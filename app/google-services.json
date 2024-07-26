@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "241759219208",
+    "project_id": "groupmaker-b7bd3",
+    "storage_bucket": "groupmaker-b7bd3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:241759219208:android:0af1451fb94a69a68babbd",
+        "android_client_info": {
+          "package_name": "com.yeceylan.groupmaker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "241759219208-3it8nibnps2467vj4nr8bjju22q97glf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz93RGvbE18NZxS7uWeelmstEyA1XSkfc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "241759219208-3it8nibnps2467vj4nr8bjju22q97glf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

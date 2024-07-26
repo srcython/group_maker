@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.yeceylan.yunusemreceylan_final"
+    namespace = "com.yeceylan.groupmaker"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.yeceylan.yunusemreceylan_final"
+        applicationId = "com.yeceylan.groupmaker"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
