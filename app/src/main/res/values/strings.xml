@@ -39,4 +39,21 @@
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_favorite">Favorite</string>
     <string name="bottom_bar_item_detail">Detail</string>
+
+    <!-- OnBoarding -->
+
+    <string name="onBoardingTitle1">Welcome to GroupMaker</string>
+    <string name="onBoardingText1">Create an account so you can get started.</string>
+
+    <string name="onBoardingTitle2">Prepare for the match</string>
+    <string name="onBoardingText2">Choose your sport and create your team</string>
+
+    <string name="onBoardingTitle3">Have fun</string>
+    <string name="onBoardingText3">Play with your team and have fun</string>
+    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+
+
+
+
 </resources>
