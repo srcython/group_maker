@@ -110,6 +110,12 @@ dependencies {
 
     implementation(libs.coil.compose)
 
+    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
+    implementation ("com.google.accompanist:accompanist-pager:0.12.0")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.12.0")
+
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 }
 kapt {
