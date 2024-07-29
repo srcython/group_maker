@@ -52,8 +52,7 @@
     <string name="onBoardingText3">Play with your team and have fun</string>
     <string name="title_activity_on_boarding">OnBoardingActivity</string>
     <string name="title_activity_login">LoginActivity</string>
-
-
+    <string name="title_activity_splash">SplashActivity</string>
 
 
 </resources>

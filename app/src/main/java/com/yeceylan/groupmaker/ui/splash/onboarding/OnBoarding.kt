@@ -1,5 +1,8 @@
-package com.yeceylan.groupmaker.ui.onboarding
+package com.yeceylan.groupmaker.ui.splash.onboarding
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -33,6 +36,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,11 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-
 import com.google.accompanist.pager.ExperimentalPagerApi
+
+
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.ui.auth.AuthenticationActivity
+import com.yeceylan.groupmaker.ui.splash.SplashActivity
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
 
@@ -54,9 +61,16 @@ import kotlinx.coroutines.launch
 @Preview(showBackground = true)
 @Composable
 private fun OnBoardinPreview() {
-   GroupMakerTheme {
-       OnBoarding(navController = rememberNavController())
-   }
+    GroupMakerTheme {
+        OnBoarding(navController = rememberNavController())
+    }
+}
+
+fun nextActivity(context: Context) {
+
+    context.startActivity(Intent(context, AuthenticationActivity::class.java))
+    val activity = context as SplashActivity
+    activity.finish()
 }
 
 fun getData(): List<OnBoardingData> {
@@ -83,6 +97,7 @@ fun getData(): List<OnBoardingData> {
 @Composable
 fun OnBoarding(navController: NavController) {
     val scope = rememberCoroutineScope()
+    val mContext = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         //Top alanını oluşturan compose çağırıyoruz
         TopSection(navController)
@@ -101,10 +116,13 @@ fun OnBoarding(navController: NavController) {
         }
         //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi
         BottomSection(size = item.size, index = state.currentPage) {
-            if (state.currentPage + 1 < item.size)
+            if (state.currentPage + 1 < item.size) {
                 scope.launch {
                     state.scrollToPage(page = state.currentPage + 1)
                 }
+            } else {
+                nextActivity(mContext)
+            }
         }
     }
 }
@@ -114,22 +132,16 @@ fun OnBoarding(navController: NavController) {
 
 fun TopSection(navController: NavController) {
     //Padding 12dp olan kutu oluşturuyoruz
+    val mContext = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
-    ) { //Sol köşedeki ok simgeli butonu oluturma
-        IconButton(
-            onClick = {},
-            modifier = Modifier.align(Alignment.CenterStart)
-        ) {
-            //iconu atama
-            Icon(Icons.AutoMirrored.Outlined.KeyboardArrowLeft, contentDescription = null)
-        }
+    ) {
         //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
-                navController.navigate("sayfaB")
+                nextActivity(mContext)
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
