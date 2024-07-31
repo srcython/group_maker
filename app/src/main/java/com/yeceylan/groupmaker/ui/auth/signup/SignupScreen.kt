@@ -222,7 +222,7 @@ private fun SignUpScreenUI(
         }
 
         LoginButtonRow(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
-            navController.navigate(AuthenticationScreens.LoginScreen.route)
+            navController.navigate(AuthenticationScreens.LoginScreen)
         }
     }
 }

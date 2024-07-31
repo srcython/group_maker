@@ -3,11 +3,11 @@ package com.yeceylan.groupmaker.ui.splash.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class SplashScreens(val route: String) {
+sealed class SplashScreens {
 
     @Serializable
-    data object SplashScreen : SplashScreens("splash_screen")
+    data object SplashScreen : SplashScreens()
 
     @Serializable
-    data object OnboardingScreen : SplashScreens("onboarding_screen")
+    data object OnboardingScreen : SplashScreens()
 }

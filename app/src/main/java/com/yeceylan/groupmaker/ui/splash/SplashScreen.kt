@@ -34,7 +34,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.core.goToTheActivity
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import kotlinx.coroutines.delay
 
@@ -56,12 +56,10 @@ fun SplashScreen(navController: NavHostController) {
         )
         delay(3000)
         navController.popBackStack()
-        navController.navigate(SplashScreens.OnboardingScreen.route)
+        navController.navigate(SplashScreens.OnboardingScreen)
 
         if (auth != null) {
-            val activity = context as Activity
-            activity.goToTheActivity(activityToGo = MainActivity(),isFinish = true)
-
+            navController.navigate(BottomBarScreen.Home.route)
         } else {
             navController.popBackStack()
             navController.navigate(SplashScreens.OnboardingScreen)

@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.yeceylan.groupmaker.ui.bottombar.BottomBar
 import com.yeceylan.groupmaker.ui.bottombar.MainNavGraph
@@ -25,13 +28,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val isBottomBarShow = remember { mutableStateOf(true) }
+
 
             GroupMakerTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { BottomBar(navController) }
+                    bottomBar = { if (isBottomBarShow.value) {
+                        BottomBar(navController = navController)
+                    } }
                 ) {
-                    MainNavGraph(navController = navController)
+                    MainNavGraph(navController = navController, isShowBottomBar =  isBottomBarShow)
                 }
             }
         }
