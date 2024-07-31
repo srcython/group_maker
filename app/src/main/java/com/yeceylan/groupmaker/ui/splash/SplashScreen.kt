@@ -48,7 +48,7 @@ fun SplashScreen(navController: NavHostController ) {
         )
         delay(3000)
         navController.popBackStack()
-        navController.navigate(SplashScreens.OnboardingScreen)
+        navController.navigate(SplashScreens.OnboardingScreen.route)
 
        /* if (onBoardingIsFinished(context = context)) {
             navController.popBackStack()

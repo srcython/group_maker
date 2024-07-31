@@ -3,11 +3,11 @@ package com.yeceylan.groupmaker.ui.auth.navigation
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class AuthenticationScreens {
+sealed class AuthenticationScreens(val route: String) {
 
     @Serializable
-    data object LoginScreen : AuthenticationScreens()
+    data object LoginScreen : AuthenticationScreens("login_screen")
 
     @Serializable
-    data object SignUpScreen : AuthenticationScreens()
+    data object SignUpScreen : AuthenticationScreens("signup_screen")
 }

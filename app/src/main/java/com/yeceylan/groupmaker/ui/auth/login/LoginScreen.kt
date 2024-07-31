@@ -1,6 +1,5 @@
 package com.yeceylan.groupmaker.ui.auth.login
 
-import android.app.Activity
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material3.Text
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -36,9 +35,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.components.DButton
 import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
 import com.yeceylan.groupmaker.ui.components.DOutlinedTextField
@@ -50,7 +49,6 @@ import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel(),
-    goToTheActivity: (activity: Activity) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
@@ -62,11 +60,12 @@ fun LoginScreen(
         }
 
         if (isSuccessGoogleLogin) {
-            /* sonar - comment */
+            navController.navigate(BottomBarScreen.Home.route)
         }
 
         if (isSuccessEmailAndPasswordLogin) {
-            goToTheActivity(MainActivity())
+            viewModel.resetUIState()
+            navController.navigate(BottomBarScreen.Home.route)
         }
 
         LoginScreenUI(
@@ -158,7 +157,7 @@ fun LoginScreenUI(
         }
 
         SignUpButton(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
-            navController.navigate(AuthenticationScreens.SignUpScreen)
+            navController.navigate(AuthenticationScreens.SignUpScreen.route)
         }
     }
 }
@@ -252,9 +251,6 @@ private fun LoginScreenPreview() {
     GroupMakerTheme {
         LoginScreen(
             navController = rememberNavController(),
-            goToTheActivity = {
-                // sonar - comment
-            },
         )
     }
 }
