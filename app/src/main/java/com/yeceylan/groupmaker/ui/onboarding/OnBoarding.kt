@@ -1,5 +1,8 @@
 package com.yeceylan.groupmaker.ui.splash.onboarding
 
+import android.content.Context
+import android.content.Intent
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -21,7 +24,11 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.KeyboardArrowLeft
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -45,7 +52,8 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+import com.yeceylan.groupmaker.ui.auth.AuthenticationActivity
+import com.yeceylan.groupmaker.ui.splash.SplashActivity
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
 
@@ -58,7 +66,12 @@ private fun OnBoardinPreview() {
     }
 }
 
+fun nextActivity(context: Context) {
 
+    context.startActivity(Intent(context, AuthenticationActivity::class.java))
+    val activity = context as SplashActivity
+    activity.finish()
+}
 
 fun getData(): List<OnBoardingData> {
     return listOf(
