@@ -21,9 +21,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.core.goToTheActivity
+import com.yeceylan.groupmaker.ui.auth.AuthenticationActivity
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationNavGraph
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashNavGraph
-import com.yeceylan.groupmaker.ui.splash.onboarding.OnBoarding
+import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
 import com.yeceylan.groupmaker.ui.splash.ui.theme.GroupMakerTheme
 
 
@@ -40,7 +41,9 @@ class SplashActivity : ComponentActivity() {
                     modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                     content = { paddingValues ->
                         Surface(modifier = Modifier.padding(paddingValues)) {
-                            SplashNavGraph(navController = navController)
+                            SplashNavGraph(navController = navController){
+                                goToTheActivity(activityToGo = AuthenticationActivity(), isFinish = true)
+                            }
 
                         }
                     },
