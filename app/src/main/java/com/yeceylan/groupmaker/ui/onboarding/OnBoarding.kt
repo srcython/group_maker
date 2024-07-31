@@ -1,5 +1,6 @@
-package com.yeceylan.groupmaker.ui.splash.onboarding
+package com.yeceylan.groupmaker.ui.onboarding
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import androidx.activity.compose.BackHandler
@@ -62,16 +63,16 @@ import kotlinx.coroutines.launch
 @Composable
 private fun OnBoardinPreview() {
     GroupMakerTheme {
-        OnBoarding(navController = rememberNavController())
+        OnBoarding(navController = rememberNavController(), goToTheActivity = {})
     }
 }
 
-fun nextActivity(context: Context) {
+/*fun nextActivity(context: Context) {
 
     context.startActivity(Intent(context, AuthenticationActivity::class.java))
     val activity = context as SplashActivity
     activity.finish()
-}
+}*/
 
 fun getData(): List<OnBoardingData> {
     return listOf(
@@ -95,12 +96,12 @@ fun getData(): List<OnBoardingData> {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoarding(navController: NavController) {
+fun OnBoarding(navController: NavController,goToTheActivity: (activity: Activity) -> Unit,) {
     val scope = rememberCoroutineScope()
     val mContext = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         //Top alanını oluşturan compose çağırıyoruz
-        TopSection(navController)
+        TopSection(navController,goToTheActivity)
         //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz
         val item = getData()
         val state = rememberPagerState(pageCount = item.size)
@@ -121,7 +122,7 @@ fun OnBoarding(navController: NavController) {
                     state.scrollToPage(page = state.currentPage + 1)
                 }
             } else {
-                nextActivity(mContext)
+                goToTheActivity(AuthenticationActivity())
             }
         }
     }
@@ -130,7 +131,7 @@ fun OnBoarding(navController: NavController) {
 //Top alanını oluşturan compose
 @Composable
 
-fun TopSection(navController: NavController) {
+fun TopSection(navController: NavController,goToTheActivity: (activity: Activity) -> Unit,) {
     //Padding 12dp olan kutu oluşturuyoruz
     val mContext = LocalContext.current
     Box(
@@ -141,7 +142,7 @@ fun TopSection(navController: NavController) {
         //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
-                nextActivity(mContext)
+                goToTheActivity(AuthenticationActivity())
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {

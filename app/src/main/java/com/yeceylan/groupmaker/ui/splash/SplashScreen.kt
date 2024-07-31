@@ -1,6 +1,7 @@
 package com.yeceylan.groupmaker.ui.splash
 
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,35 +31,40 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.firebase.auth.FirebaseAuth
+import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.core.goToTheActivity
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import kotlinx.coroutines.delay
 
 
 @Composable
-fun SplashScreen(navController: NavHostController ) {
+fun SplashScreen(navController: NavHostController) {
+
+    val context = LocalContext.current
 
     val alpha = remember {
         Animatable(0f)
     }
-
+    val auth = FirebaseAuth.getInstance()
+    FirebaseAuth.getInstance().signOut()
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             1f,
             animationSpec = tween(2500)
         )
         delay(3000)
-        navController.popBackStack()
-        navController.navigate(SplashScreens.OnboardingScreen)
 
-       /* if (onBoardingIsFinished(context = context)) {
-            navController.popBackStack()
-            navController.navigate("Home")
+
+        if (auth != null) {
+            val activity = context as Activity
+            activity.goToTheActivity(activityToGo = MainActivity(),isFinish = true)
+
         } else {
             navController.popBackStack()
-            navController.navigate("Onboarding")
-
-        }*/
+            navController.navigate(SplashScreens.OnboardingScreen)
+        }
 
     }
 

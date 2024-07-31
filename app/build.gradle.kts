@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
+    //firestore
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -118,6 +121,9 @@ dependencies {
 
     //lottie
     implementation( "com.airbnb.android:lottie-compose:6.4.1")
+
+    //glide for compose
+    implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
 
 
 }
