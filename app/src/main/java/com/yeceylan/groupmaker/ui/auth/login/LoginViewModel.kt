@@ -83,6 +83,12 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun resetUIState() {
+        _uiState.update {
+            LoginScreenUIState()
+        }
+    }
+
     data class LoginScreenUIState(
         val isLoading: Boolean = false,
         val isHaveError: Boolean = false,

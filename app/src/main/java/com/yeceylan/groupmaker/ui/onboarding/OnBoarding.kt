@@ -1,9 +1,6 @@
 package com.yeceylan.groupmaker.ui.onboarding
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import androidx.activity.compose.BackHandler
+
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -25,11 +22,7 @@ import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowLeft
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.outlined.KeyboardArrowLeft
-import androidx.compose.material.icons.outlined.KeyboardArrowRight
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -48,13 +41,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
-
-
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.auth.AuthenticationActivity
-import com.yeceylan.groupmaker.ui.splash.SplashActivity
+import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
 
@@ -63,16 +53,10 @@ import kotlinx.coroutines.launch
 @Composable
 private fun OnBoardinPreview() {
     GroupMakerTheme {
-        OnBoarding(navController = rememberNavController(), goToTheActivity = {})
+        OnBoarding(navController = rememberNavController())
     }
 }
 
-/*fun nextActivity(context: Context) {
-
-    context.startActivity(Intent(context, AuthenticationActivity::class.java))
-    val activity = context as SplashActivity
-    activity.finish()
-}*/
 
 fun getData(): List<OnBoardingData> {
     return listOf(
@@ -96,12 +80,12 @@ fun getData(): List<OnBoardingData> {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoarding(navController: NavController,goToTheActivity: (activity: Activity) -> Unit,) {
+fun OnBoarding(navController: NavController) {
     val scope = rememberCoroutineScope()
     val mContext = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
         //Top alanını oluşturan compose çağırıyoruz
-        TopSection(navController,goToTheActivity)
+        TopSection(navController)
         //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz
         val item = getData()
         val state = rememberPagerState(pageCount = item.size)
@@ -122,7 +106,7 @@ fun OnBoarding(navController: NavController,goToTheActivity: (activity: Activity
                     state.scrollToPage(page = state.currentPage + 1)
                 }
             } else {
-                goToTheActivity(AuthenticationActivity())
+                navController.navigate(AuthenticationScreens.LoginScreen)
             }
         }
     }
@@ -131,7 +115,7 @@ fun OnBoarding(navController: NavController,goToTheActivity: (activity: Activity
 //Top alanını oluşturan compose
 @Composable
 
-fun TopSection(navController: NavController,goToTheActivity: (activity: Activity) -> Unit,) {
+fun TopSection(navController: NavController) {
     //Padding 12dp olan kutu oluşturuyoruz
     val mContext = LocalContext.current
     Box(
@@ -142,7 +126,7 @@ fun TopSection(navController: NavController,goToTheActivity: (activity: Activity
         //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
-                goToTheActivity(AuthenticationActivity())
+                navController.navigate(AuthenticationScreens.LoginScreen)
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {

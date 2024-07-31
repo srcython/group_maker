@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.use_cases.auth.RegisterUseCase
+import com.yeceylan.groupmaker.ui.auth.login.LoginViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -65,6 +66,11 @@ class SignUpViewModel @Inject constructor(val registerUseCase: RegisterUseCase) 
 
     fun isPasswordsMatch(password: String, confirmPassword: String): Boolean {
         return password == confirmPassword
+    }
+    fun resetUIState() {
+        _uiState.update {
+            SignUpUIState()
+        }
     }
 
     data class SignUpUIState(
