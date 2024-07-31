@@ -5,6 +5,7 @@ import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.yeceylan.groupmaker.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
@@ -44,7 +45,7 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Home.route) {
             isShowBottomBar.value = true
-            HomeScreen()
+            SportTypes()
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
