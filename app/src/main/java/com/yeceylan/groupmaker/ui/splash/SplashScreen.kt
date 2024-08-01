@@ -59,11 +59,13 @@ fun SplashScreen(navController: NavHostController) {
         navController.navigate(SplashScreens.OnboardingScreen)
 
         if (auth != null) {
+           // auth.signOut()
             navController.navigate(BottomBarScreen.Home.route)
         } else {
             navController.popBackStack()
             navController.navigate(SplashScreens.OnboardingScreen)
         }
+
 
     }
 

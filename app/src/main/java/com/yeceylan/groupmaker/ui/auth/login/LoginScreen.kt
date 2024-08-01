@@ -111,9 +111,13 @@ fun LoginScreenUI(
 
         Spacer(modifier = Modifier.height(Dimen.spacing_xxl))
 
-        DGoogleLoginButton {
-            loginWithGoogle()
-        }
+        DGoogleLoginButton(modifier = Modifier,
+            onClick = {
+                navController.navigate(AuthenticationScreens.MakeMatchScreen)
+        })
+//        {
+////            loginWithGoogle()
+//        }
 
         DividerSignInWith(modifier = Modifier.padding(vertical = Dimen.spacing_m1))
 
