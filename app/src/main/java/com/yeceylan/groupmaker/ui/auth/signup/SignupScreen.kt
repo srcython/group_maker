@@ -92,6 +92,7 @@ private fun SignUpScreenUI(
 ) {
     val verticalScroll = rememberScrollState()
     var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var isPasswordsMatch by remember { mutableStateOf(false) }
@@ -128,7 +129,7 @@ private fun SignUpScreenUI(
             hint = stringResource(R.string.username_hint),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = {
-                // sonar comment
+                name = it
             },
         )
 
@@ -218,7 +219,7 @@ private fun SignUpScreenUI(
             text = stringResource(R.string.button_sign_up),
             modifier = Modifier.padding(top = Dimen.spacing_m1),
         ) {
-            viewModel.signUpWithEmailAndPassword(email = email, password = password)
+            viewModel.signUpWithEmailAndPassword(email = email, password = password, name = name)
         }
 
         LoginButtonRow(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
