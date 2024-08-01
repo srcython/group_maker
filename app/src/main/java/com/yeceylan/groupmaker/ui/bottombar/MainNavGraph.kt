@@ -9,10 +9,9 @@ import com.yeceylan.groupmaker.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
+import com.yeceylan.groupmaker.ui.player.PlayerPage
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 
@@ -49,7 +48,7 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
-            HistoryScreen()
+            PlayerPage()
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true

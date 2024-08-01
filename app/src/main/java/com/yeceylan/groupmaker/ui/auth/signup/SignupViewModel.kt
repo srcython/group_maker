@@ -4,6 +4,9 @@ import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeceylan.groupmaker.core.Resource
+import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
+import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.RegisterUseCase
 import com.yeceylan.groupmaker.ui.auth.login.LoginViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,15 +15,20 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SignUpViewModel @Inject constructor(val registerUseCase: RegisterUseCase) : ViewModel() {
+class SignUpViewModel @Inject constructor(
+    private val registerUseCase: RegisterUseCase,
+    private val addUserUseCase: AddUserUseCase,
+    private val getUsersUseCase: GetUsersUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUIState())
     val uiState = _uiState.asStateFlow()
 
-    fun signUpWithEmailAndPassword(email: String, password: String) =
+    fun signUpWithEmailAndPassword(email: String, password: String, name: String) =
         registerUseCase(email, password).onEach {
             when (it) {
                 is Resource.Loading -> {
@@ -30,13 +38,10 @@ class SignUpViewModel @Inject constructor(val registerUseCase: RegisterUseCase) 
                 }
 
                 is Resource.Success -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            isLoading = false,
-                            isHaveError = false,
-                            isSuccessSignUpWithEmailAndPassword = true,
-                        )
-                    }
+                    val user = it.data
+                    val userId = user?.user?.uid
+                    val newUser = User(id = userId.toString(), email = email, name = name)
+                    addUserToFirestore(newUser)
                 }
 
                 is Resource.Error -> {
@@ -50,6 +55,29 @@ class SignUpViewModel @Inject constructor(val registerUseCase: RegisterUseCase) 
                 }
             }
         }.launchIn(viewModelScope)
+
+    private fun addUserToFirestore(user: User) {
+        viewModelScope.launch {
+            try {
+                addUserUseCase(user)
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        isHaveError = false,
+                        isSuccessSignUpWithEmailAndPassword = true,
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update { state ->
+                    state.copy(
+                        isLoading = false,
+                        isHaveError = true,
+                        errorMessage = e.message.orEmpty(),
+                    )
+                }
+            }
+        }
+    }
 
     fun signUpWithGoogle() {
         // TODO : SignUpWithGoogle
