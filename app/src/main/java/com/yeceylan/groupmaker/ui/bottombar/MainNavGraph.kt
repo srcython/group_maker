@@ -5,16 +5,17 @@ import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.yeceylan.groupmaker.SportTypes
+import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
+import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
+import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
 
 
 @Composable
@@ -35,6 +36,10 @@ fun MainNavGraph(
             isShowBottomBar.value = false
             SignUpScreen(navController = navController)
         }
+        composable<AuthenticationScreens.MakeMatchScreen> {
+            isShowBottomBar.value = false
+            MakeMatchScreen(navController = navController)
+        }
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false
             SplashScreen(navController = navController)
@@ -45,7 +50,7 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Home.route) {
             isShowBottomBar.value = true
-            SportTypes()
+            SportTypes(navController = navController)
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
@@ -54,6 +59,10 @@ fun MainNavGraph(
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true
             ProfileScreen()
+        }
+        composable<SportTypeScreens.SportTypeSetting> {
+            isShowBottomBar.value = true
+            SportTypeSetting()
         }
     }
 }
