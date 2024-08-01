@@ -10,4 +10,7 @@ sealed class AuthenticationScreens {
 
     @Serializable
     data object SignUpScreen : AuthenticationScreens()
+
+    @Serializable
+    data object MakeMatchScreen : AuthenticationScreens()
 }

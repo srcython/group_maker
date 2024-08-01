@@ -11,6 +11,7 @@ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
+import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
@@ -32,7 +33,7 @@ fun MainNavGraph(
             isShowBottomBar.value = false
             LoginScreen(navController = navController)
         }
-        composable< AuthenticationScreens.SignUpScreen> {
+        composable<AuthenticationScreens.SignUpScreen> {
             isShowBottomBar.value = false
             SignUpScreen(navController = navController)
         }
