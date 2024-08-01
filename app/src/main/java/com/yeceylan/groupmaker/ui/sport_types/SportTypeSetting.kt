@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker
+package com.yeceylan.groupmaker.ui.sport_types
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yeceylan.groupmaker.R
 
 @Preview
 @Composable
