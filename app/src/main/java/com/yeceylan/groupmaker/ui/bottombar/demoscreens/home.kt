@@ -8,15 +8,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import com.yeceylan.groupmaker.SportTypes
 
 @Composable
 fun HomeScreen() {
+    SportTypes()
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .background(Color.LightGray)
-    ) {
-        Text(text = "Home Screen", fontSize = 20.sp)
-    }
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Color.LightGray)
+//    ) {
+//        Text(text = "Home Screen", fontSize = 20.sp)
+//    }
 
 }

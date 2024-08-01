@@ -39,19 +39,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+import com.yeceylan.groupmaker.ui.bottombar.Routes
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
 
 
 @Preview(showBackground = true)
 @Composable
-private fun OnBoardinPreview() {
+private fun OnBoardingPreview() {
     GroupMakerTheme {
         OnBoarding(navController = rememberNavController())
     }
@@ -80,17 +81,12 @@ fun getData(): List<OnBoardingData> {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun OnBoarding(navController: NavController) {
+fun OnBoarding(navController: NavHostController) {
     val scope = rememberCoroutineScope()
-    val mContext = LocalContext.current
     Column(modifier = Modifier.fillMaxSize()) {
-        //Top alanını oluşturan compose çağırıyoruz
         TopSection(navController)
-        //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz
         val item = getData()
         val state = rememberPagerState(pageCount = item.size)
-        //OnBoardingItem'a item resim ve yazıları arayüz elementlerine aktarmasını
-        //sağlıyoruz
         HorizontalPager(
             state = state,
             modifier = Modifier
@@ -99,34 +95,32 @@ fun OnBoarding(navController: NavController) {
         ) { page ->
             OnBoardingItem(item = item[page])
         }
-        //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi
         BottomSection(size = item.size, index = state.currentPage) {
             if (state.currentPage + 1 < item.size) {
                 scope.launch {
                     state.scrollToPage(page = state.currentPage + 1)
                 }
             } else {
-                navController.navigate(AuthenticationScreens.LoginScreen)
+                navController.navigate(Routes.Login.route) {
+                    popUpTo(Routes.OnBoarding.route) { inclusive = true }
+                }
             }
         }
     }
 }
 
-//Top alanını oluşturan compose
 @Composable
-
-fun TopSection(navController: NavController) {
-    //Padding 12dp olan kutu oluşturuyoruz
-    val mContext = LocalContext.current
+fun TopSection(navController: NavHostController) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(12.dp)
     ) {
-        //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
-                navController.navigate(AuthenticationScreens.LoginScreen)
+                navController.navigate(Routes.Login.route) {
+                    popUpTo(Routes.OnBoarding.route) { inclusive = true }
+                }
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {

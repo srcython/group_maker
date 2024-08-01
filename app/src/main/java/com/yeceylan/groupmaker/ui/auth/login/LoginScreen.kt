@@ -36,8 +36,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.bottombar.Routes
 import com.yeceylan.groupmaker.ui.components.DButton
 import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
 import com.yeceylan.groupmaker.ui.components.DOutlinedTextField
@@ -48,9 +48,9 @@ import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by loginViewModel.uiState.collectAsState()
     val context = LocalContext.current
 
     with(uiState) {
@@ -60,24 +60,34 @@ fun LoginScreen(
         }
 
         if (isSuccessGoogleLogin) {
-            navController.navigate(BottomBarScreen.Home.route)
+            navController.navigate(Routes.Main.route) {
+                popUpTo(Routes.Login.route) {
+                    inclusive = true
+                }
+            }
+
+
         }
 
         if (isSuccessEmailAndPasswordLogin) {
-            viewModel.resetUIState()
-            navController.navigate(BottomBarScreen.Home.route)
+            loginViewModel.resetUIState()
+            navController.navigate(Routes.Main.route) {
+                popUpTo(Routes.Login.route) {
+                    inclusive = true
+                }
+            }
         }
 
         LoginScreenUI(
             navController = navController,
-            loginWithGoogle = { viewModel.loginWithGoogle() },
+            loginWithGoogle = { loginViewModel.loginWithGoogle() },
             errorMessage = errorMessage,
             isError = isHaveError,
             onClickToTextField = {
-                viewModel.updateErrorStatesWithDefaultValues()
+                loginViewModel.updateErrorStatesWithDefaultValues()
             },
             loginWithEmailAndPassword = { email, password ->
-                viewModel.loginWithEmailAndPassword(email, password, context)
+                loginViewModel.loginWithEmailAndPassword(email, password, context)
             },
         )
     }
@@ -157,7 +167,7 @@ fun LoginScreenUI(
         }
 
         SignUpButton(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
-            navController.navigate(AuthenticationScreens.SignUpScreen)
+            navController.navigate("signup")
         }
     }
 }

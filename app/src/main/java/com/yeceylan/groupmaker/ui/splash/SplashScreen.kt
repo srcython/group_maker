@@ -1,8 +1,5 @@
 package com.yeceylan.groupmaker.ui.splash
 
-
-import android.app.Activity
-import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -16,13 +13,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,40 +28,36 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.firebase.auth.FirebaseAuth
-import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
-import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
+import com.yeceylan.groupmaker.ui.auth.login.LoginViewModel
+import com.yeceylan.groupmaker.ui.bottombar.Routes
 import kotlinx.coroutines.delay
-
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun SplashScreen(navController: NavHostController) {
+fun SplashScreen(
+    navController: NavHostController,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
+    val alpha = remember { Animatable(0f) }
+    val uiState by loginViewModel.uiState.collectAsState()
 
-    val context = LocalContext.current
-
-    val alpha = remember {
-        Animatable(0f)
-    }
-    val auth = FirebaseAuth.getInstance()
-    FirebaseAuth.getInstance().signOut()
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             1f,
             animationSpec = tween(2500)
         )
         delay(3000)
-        navController.popBackStack()
-        navController.navigate(SplashScreens.OnboardingScreen)
 
-        if (auth != null) {
-            navController.navigate(BottomBarScreen.Home.route)
+        if (uiState.isLoggedIn) {
+            navController.navigate(Routes.Main.route) {
+                popUpTo(Routes.Splash.route) { inclusive = true }
+            }
         } else {
-            navController.popBackStack()
-            navController.navigate(SplashScreens.OnboardingScreen)
+            navController.navigate(Routes.OnBoarding.route) {
+                popUpTo(Routes.Splash.route) { inclusive = true }
+            }
         }
-
     }
 
     Column(
@@ -92,15 +85,8 @@ fun LoaderAnimation(modifier: Modifier, anim: Int) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(anim))
 
     LottieAnimation(
-        composition = composition, iterations = LottieConstants.IterateForever,
+        composition = composition,
+        iterations = LottieConstants.IterateForever,
         modifier = modifier
     )
 }
-
-/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {
-    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-    return sharedPreferences.getBoolean("isFinished", false)
-
-}
-
- */

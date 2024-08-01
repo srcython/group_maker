@@ -40,8 +40,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.bottombar.Routes
 import com.yeceylan.groupmaker.ui.components.BackButton
 import com.yeceylan.groupmaker.ui.components.DButton
 import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
@@ -73,7 +73,8 @@ fun SignUpScreen(
 
         if (isSuccessSignUpWithEmailAndPassword) {
             viewModel.resetUIState()
-            navController.navigate(BottomBarScreen.Home.route)
+            navController.navigate(Routes.Login.route){
+            }
         }
 
         SignUpScreenUI(
@@ -222,7 +223,7 @@ private fun SignUpScreenUI(
         }
 
         LoginButtonRow(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
-            navController.navigate(AuthenticationScreens.LoginScreen)
+            navController.navigate("login")
         }
     }
 }

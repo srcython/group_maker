@@ -5,9 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +26,26 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 
+@Composable
+fun BottomNav() {
+    val navController = rememberNavController()
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White),
+        bottomBar = { BottomBar(navController = navController) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+
+        ) {
+            BottomNavGraph(navController = navController)
+        }
+    }
+}
+
 
 @Composable
 fun BottomBar(navController: NavHostController) {
@@ -36,23 +58,29 @@ fun BottomBar(navController: NavHostController) {
     val navStackBackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navStackBackEntry?.destination
 
-    Row(
+    Box(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
-            .background(Color.Transparent)
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 17.dp, vertical = 23.dp)
+            .height(40.dp)
+            .clip(CircleShape)
+            .clickable(enabled = false) {},
+        contentAlignment = Alignment.Center
     ) {
-        screens.forEach { screen ->
-            AddItem(
-                screen = screen,
-                currentDestination = currentDestination,
-                navController = navController
-            )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            screens.forEach { screen ->
+                AddItem(
+                    screen = screen,
+                    currentDestination = currentDestination,
+                    navController = navController
+                )
+            }
         }
     }
-
 }
 
 @Composable
@@ -68,7 +96,6 @@ fun RowScope.AddItem(
 
     val contentColor =
         if (selected) Color.White else Color.Black
-
     Box(
         modifier = Modifier
             .height(40.dp)
@@ -76,13 +103,17 @@ fun RowScope.AddItem(
             .background(background)
             .clickable(onClick = {
                 navController.navigate(screen.route) {
-                    popUpTo(navController.graph.findStartDestination().id)
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
                     launchSingleTop = true
+                    restoreState = true
                 }
             })
     ) {
         Row(
             modifier = Modifier
+                .background(Color.Transparent)
                 .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -102,8 +133,9 @@ fun RowScope.AddItem(
     }
 }
 
+
 @Composable
 @Preview
 fun BottomNavPreview() {
-    BottomBar(navController = rememberNavController())
+    BottomNav()
 }
