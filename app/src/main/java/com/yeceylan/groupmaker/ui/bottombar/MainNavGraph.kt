@@ -3,8 +3,10 @@ package com.yeceylan.groupmaker.ui.bottombar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
@@ -61,9 +63,23 @@ fun MainNavGraph(
             isShowBottomBar.value = true
             ProfileScreen()
         }
-        composable<SportTypeScreens.SportTypeSetting> {
+       /* composable<SportTypeScreens.SportTypeSetting> {
             isShowBottomBar.value = true
             SportTypeSetting()
+
+        }*/
+        composable(
+            route = SportTypeScreens.SportTypeSetting.route,
+            arguments = listOf(
+                navArgument("title"){ type = NavType.StringType},
+                navArgument("size"){ type = NavType.IntType}
+            )
+        ) {
+            val title = it.arguments?.getString("title")!!
+            val size = it.arguments?.getInt("size")!!
+            isShowBottomBar.value = true
+            SportTypeSetting(title,size)
+
         }
     }
 }

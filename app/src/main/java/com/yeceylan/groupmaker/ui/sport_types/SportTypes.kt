@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.yeceylan.groupmaker.core.Response
+import com.yeceylan.groupmaker.domain.model.SportTypeData
 import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
 
 @Composable
@@ -37,30 +38,37 @@ fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hil
     when (val sportListResponse = viewModel.booksResponse) {
         is Response.Failure -> "TODO()"
         is Response.Loading -> "TODO()"
-        is Response.Success ->
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 40.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                LazyColumn() {
-                    val a = sportListResponse.data
-
-                    items(sportListResponse.data) {
-
-                        ImageCard(
-                            painter = it.image!!,
-                            contentDescription = "",
-                            title = it.title!!,
-                            navController = navController,
-                        )
-                    }
-                }
-            }
+        is Response.Success -> SportList(
+            list = sportListResponse.data,
+            navController = navController
+        )
     }
 }
+
+@Composable
+fun SportList(list: List<SportTypeData>, navController: NavController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(top = 40.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        LazyColumn() {
+
+            items(list) {
+
+                ImageCard(
+                    painter = it.image!!,
+                    contentDescription = "",
+                    title = it.title!!,
+                    navController = navController,
+                    teamSize = it.size!!
+                )
+            }
+        }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -69,14 +77,16 @@ fun ImageCard(
     contentDescription: String,
     title: String,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    teamSize:Int
+
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
-                navController.navigate(SportTypeScreens.SportTypeSetting)
+                navController.navigate("${SportTypeScreens.SportTypeSetting.pass}/$title/$teamSize")
             },
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(10.dp),
