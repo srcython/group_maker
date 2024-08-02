@@ -65,6 +65,7 @@ fun LoginScreen(
 
         if (isSuccessEmailAndPasswordLogin) {
             viewModel.resetUIState()
+            navController.popBackStack()
             navController.navigate(BottomBarScreen.Home.route)
         }
 

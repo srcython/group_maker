@@ -12,8 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,24 +24,32 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yeceylan.groupmaker.R
 
-@Preview
 @Composable
-fun SportTypeSetting() {
+fun SportTypeSetting(title: String, teamSize: Int) {
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
 
+    Text(
+        text = title,
+        fontSize = 30.sp,
+        textAlign = TextAlign.Center,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 70.dp)
+    )
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        SportTypeSettingItem(painter = create,"Create a Match")
-        SportTypeSettingItem(painter = players,"Players")
+
+        SportTypeSettingItem(painter = create, "Create a Match")
+        SportTypeSettingItem(painter = players, "Players")
 
 
     }
@@ -48,7 +57,7 @@ fun SportTypeSetting() {
 }
 
 @Composable
-fun SportTypeSettingItem(painter: Painter,text:String) {
+fun SportTypeSettingItem(painter: Painter, text: String) {
 
     Card(
         modifier = Modifier
@@ -58,7 +67,7 @@ fun SportTypeSettingItem(painter: Painter,text:String) {
                 Log.e("card", "click")
             },
         shape = RoundedCornerShape(24.dp),
-        elevation = 10.dp,
+        elevation = CardDefaults.cardElevation(10.dp),
 
         ) {
         Box(modifier = Modifier.height(200.dp)) {

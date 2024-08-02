@@ -1,6 +1,5 @@
 package com.yeceylan.groupmaker.ui.onboarding
 
-
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -18,11 +17,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -30,7 +29,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,10 +42,10 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.domain.model.OnBoardingData
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
-
 
 @Preview(showBackground = true)
 @Composable
@@ -56,7 +54,6 @@ private fun OnBoardinPreview() {
         OnBoarding(navController = rememberNavController())
     }
 }
-
 
 fun getData(): List<OnBoardingData> {
     return listOf(
@@ -81,8 +78,9 @@ fun getData(): List<OnBoardingData> {
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun OnBoarding(navController: NavController) {
+
     val scope = rememberCoroutineScope()
-    val mContext = LocalContext.current
+
     Column(modifier = Modifier.fillMaxSize()) {
         //Top alanını oluşturan compose çağırıyoruz
         TopSection(navController)
@@ -106,7 +104,9 @@ fun OnBoarding(navController: NavController) {
                     state.scrollToPage(page = state.currentPage + 1)
                 }
             } else {
+                navController.popBackStack()
                 navController.navigate(AuthenticationScreens.LoginScreen)
+
             }
         }
     }
@@ -114,10 +114,8 @@ fun OnBoarding(navController: NavController) {
 
 //Top alanını oluşturan compose
 @Composable
-
 fun TopSection(navController: NavController) {
-    //Padding 12dp olan kutu oluşturuyoruz
-    val mContext = LocalContext.current
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -126,13 +124,14 @@ fun TopSection(navController: NavController) {
         //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
+                navController.popBackStack()
                 navController.navigate(AuthenticationScreens.LoginScreen)
             },
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text(
                 text = "Skip",
-                color = MaterialTheme.colors.onBackground
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
     }
@@ -149,9 +148,7 @@ fun BoxScope.Indicators(size: Int, index: Int) {
         repeat(size) {
             Indicator(isSelected = it == index)
         }
-
     }
-
 }
 
 //Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma
@@ -167,8 +164,8 @@ fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
         FloatingActionButton(
             onClick = onNextClicked,
             modifier = Modifier.align(Alignment.CenterEnd),
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
         ) {
             Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)
         }
@@ -181,7 +178,7 @@ fun Indicator(isSelected: Boolean) {
     //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm
     val width = animateDpAsState(
         targetValue = if (isSelected) 25.dp else 10.dp,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy)
+        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy), label = ""
     )
     //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama
     Box(
@@ -190,13 +187,11 @@ fun Indicator(isSelected: Boolean) {
             .width(width = width.value)
             .clip(shape = CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground.copy(
+                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(
                     alpha = 0.5f
                 )
             )
-    ) {
-
-    }
+    ) {}
 
 }
 
@@ -218,13 +213,13 @@ fun OnBoardingItem(item: OnBoardingData) {
         Text(
             text = stringResource(id = item.titleR),
             fontSize = 24.sp,
-            color = MaterialTheme.colors.onBackground,
+            color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Bold
         )
         //Açıklama yazısı Text özelliğine atanıyor
         Text(
             text = stringResource(id = item.textR),
-            color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
             textAlign = TextAlign.Center
         )
     }
