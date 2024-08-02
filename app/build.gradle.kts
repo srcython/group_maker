@@ -27,7 +27,10 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
     compileOptions {
@@ -96,35 +99,37 @@ dependencies {
     implementation("androidx.fragment:fragment-ktx:1.3.6")
 
     // Retrofit
-    implementation (libs.retrofit)
-    implementation (libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // Paging
-    implementation (libs.androidx.paging.runtime.ktx)
+    implementation(libs.androidx.paging.runtime.ktx)
 
     // Coroutine
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
 
-    implementation (libs.glide)
-    kapt (libs.compiler)
+    implementation(libs.glide)
+    kapt(libs.compiler)
 
-    implementation ("com.localebro:okhttpprofiler:1.0.8")
+    implementation("com.localebro:okhttpprofiler:1.0.8")
 
     implementation(libs.coil.compose)
 
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
-    implementation ("com.google.accompanist:accompanist-pager:0.12.0")
-    implementation ("com.google.accompanist:accompanist-pager-indicators:0.12.0")
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
+    implementation("com.google.accompanist:accompanist-pager:0.12.0")
+    implementation("com.google.accompanist:accompanist-pager-indicators:0.12.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
 
     //lottie
-    implementation( "com.airbnb.android:lottie-compose:6.4.1")
+    implementation("com.airbnb.android:lottie-compose:6.4.1")
 
     //glide for compose
-    implementation ("com.github.bumptech.glide:compose:1.0.0-beta01")
+    implementation("com.github.bumptech.glide:compose:1.0.0-beta01")
 
+    // Google Places API
+    implementation("com.google.android.libraries.places:places:3.5.0")
 
 }
 kapt {
