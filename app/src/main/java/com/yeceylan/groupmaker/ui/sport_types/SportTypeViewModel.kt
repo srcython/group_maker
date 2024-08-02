@@ -26,7 +26,6 @@ class SportTypeViewModel @Inject constructor(
     private fun getBooks() = viewModelScope.launch {
         sportTypeUseCase.invoke().collect { response ->
             booksResponse = response
-            Log.e("response",booksResponse.toString())
         }
     }
 }
