@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -43,12 +44,13 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavHostController) {
 
     val context = LocalContext.current
+    val viewModel:SplashViewModel = hiltViewModel()
 
     val alpha = remember {
         Animatable(0f)
     }
     val auth = FirebaseAuth.getInstance()
-    FirebaseAuth.getInstance().signOut()
+    //FirebaseAuth.getInstance().signOut()
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             1f,
@@ -58,7 +60,7 @@ fun SplashScreen(navController: NavHostController) {
         navController.popBackStack()
         navController.navigate(SplashScreens.OnboardingScreen)
 
-        if (auth != null) {
+        if (viewModel.uiState.value.isLogin) {
            // auth.signOut()
             navController.navigate(BottomBarScreen.Home.route)
         } else {
