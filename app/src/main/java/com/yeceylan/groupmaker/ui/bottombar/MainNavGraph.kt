@@ -14,8 +14,11 @@ import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
+import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
+import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
 import com.yeceylan.groupmaker.ui.player.PlayerPage
+import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
@@ -32,6 +35,14 @@ fun MainNavGraph(
         startDestination = SplashScreens.SplashScreen,
     ) {
 
+        composable<SplashScreens.SplashScreen> {
+            isShowBottomBar.value = false
+            SplashScreen(navController = navController)
+        }
+        composable<OnBoardingScreens.OnBoardingScreen> {
+            isShowBottomBar.value = false
+            OnBoarding(navController = navController)
+        }
         composable<AuthenticationScreens.LoginScreen> {
             isShowBottomBar.value = false
             LoginScreen(navController = navController)
@@ -40,35 +51,18 @@ fun MainNavGraph(
             isShowBottomBar.value = false
             SignUpScreen(navController = navController)
         }
-        composable<AuthenticationScreens.MakeMatchScreen> {
-            isShowBottomBar.value = false
-            MakeMatchScreen(navController = navController)
-        }
-        composable<SplashScreens.SplashScreen> {
-            isShowBottomBar.value = false
-            SplashScreen(navController = navController)
-        }
-        composable<SplashScreens.OnboardingScreen> {
-            isShowBottomBar.value = false
-            OnBoarding(navController = navController)
-        }
         composable(route = BottomBarScreen.Home.route) {
             isShowBottomBar.value = true
             SportTypes(navController = navController)
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
-            PlayerPage()
+            HistoryScreen()
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true
             ProfileScreen()
         }
-       /* composable<SportTypeScreens.SportTypeSetting> {
-            isShowBottomBar.value = true
-            SportTypeSetting()
-
-        }*/
         composable(
             route = SportTypeScreens.SportTypeSetting.route,
             arguments = listOf(
@@ -79,8 +73,19 @@ fun MainNavGraph(
             val title = it.arguments?.getString("title")!!
             val size = it.arguments?.getInt("size")!!
             isShowBottomBar.value = true
-            SportTypeSetting(title,size)
-
+            SportTypeSetting(title,size,navController)
+        }
+        composable(
+            route = MatchScreens.MakeMatchScreen().route,
+            arguments = listOf(navArgument("teamSize"){ type = NavType.IntType}),
+        ) {
+            val teamSize = it.arguments?.getInt("teamSize")!!
+            isShowBottomBar.value = false
+            MakeMatchScreen(teamSize,navController = navController)
+        }
+        composable<PlayerScreens.PlayerPage> {
+            isShowBottomBar.value = true
+            PlayerPage()
         }
     }
 }

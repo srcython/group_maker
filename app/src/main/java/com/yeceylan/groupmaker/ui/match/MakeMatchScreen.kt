@@ -38,6 +38,7 @@ data class Person(
 
 @Composable
 fun MakeMatchScreen(
+    teamSize:Int,
     navController: NavController,
     viewModel: LocationViewModel = hiltViewModel()
 ) {
@@ -75,7 +76,7 @@ fun MakeMatchScreen(
     var expanded2 by remember { mutableStateOf(false) }
     var selectedPersons1 by remember { mutableStateOf(listOf<Person>()) }
     var selectedPersons2 by remember { mutableStateOf(listOf<Person>()) }
-    var maxPlayers by remember { mutableIntStateOf(11) }
+    var maxPlayers by remember { mutableIntStateOf(teamSize) }
     var showPlayerCountDialog by remember { mutableStateOf(false) }
     var showChangeTeamNamesDialog by remember { mutableStateOf(false) }
     var matchLocation by remember { mutableStateOf("") }
