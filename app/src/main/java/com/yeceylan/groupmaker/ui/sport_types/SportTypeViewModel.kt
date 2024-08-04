@@ -1,15 +1,16 @@
 package com.yeceylan.groupmaker.ui.sport_types
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.core.Response
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.SportTypeData
 import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -17,15 +18,25 @@ import javax.inject.Inject
 class SportTypeViewModel @Inject constructor(
     private val sportTypeUseCase: GetSportTypeUseCase
 ) : ViewModel() {
-    var booksResponse by mutableStateOf<Response<List<SportTypeData>>>(Response.Loading)
+
+    private var sportTypesResponse by mutableStateOf<Resource<List<SportTypeData>>>(Resource.Loading())
+
+    private val _sportTypeList = MutableStateFlow<List<SportTypeData>>(emptyList())
+    val sportTypeList: StateFlow<List<SportTypeData>> = _sportTypeList
 
     init {
-        getBooks()
+        getSportTypes()
     }
 
-    private fun getBooks() = viewModelScope.launch {
-        sportTypeUseCase.invoke().collect { response ->
-            booksResponse = response
+    private fun getSportTypes() = viewModelScope.launch {
+        sportTypeUseCase().collect {
+            sportTypesResponse = it
+
+            when (sportTypesResponse) {
+                is Resource.Error -> "TODO()"
+                is Resource.Loading -> "TODO()"
+                is Resource.Success -> _sportTypeList.value = sportTypesResponse.data!!
+            }
         }
     }
 }

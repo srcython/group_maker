@@ -8,6 +8,4 @@ sealed class SplashScreens {
     @Serializable
     data object SplashScreen : SplashScreens()
 
-    @Serializable
-    data object OnboardingScreen : SplashScreens()
 }

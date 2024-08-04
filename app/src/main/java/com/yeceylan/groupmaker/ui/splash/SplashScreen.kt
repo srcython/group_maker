@@ -30,6 +30,7 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import kotlinx.coroutines.delay
 
@@ -57,7 +58,7 @@ fun SplashScreen(navController: NavHostController) {
                 }
             }
         } else {
-            navController.navigate(SplashScreens.OnboardingScreen){
+            navController.navigate(OnBoardingScreens.OnBoardingScreen){
                 popUpTo(navController.graph.id){
                     inclusive = true
                 }
