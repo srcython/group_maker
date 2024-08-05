@@ -20,18 +20,17 @@ class LocationRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             val token = AutocompleteSessionToken.newInstance()
 
-            // Define bounds for Turkey
-            val turkeyBounds = RectangularBounds.newInstance(
-                com.google.android.gms.maps.model.LatLng(35.8190, 32.9630), // Southwest bound
-                com.google.android.gms.maps.model.LatLng(42.0354, 44.8323)  // Northeast bound
-            )
+//            val turkeyBounds = RectangularBounds.newInstance(
+//                com.google.android.gms.maps.model.LatLng(35.8190, 32.9630), // Southwest bound
+//                com.google.android.gms.maps.model.LatLng(42.0354, 44.8323)  // Northeast bound
+//            )
 
-            // Request with location bias to Turkey and type restrictions
             val request = FindAutocompletePredictionsRequest.builder()
                 .setQuery(query)
                 .setSessionToken(token)
-                .setLocationBias(turkeyBounds)
-                .setTypesFilter(listOf("establishment")) // Filter for businesses
+//                .setLocationBias(turkeyBounds)
+                .setCountries("TR")
+                .setTypesFilter(listOf("establishment"))
                 .build()
 
             val response = placesClient.findAutocompletePredictions(request)

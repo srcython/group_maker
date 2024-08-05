@@ -25,6 +25,9 @@ class LocationViewModel @Inject constructor(
     private val _selectedLocation = MutableStateFlow<LatLng?>(null)
     val selectedLocation: StateFlow<LatLng?> = _selectedLocation
 
+    private val _selectedAddress = MutableStateFlow<String?>(null)
+    val selectedAddress: StateFlow<String?> = _selectedAddress
+
     private val _predictions = MutableStateFlow<List<AutocompletePrediction>>(emptyList())
     val predictions: StateFlow<List<AutocompletePrediction>> = _predictions
 
@@ -41,22 +44,23 @@ class LocationViewModel @Inject constructor(
 
     fun fetchLocationDetails(placeId: String) {
         viewModelScope.launch {
-            val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG)
+            val placeFields = listOf(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
             val request = FetchPlaceRequest.newInstance(placeId, placeFields)
 
             try {
                 val placeResponse = placesClient.fetchPlace(request).await()
                 val place = placeResponse.place
 
-                // Format latitude and longitude to four decimal places
-                val formattedLatLng = place.latLng?.let { latLng ->
-                    LatLng(
-                        String.format("%.4f", latLng.latitude).toDouble(),
-                        String.format("%.4f", latLng.longitude).toDouble()
-                    )
-                }
+//                // Lat ve long dört ondalık basamakta format
+//                val formattedLatLng = place.latLng?.let { latLng ->
+//                    LatLng(
+//                        String.format("%.4f", latLng.latitude).toDouble(),
+//                        String.format("%.4f", latLng.longitude).toDouble()
+//                    )
+//                }
 
-                _selectedLocation.value = formattedLatLng
+                _selectedLocation.value = place.latLng
+                _selectedAddress.value = place.address
 
             } catch (e: Exception) {
                 Log.e("LocationViewModel", "Error fetching place details", e)

@@ -43,8 +43,7 @@ fun MatchLocationInputField(
         }
     }
 
-    // Observe selected location
-    val selectedLocation by viewModel.selectedLocation.collectAsState()
+//    val selectedLocation by viewModel.selectedLocation.collectAsState()
 
     Column {
         OutlinedTextField(
@@ -103,16 +102,16 @@ fun MatchLocationInputField(
             }
         }
 
-        selectedLocation?.let { location ->
-            val formattedLatitude = String.format("%.4f", location.latitude)
-            val formattedLongitude = String.format("%.4f", location.longitude)
-
-            Text(
-                text = "Latitude: $formattedLatitude, Longitude: $formattedLongitude",
-                style = MaterialTheme.typography.subtitle1,
-                modifier = Modifier.padding(top = 8.dp)
-            )
-        }
+//        selectedLocation?.let { location ->
+//            val formattedLatitude = String.format("%.4f", location.latitude)
+//            val formattedLongitude = String.format("%.4f", location.longitude)
+//
+//            Text(
+//                text = "Latitude: $formattedLatitude, Longitude: $formattedLongitude",
+//                style = MaterialTheme.typography.subtitle1,
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
+//        }
     }
 }
 
