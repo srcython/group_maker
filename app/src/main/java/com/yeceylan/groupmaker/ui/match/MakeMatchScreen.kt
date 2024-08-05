@@ -18,7 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.gson.Gson
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.domain.model.MatchInfo
 import com.yeceylan.groupmaker.ui.components.ChangeTeamNamesDialog
 import com.yeceylan.groupmaker.ui.components.MatchDateInputField
 import com.yeceylan.groupmaker.ui.components.MatchLocationInputField
@@ -27,6 +29,8 @@ import com.yeceylan.groupmaker.ui.components.PlayerCountDialog
 import com.yeceylan.groupmaker.ui.components.PlayerSelectionSection
 import com.yeceylan.groupmaker.ui.components.SelectedPlayersGrid
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 data class Person(
     val name: String,
@@ -79,9 +83,11 @@ fun MakeMatchScreen(
     var showPlayerCountDialog by remember { mutableStateOf(false) }
     var showChangeTeamNamesDialog by remember { mutableStateOf(false) }
     var matchLocation by remember { mutableStateOf("") }
-    val selectedLocation by viewModel.selectedLocation.collectAsState(initial = null)
+    val locationLatLng by viewModel.selectedLocation.collectAsState(initial = null)
+    val selectedAddress by viewModel.selectedAddress.collectAsState(initial = "")
     var matchDate by remember { mutableStateOf("") }
     var matchTime by remember { mutableStateOf("") }
+
 
     if (showPlayerCountDialog) {
         PlayerCountDialog(maxPlayers) { maxPlayers = it; showPlayerCountDialog = false }
@@ -124,9 +130,9 @@ fun MakeMatchScreen(
                 )
                 Spacer(modifier = Modifier.height(5.dp))
 
-                // Konum arama bileşeni
+
                 MatchLocationInputField(
-                    label = "Maç Konumu",
+                    label = "Maç konumu giriniz",
                     value = matchLocation,
                     onValueChange = { matchLocation = it },
                     viewModel = viewModel
@@ -226,6 +232,7 @@ fun MakeMatchScreen(
                     Button(
                         onClick = {
                             val context = navController.context
+
                             if (matchLocation.isEmpty()) {
                                 Toast.makeText(
                                     context,
@@ -257,20 +264,31 @@ fun MakeMatchScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    "Maç başarıyla oluşturuldu!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                // Navigate to the next screen or perform any other actions
+                                    val matchInfo = MatchInfo(
+                                        team1Name = team1Name,
+                                        team2Name = team2Name,
+                                        matchLocation = matchLocation,
+                                        matchDate = matchDate,
+                                        matchTime = matchTime,
+                                        latLng = locationLatLng,
+                                        address = selectedAddress ?: "Bilinmeyen Addres"
+                                    )
+
+                                    val matchInfoJson = Gson().toJson(matchInfo)
+                                    val encodedJson = URLEncoder.encode(matchInfoJson, StandardCharsets.UTF_8.toString()).replace("+", "%20")
+                                    navController.navigate("matchInfo/$encodedJson")
+
+
                             }
                         },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(10.dp)
+                            .padding(5.dp)
                     ) {
                         Text(text = "Maç Oluştur")
                     }
+
+
                 }
             }
         }

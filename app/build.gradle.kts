@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.google.services)
     id("org.jetbrains.kotlin.kapt")
+
 }
 
 android {
@@ -130,6 +131,10 @@ dependencies {
 
     // Google Places API
     implementation("com.google.android.libraries.places:places:3.5.0")
+
+    implementation ("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+
 
 }
 kapt {

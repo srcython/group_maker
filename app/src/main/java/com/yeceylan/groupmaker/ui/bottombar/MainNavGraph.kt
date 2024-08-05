@@ -7,6 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.google.gson.Gson
+import com.yeceylan.groupmaker.domain.model.MatchInfo
 import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
@@ -14,6 +16,7 @@ import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
+import com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
 import com.yeceylan.groupmaker.ui.player.PlayerPage
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
@@ -64,23 +67,34 @@ fun MainNavGraph(
             isShowBottomBar.value = true
             ProfileScreen()
         }
-       /* composable<SportTypeScreens.SportTypeSetting> {
-            isShowBottomBar.value = true
-            SportTypeSetting()
+        /* composable<SportTypeScreens.SportTypeSetting> {
+             isShowBottomBar.value = true
+             SportTypeSetting()
 
-        }*/
+         }*/
         composable(
             route = SportTypeScreens.SportTypeSetting.route,
             arguments = listOf(
-                navArgument("title"){ type = NavType.StringType},
-                navArgument("size"){ type = NavType.IntType}
+                navArgument("title") { type = NavType.StringType },
+                navArgument("size") { type = NavType.IntType }
             )
         ) {
             val title = it.arguments?.getString("title")!!
             val size = it.arguments?.getInt("size")!!
             isShowBottomBar.value = true
-            SportTypeSetting(title,size)
+            SportTypeSetting(title, size)
 
         }
+        composable(
+            route = "matchInfo/{matchInfoJson}",
+            arguments = listOf(navArgument("matchInfoJson") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val matchInfoJson =
+                backStackEntry.arguments?.getString("matchInfoJson") ?: return@composable
+            val matchInfo = Gson().fromJson(matchInfoJson, MatchInfo::class.java)
+            MatchInfoScreen(navController, matchInfo)
+        }
+
+
     }
 }
