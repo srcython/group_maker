@@ -10,18 +10,22 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
     @Provides
+    @Singleton
     fun provideSportTypeRef() = Firebase.firestore.collection("typeCollection")
 
     @Provides
+    @Singleton
     fun provideBooksRepository(
         sportTypeRef: CollectionReference
     ): SportTypeRepository = SportTypeRepositoryImpl(sportTypeRef)
 
     @Provides
+    @Singleton
     fun provideUseCases(repo: SportTypeRepository) = GetSportTypeUseCase(repo)
 }

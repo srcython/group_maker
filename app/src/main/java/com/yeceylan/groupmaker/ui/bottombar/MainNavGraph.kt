@@ -18,7 +18,9 @@ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
 import com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen
 import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
+import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
 import com.yeceylan.groupmaker.ui.player.PlayerPage
+import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
@@ -35,6 +37,14 @@ fun MainNavGraph(
         startDestination = SplashScreens.SplashScreen,
     ) {
 
+        composable<SplashScreens.SplashScreen> {
+            isShowBottomBar.value = false
+            SplashScreen(navController = navController)
+        }
+        composable<OnBoardingScreens.OnBoardingScreen> {
+            isShowBottomBar.value = false
+            OnBoarding(navController = navController)
+        }
         composable<AuthenticationScreens.LoginScreen> {
             isShowBottomBar.value = false
             LoginScreen(navController = navController)
@@ -67,23 +77,29 @@ fun MainNavGraph(
             isShowBottomBar.value = true
             ProfileScreen()
         }
-        /* composable<SportTypeScreens.SportTypeSetting> {
-             isShowBottomBar.value = true
-             SportTypeSetting()
-
-         }*/
         composable(
             route = SportTypeScreens.SportTypeSetting.route,
             arguments = listOf(
-                navArgument("title") { type = NavType.StringType },
-                navArgument("size") { type = NavType.IntType }
+                navArgument("title"){ type = NavType.StringType},
+                navArgument("size"){ type = NavType.IntType}
             )
         ) {
             val title = it.arguments?.getString("title")!!
             val size = it.arguments?.getInt("size")!!
             isShowBottomBar.value = true
-            SportTypeSetting(title, size)
-
+            SportTypeSetting(title,size,navController)
+        }
+        composable(
+            route = MatchScreens.MakeMatchScreen().route,
+            arguments = listOf(navArgument("teamSize"){ type = NavType.IntType}),
+        ) {
+            val teamSize = it.arguments?.getInt("teamSize")!!
+            isShowBottomBar.value = false
+            MakeMatchScreen(teamSize,navController = navController)
+        }
+        composable<PlayerScreens.PlayerPage> {
+            isShowBottomBar.value = true
+            PlayerPage()
         }
         composable(
             route = "matchInfo/{matchInfoJson}",
