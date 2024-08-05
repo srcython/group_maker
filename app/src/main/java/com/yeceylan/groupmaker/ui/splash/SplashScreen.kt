@@ -36,6 +36,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import kotlinx.coroutines.delay
 
@@ -51,6 +52,7 @@ fun SplashScreen(navController: NavHostController) {
     }
     val auth = FirebaseAuth.getInstance()
     //FirebaseAuth.getInstance().signOut()
+
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             1f,
@@ -62,10 +64,16 @@ fun SplashScreen(navController: NavHostController) {
 
         if (viewModel.uiState.value.isLogin) {
            // auth.signOut()
-            navController.navigate(BottomBarScreen.Home.route)
-        } else {
-            navController.popBackStack()
-            navController.navigate(SplashScreens.OnboardingScreen)
+            navController.navigate(BottomBarScreen.Home.route){
+                popUpTo(navController.graph.id){
+                    inclusive = true
+                }
+            }        } else {
+            navController.navigate(OnBoardingScreens.OnBoardingScreen){
+                popUpTo(navController.graph.id){
+                    inclusive = true
+                }
+            }
         }
 
 

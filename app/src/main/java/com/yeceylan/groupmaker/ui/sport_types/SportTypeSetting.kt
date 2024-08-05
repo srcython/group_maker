@@ -1,6 +1,5 @@
 package com.yeceylan.groupmaker.ui.sport_types
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Text
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,42 +24,62 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
+import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
 
-@Preview
 @Composable
-fun SportTypeSetting() {
+fun SportTypeSetting(title: String, teamSize: Int, navController: NavController) {
+
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        SportTypeSettingItem(painter = create,"Create a Match")
-        SportTypeSettingItem(painter = players,"Players")
 
-
+        Text(
+            text = title,
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
+        LazyColumn {
+            item {
+                SportTypeSettingItem(painter = create, "Create a Match", navController,teamSize)
+            }
+            item {
+                SportTypeSettingItem(painter = players, "Players", navController,teamSize)
+            }
+        }
     }
 
 }
 
 @Composable
-fun SportTypeSettingItem(painter: Painter,text:String) {
+fun SportTypeSettingItem(painter: Painter, text: String, navController: NavController,teamSize: Int) {
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
-                Log.e("card", "click")
+
+                if (text !="Players"){
+                    navController.navigate("${MatchScreens.MakeMatchScreen().pass}/$teamSize")
+                }else{
+                    navController.navigate(PlayerScreens.PlayerPage)
+                }
             },
         shape = RoundedCornerShape(24.dp),
-        elevation = 10.dp,
+        elevation = CardDefaults.cardElevation(10.dp),
 
         ) {
         Box(modifier = Modifier.height(200.dp)) {

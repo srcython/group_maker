@@ -65,6 +65,7 @@ fun LoginScreen(
 
         if (isSuccessEmailAndPasswordLogin) {
             viewModel.resetUIState()
+            navController.popBackStack()
             navController.navigate(BottomBarScreen.Home.route)
         }
 
@@ -113,7 +114,8 @@ fun LoginScreenUI(
 
         DGoogleLoginButton(modifier = Modifier,
             onClick = {
-                navController.navigate(AuthenticationScreens.MakeMatchScreen)
+                //sayfa uygulamada gereken yere kondu
+                //navController.navigate(AuthenticationScreens.MakeMatchScreen)
         })
 //        {
 ////            loginWithGoogle()
