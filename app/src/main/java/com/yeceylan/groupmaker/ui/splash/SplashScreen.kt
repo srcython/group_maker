@@ -45,7 +45,7 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavHostController) {
 
     val context = LocalContext.current
-    val viewModel:SplashViewModel = hiltViewModel()
+    val viewModel: SplashViewModel = hiltViewModel()
 
     val alpha = remember {
         Animatable(0f)
@@ -59,18 +59,17 @@ fun SplashScreen(navController: NavHostController) {
             animationSpec = tween(2500)
         )
         delay(3000)
-        navController.popBackStack()
-        navController.navigate(SplashScreens.OnboardingScreen)
 
         if (viewModel.uiState.value.isLogin) {
-           // auth.signOut()
-            navController.navigate(BottomBarScreen.Home.route){
-                popUpTo(navController.graph.id){
+            // auth.signOut()
+            navController.navigate(BottomBarScreen.Home.route) {
+                popUpTo(navController.graph.id) {
                     inclusive = true
                 }
-            }        } else {
-            navController.navigate(OnBoardingScreens.OnBoardingScreen){
-                popUpTo(navController.graph.id){
+            }
+        } else {
+            navController.navigate(OnBoardingScreens.OnBoardingScreen) {
+                popUpTo(navController.graph.id) {
                     inclusive = true
                 }
             }
