@@ -2,9 +2,15 @@ package com.yeceylan.groupmaker.data.repository
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.repository.UserRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -19,11 +25,25 @@ class UserRepositoryImpl @Inject constructor(
             .await()
     }
 
-    override suspend fun getUsers(): List<User> {
-        return firestore.collection("users")
-            .get()
-            .await()
-            .toObjects(User::class.java)
+    override suspend fun getUsers(): Flow<Resource<List<User>>> = callbackFlow {
+
+        trySend(Resource.Loading())
+
+        val snapshotListener: ListenerRegistration = firestore.collection("users")
+            .addSnapshotListener { snapshot, error ->
+
+                val usersResponse = if (snapshot != null) {
+                    val users = snapshot.toObjects(User::class.java)
+                    Resource.Success(users)
+                } else {
+                    Resource.Error(error?.message ?: "Veri alınamadı")
+                }
+                trySend(usersResponse)
+            }
+
+        awaitClose {
+            snapshotListener.remove()
+        }
     }
 
     override suspend fun addMatch(userId: String, match: Match) {

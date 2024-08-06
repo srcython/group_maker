@@ -5,7 +5,7 @@ data class User(
     val email: String = "",
     val name: String = "",
     val surname: String? = "",
-    val photoResId: Int? = 0,
+    val photoUrl: String? = "",
     val position: String? = "",
     val point: Int? = 0,
     val currentMatch:Match? = null,
@@ -15,7 +15,7 @@ data class User(
         email = "",
         name = "",
         surname = "",
-        photoResId = 0,
+        photoUrl = "",
         position = "",
         point = 0,
         currentMatch = null

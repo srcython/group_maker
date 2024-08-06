@@ -1,13 +1,15 @@
 package com.yeceylan.groupmaker.domain.use_cases
 
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.repository.UserRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class GetUsersUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(): List<User> {
+    suspend operator fun invoke(): Flow<Resource<List<User>>> {
         return userRepository.getUsers()
     }
 }

@@ -39,7 +39,7 @@ class PlayerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val fetchedUsers = getUsersUseCase()
-                _users.value = fetchedUsers
+//                _users.value = fetchedUsers
             } catch (e: Exception) {
                 // Handle error here
             }
