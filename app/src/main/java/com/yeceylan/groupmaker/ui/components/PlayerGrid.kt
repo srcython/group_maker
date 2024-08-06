@@ -73,7 +73,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                             }
                         }
                         Text(
-                            text = person.name,
+                            text = person.firstName,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(top = 4.dp)

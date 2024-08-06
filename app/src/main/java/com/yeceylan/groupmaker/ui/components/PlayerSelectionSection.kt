@@ -95,7 +95,7 @@ fun PlayerSelectionSection(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.name }}",
+                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName }}",
                     fontSize = 16.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -159,7 +159,7 @@ fun PlayerSelectionSection(
                             .heightIn(max = 300.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        availableUsers.sortedBy { it.name }.forEach { person ->
+                        availableUsers.sortedBy { it.firstName }.forEach { person ->
                             DropdownMenuItem(
                                 onClick = {
                                     if (selectedUsers.contains(person)) {
@@ -202,7 +202,7 @@ fun PlayerSelectionSection(
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(text = "${person.name} ${person.surname}")
+                                        Text(text = "${person.firstName} ${person.surname}")
                                         person.position?.let {
                                             Text(
                                                 text = it,
