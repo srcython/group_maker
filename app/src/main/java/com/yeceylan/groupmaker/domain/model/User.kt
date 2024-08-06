@@ -3,21 +3,22 @@ package com.yeceylan.groupmaker.domain.model
 data class User(
     val id: String = "",
     val email: String = "",
-    val name: String = "",
+    val firstName: String = "",
+    val userName: String = "",
     val surname: String? = "",
-    val photoUrl: String? = "",
+    val photoUrl: String? = null,
     val position: String? = "",
     val point: Int? = 0,
-    val currentMatch:Match? = null,
 ) {
     constructor() : this(
-       id = "",
+        id = "",
+        firstName = "",
         email = "",
-        name = "",
+        userName = "",
         surname = "",
         photoUrl = "",
         position = "",
         point = 0,
-        currentMatch = null
     )
 }
+
