@@ -27,7 +27,7 @@ fun PlayerPage(
         Text(text = "Seçili Oyuncular")
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(selectedUsers) { user ->
-                Text(text = user.name)
+                Text(text = user.name!!)
             }
         }
 
@@ -70,7 +70,7 @@ fun PlayerPage(
                                         }
                                     }
                                 )
-                                Text(text = user.name)
+                                Text(text = user.name!!)
                             }
                         }
                     }

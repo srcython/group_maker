@@ -1,15 +1,25 @@
 package com.yeceylan.groupmaker.data.repository
 
 import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.toObject
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.repository.UserRepository
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+
+
 ) : UserRepository {
 
     override suspend fun addUser(user: User) {
@@ -17,6 +27,24 @@ class UserRepositoryImpl @Inject constructor(
             .document(user.id)
             .set(user)
             .await()
+    }
+
+    override suspend fun getUser() = callbackFlow {
+        val snapshotListener = firestore.collection("users")
+            .document(FirebaseAuth.getInstance().currentUser!!.uid)
+            .addSnapshotListener{ snapshot, e ->
+
+            val booksResponse = if (snapshot != null) {
+                val books = snapshot.toObject<User>()!!
+                Resource.Success(books)
+            } else {
+                Resource.Error(e.toString())
+            }
+            trySend(booksResponse)
+        }
+        awaitClose {
+            snapshotListener.remove()
+        }
     }
 
     override suspend fun getUsers(): List<User> {
@@ -86,7 +114,11 @@ class UserRepositoryImpl @Inject constructor(
                 null
             }
         } catch (e: Exception) {
-            Log.e("UserRepositoryImpl", "Error getting active match for user $userId: ${e.message}", e)
+            Log.e(
+                "UserRepositoryImpl",
+                "Error getting active match for user $userId: ${e.message}",
+                e
+            )
             null
         }
     }

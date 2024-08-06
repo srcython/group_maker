@@ -4,20 +4,11 @@ data class User(
     val id: String = "",
     val email: String = "",
     val name: String = "",
-    val surname: String? = "",
-    val photoResId: Int? = 0,
-    val position: String? = "",
-    val point: Int? = 0,
-    val currentMatch:Match? = null,
+    val surname: String = "",
+    val photo: String = "",
+    val position: String = "",
+    val point: String = "",
+    val currentMatch:String = "",
+    val firstname:String=""
 ) {
-    constructor() : this(
-       id = "",
-        email = "",
-        name = "",
-        surname = "",
-        photoResId = 0,
-        position = "",
-        point = 0,
-        currentMatch = null
-    )
 }
