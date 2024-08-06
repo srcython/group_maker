@@ -26,6 +26,7 @@ class UserRepositoryImpl @Inject constructor(
             .toObjects(User::class.java)
     }
 
+
     override suspend fun addMatch(userId: String, match: Match) {
         val userDocument = firestore.collection("users").document(userId)
         val matchesCollection = userDocument.collection("matches")
@@ -46,8 +47,7 @@ class UserRepositoryImpl @Inject constructor(
                 "result", match.result,
                 "type", match.type,
                 "playerList", match.playerList,
-                "macPlayer", match.macPlayer,
-                "isActive", match.isActive
+                "maxPlayer", match.maxPlayer,
             )
             .await()
     }

@@ -40,7 +40,7 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Success -> {
                     val user = it.data
                     val userId = user?.user?.uid
-                    val newUser = User(id = userId.toString(), email = email, name = name)
+                    val newUser = User(id = userId.toString(), email = email, userName = name)
                     addUserToFirestore(newUser)
                 }
 
