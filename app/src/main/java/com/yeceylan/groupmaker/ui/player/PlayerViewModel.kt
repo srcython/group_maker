@@ -43,8 +43,7 @@ class PlayerViewModel @Inject constructor(
             try {
                 Log.d("PlayerViewModel", "Fetching users...")
                 val fetchedUsers = getUsersUseCase()
-                _users.value = fetchedUsers
-                Log.d("PlayerViewModel", "Users fetched: ${fetchedUsers.size}")
+//                _users.value = fetchedUsers
             } catch (e: Exception) {
                 Log.e("PlayerViewModel", "Error fetching users: ${e.message}", e)
             }

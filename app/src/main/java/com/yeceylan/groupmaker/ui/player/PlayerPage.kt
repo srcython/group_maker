@@ -21,7 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.components.SelectedPlayersGrid
-import com.yeceylan.groupmaker.ui.match.Person
 
 @Composable
 fun PlayerPage(

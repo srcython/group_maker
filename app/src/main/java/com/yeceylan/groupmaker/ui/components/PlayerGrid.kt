@@ -20,13 +20,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.match.Person
+import com.yeceylan.groupmaker.domain.model.User
 
 
 @Composable
-fun SelectedPlayersGrid(selectedPersons: List<Person>, setSelectedPersons: (List<Person>) -> Unit) {
-    if (selectedPersons.isNotEmpty()) {
+fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<User>) -> Unit) {
+    if (selectedUsers.isNotEmpty()) {
         Text(text = "Seçilenler:", modifier = Modifier.padding(top = 5.dp))
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
@@ -34,7 +35,7 @@ fun SelectedPlayersGrid(selectedPersons: List<Person>, setSelectedPersons: (List
             modifier = Modifier
                 .heightIn(max = 400.dp)
         ) {
-            items(selectedPersons) { person ->
+            items(selectedUsers) { person ->
                 Box(
                     contentAlignment = Alignment.TopEnd,
                     modifier = Modifier
@@ -46,19 +47,22 @@ fun SelectedPlayersGrid(selectedPersons: List<Person>, setSelectedPersons: (List
                         modifier = Modifier.fillMaxSize()
                     ) {
                         Box {
-                            Image(
-                                painter = painterResource(id = person.photoResId),
+                            AsyncImage(
+                                model = person.photoUrl,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(60.dp)
-                                    .clip(CircleShape)
+                                    .clip(CircleShape),
+                                placeholder = painterResource(id = R.drawable.ic_clock), // Yüklenirken gösterilen resim
+                                error = painterResource(id = R.drawable.ic_clock) // Hata durumunda gösterilen resim
                             )
+
                             Box(
                                 modifier = Modifier
                                     .size(16.dp)
                                     .align(Alignment.TopEnd)
                                     .clickable {
-                                        setSelectedPersons(selectedPersons - person)
+                                        setSelectedPersons(selectedUsers - person)
                                     }
                             ) {
                                 Image(
@@ -69,7 +73,7 @@ fun SelectedPlayersGrid(selectedPersons: List<Person>, setSelectedPersons: (List
                             }
                         }
                         Text(
-                            text = person.name,
+                            text = person.firstName,
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(top = 4.dp)

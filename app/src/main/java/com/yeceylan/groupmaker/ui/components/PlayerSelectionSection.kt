@@ -16,23 +16,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.ui.match.Person
+import com.yeceylan.groupmaker.domain.model.User
 
 @Composable
 fun PlayerSelectionSection(
     teamName: String,
-    selectedPersons: List<Person>,
-    availablePersons: List<Person>,
+    selectedUsers: List<User>,
+    availableUsers: List<User>,
     maxPlayers: Int,
     expanded: Boolean,
     setExpanded: (Boolean) -> Unit,
-    setSelectedPersons: (List<Person>) -> Unit
+    setSelectedPersons: (List<User>) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -45,15 +47,15 @@ fun PlayerSelectionSection(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "Seçilen Kişiler (${selectedPersons.size}/$maxPlayers)",
+            text = "Seçilen Kişiler (${selectedUsers.size}/$maxPlayers)",
             modifier = Modifier.padding(bottom = 5.dp)
         )
         Row {
             IconButton(
                 onClick = {
                     val randomPlayers =
-                        availablePersons.shuffled().take(maxPlayers - selectedPersons.size)
-                    setSelectedPersons(selectedPersons + randomPlayers)
+                        availableUsers.shuffled().take(maxPlayers - selectedUsers.size)
+                    setSelectedPersons(selectedUsers + randomPlayers)
                 }
             ) {
                 Image(
@@ -93,7 +95,7 @@ fun PlayerSelectionSection(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (selectedPersons.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedPersons.joinToString { it.name }}",
+                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName }}",
                     fontSize = 16.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -109,7 +111,7 @@ fun PlayerSelectionSection(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
-                if (availablePersons.isEmpty()) {
+                if (availableUsers.isEmpty()) {
                     DropdownMenuItem(onClick = { setExpanded(false) }) {
                         Box(
                             modifier = Modifier.fillMaxWidth(),
@@ -157,13 +159,13 @@ fun PlayerSelectionSection(
                             .heightIn(max = 300.dp)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        availablePersons.sortedBy { it.name }.forEach { person ->
+                        availableUsers.sortedBy { it.firstName }.forEach { person ->
                             DropdownMenuItem(
                                 onClick = {
-                                    if (selectedPersons.contains(person)) {
-                                        setSelectedPersons(selectedPersons - person)
-                                    } else if (selectedPersons.size < maxPlayers) {
-                                        setSelectedPersons(selectedPersons + person)
+                                    if (selectedUsers.contains(person)) {
+                                        setSelectedPersons(selectedUsers - person)
+                                    } else if (selectedUsers.size < maxPlayers) {
+                                        setSelectedPersons(selectedUsers + person)
                                     } else {
                                         Toast.makeText(
                                             context,
@@ -180,27 +182,33 @@ fun PlayerSelectionSection(
                                         .fillMaxWidth()
                                 ) {
                                     Checkbox(
-                                        checked = selectedPersons.contains(person),
+                                        checked = selectedUsers.contains(person),
                                         onCheckedChange = null,
                                         colors = CheckboxDefaults.colors(
                                             checkedColor = Color.Green
                                         )
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
-                                    Image(
-                                        painter = painterResource(id = person.photoResId),
+                                    AsyncImage(
+                                        model = person.photoUrl,
+                                        placeholder = painterResource(id = R.drawable.ic_clock),
+                                        error = painterResource(id = R.drawable.ic_clock),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape)
+                                            .size(60.dp)
+                                            .clip(CircleShape),
+                                        contentScale = ContentScale.Crop,
+                                        alignment = Alignment.Center
                                     )
                                     Spacer(modifier = Modifier.width(8.dp))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(text = "${person.name} ${person.surname}")
-                                        Text(
-                                            text = person.position,
-                                            style = MaterialTheme.typography.body2
-                                        )
+                                        Text(text = "${person.firstName} ${person.surname}")
+                                        person.position?.let {
+                                            Text(
+                                                text = it,
+                                                style = MaterialTheme.typography.body2
+                                            )
+                                        }
                                     }
                                     Image(
                                         painter = painterResource(id = R.drawable.ic_star),

@@ -20,7 +20,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.gson.Gson
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.MatchInfo
+import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.components.ChangeTeamNamesDialog
 import com.yeceylan.groupmaker.ui.components.MatchDateInputField
 import com.yeceylan.groupmaker.ui.components.MatchLocationInputField
@@ -32,63 +34,30 @@ import com.yeceylan.groupmaker.ui.location.LocationViewModel
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
-data class Person(
-    val name: String,
-    val surname: String,
-    val photoResId: Int,
-    val position: String,
-    val point: Int
-)
-
 @Composable
 fun MakeMatchScreen(
-    teamSize:Int,
+    teamSize: Int,
     navController: NavController,
-    viewModel: LocationViewModel = hiltViewModel()
+    makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),
+    locationViewModel: LocationViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
     var team1Name by remember { mutableStateOf("Takım 1") }
     var team2Name by remember { mutableStateOf("Takım 2") }
-    val persons = remember {
-        listOf(
-            Person("Jane", "Smith", R.drawable.ic_launcher_background, "Forward", 10),
-            Person("Bob", "Johnson", R.drawable.ic_launcher_background, "Midfielder", 8),
-            Person("Alice", "Brown", R.drawable.ic_launcher_background, "Defender", 6),
-            Person("Charlie", "Davis", R.drawable.ic_launcher_background, "Goalkeeper", 9),
-            Person("Eve", "Wilson", R.drawable.ic_launcher_background, "Midfielder", 7),
-            Person("Frank", "Miller", R.drawable.ic_launcher_background, "Defender", 5),
-            Person("Grace", "Lee", R.drawable.ic_launcher_background, "Forward", 9),
-            Person("Hank", "Martinez", R.drawable.ic_launcher_background, "Midfielder", 7),
-            Person("Iasvy", "Clark", R.drawable.ic_launcher_background, "Defender", 6),
-            Person("Jaack", "Lewis", R.drawable.ic_launcher_background, "Goalkeeper", 8),
-            Person("Kaaren", "Walker", R.drawable.ic_launcher_background, "Forward", 10),
-            Person("Jaane", "Smith", R.drawable.ic_launcher_background, "Forward", 10),
-            Person("Boasb", "Johnson", R.drawable.ic_launcher_background, "Midfielder", 8),
-            Person("Alisace", "Brown", R.drawable.ic_launcher_background, "Defender", 6),
-            Person("Chasarlie", "Davis", R.drawable.ic_launcher_background, "Goalkeeper", 9),
-            Person("saEve", "Wilson", R.drawable.ic_launcher_background, "Midfielder", 7),
-            Person("Frsank", "Miller", R.drawable.ic_launcher_background, "Defender", 5),
-            Person("Grssace", "Lee", R.drawable.ic_launcher_background, "Forward", 9),
-            Person("Hasnk", "Martinez", R.drawable.ic_launcher_background, "Midfielder", 7),
-            Person("Ivsy", "Clark", R.drawable.ic_launcher_background, "Defender", 6),
-            Person("Jasck", "Lewis", R.drawable.ic_launcher_background, "Goalkeeper", 8),
-            Person("Jasack", "Lewis", R.drawable.ic_launcher_background, "Goalkeeper", 8)
-        )
-    }
+    val usersResource by makeMatchViewModel.users.collectAsState()
 
     var expanded1 by remember { mutableStateOf(false) }
     var expanded2 by remember { mutableStateOf(false) }
-    var selectedPersons1 by remember { mutableStateOf(listOf<Person>()) }
-    var selectedPersons2 by remember { mutableStateOf(listOf<Person>()) }
+    var selectedPersons1 by remember { mutableStateOf(listOf<User>()) }
+    var selectedPersons2 by remember { mutableStateOf(listOf<User>()) }
     var maxPlayers by remember { mutableIntStateOf(teamSize) }
     var showPlayerCountDialog by remember { mutableStateOf(false) }
     var showChangeTeamNamesDialog by remember { mutableStateOf(false) }
     var matchLocation by remember { mutableStateOf("") }
-    val locationLatLng by viewModel.selectedLocation.collectAsState(initial = null)
-    val selectedAddress by viewModel.selectedAddress.collectAsState(initial = "")
+    val locationLatLng by locationViewModel.selectedLocation.collectAsState(initial = null)
+    val selectedAddress by locationViewModel.selectedAddress.collectAsState(initial = "")
     var matchDate by remember { mutableStateOf("") }
     var matchTime by remember { mutableStateOf("") }
-
 
     if (showPlayerCountDialog) {
         PlayerCountDialog(maxPlayers) { maxPlayers = it; showPlayerCountDialog = false }
@@ -131,12 +100,11 @@ fun MakeMatchScreen(
                 )
                 Spacer(modifier = Modifier.height(5.dp))
 
-
                 MatchLocationInputField(
                     label = "Maç konumu giriniz",
                     value = matchLocation,
                     onValueChange = { matchLocation = it },
-                    viewModel = viewModel
+                    viewModel = locationViewModel
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -201,35 +169,52 @@ fun MakeMatchScreen(
                         .background(Color.White)
                         .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                 ) {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 50.dp)
-                    ) {
-                        item {
-                            PlayerSelectionSection(
-                                teamName = team1Name,
-                                selectedPersons = selectedPersons1,
-                                availablePersons = persons.filter { it !in selectedPersons2 },
-                                maxPlayers = maxPlayers,
-                                expanded = expanded1,
-                                setExpanded = { expanded1 = it },
-                                setSelectedPersons = { selectedPersons1 = it }
+                    when (usersResource) {
+                        is Resource.Loading -> {
+                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        }
+                        is Resource.Success -> {
+                            val users = usersResource.data ?: emptyList()
+
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 50.dp)
+                            ) {
+                                item {
+                                    PlayerSelectionSection(
+                                        teamName = team1Name,
+                                        selectedUsers = selectedPersons1,
+                                        availableUsers = users.filter { it !in selectedPersons2 },
+                                        maxPlayers = maxPlayers,
+                                        expanded = expanded1,
+                                        setExpanded = { expanded1 = it },
+                                        setSelectedPersons = { selectedPersons1 = it }
+                                    )
+                                    SelectedPlayersGrid(selectedPersons1) { selectedPersons1 = it }
+                                    Spacer(modifier = Modifier.height(16.dp))
+                                    PlayerSelectionSection(
+                                        teamName = team2Name,
+                                        selectedUsers = selectedPersons2,
+                                        availableUsers = users.filter { it !in selectedPersons1 },
+                                        maxPlayers = maxPlayers,
+                                        expanded = expanded2,
+                                        setExpanded = { expanded2 = it },
+                                        setSelectedPersons = { selectedPersons2 = it }
+                                    )
+                                    SelectedPlayersGrid(selectedPersons2) { selectedPersons2 = it }
+                                }
+                            }
+                        }
+                        is Resource.Error -> {
+                            Text(
+                                text = "Hata: ${usersResource.message}",
+                                color = Color.Red,
+                                modifier = Modifier.align(Alignment.Center)
                             )
-                            SelectedPlayersGrid(selectedPersons1) { selectedPersons1 = it }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            PlayerSelectionSection(
-                                teamName = team2Name,
-                                selectedPersons = selectedPersons2,
-                                availablePersons = persons.filter { it !in selectedPersons1 },
-                                maxPlayers = maxPlayers,
-                                expanded = expanded2,
-                                setExpanded = { expanded2 = it },
-                                setSelectedPersons = { selectedPersons2 = it }
-                            )
-                            SelectedPlayersGrid(selectedPersons2) { selectedPersons2 = it }
                         }
                     }
+
                     Button(
                         onClick = {
                             val context = navController.context
@@ -265,21 +250,22 @@ fun MakeMatchScreen(
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                    val matchInfo = MatchInfo(
-                                        team1Name = team1Name,
-                                        team2Name = team2Name,
-                                        matchLocation = matchLocation,
-                                        matchDate = matchDate,
-                                        matchTime = matchTime,
-                                        latLng = locationLatLng,
-                                        address = selectedAddress ?: "Bilinmeyen Addres"
-                                    )
+                                val matchInfo = MatchInfo(
+                                    team1Name = team1Name,
+                                    team2Name = team2Name,
+                                    matchLocation = matchLocation,
+                                    matchDate = matchDate,
+                                    matchTime = matchTime,
+                                    latLng = locationLatLng,
+                                    address = selectedAddress ?: "Bilinmeyen Addres"
+                                )
 
-                                    val matchInfoJson = Gson().toJson(matchInfo)
-                                    val encodedJson = URLEncoder.encode(matchInfoJson, StandardCharsets.UTF_8.toString()).replace("+", "%20")
-                                    navController.navigate("matchInfo/$encodedJson")
-
-
+                                val matchInfoJson = Gson().toJson(matchInfo)
+                                val encodedJson = URLEncoder.encode(
+                                    matchInfoJson,
+                                    StandardCharsets.UTF_8.toString()
+                                ).replace("+", "%20")
+                                navController.navigate("matchInfo/$encodedJson")
                             }
                         },
                         modifier = Modifier
@@ -288,8 +274,6 @@ fun MakeMatchScreen(
                     ) {
                         Text(text = "Maç Oluştur")
                     }
-
-
                 }
             }
         }
