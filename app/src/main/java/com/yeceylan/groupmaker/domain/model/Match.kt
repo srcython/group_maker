@@ -9,7 +9,7 @@ data class Match(
     val result: String? = null,
     val type: String = "volleyball",
     val playerList: List<User> = emptyList(),
-    val macPlayer: String? = null,
+    val maxPlayer: String? = null,
     val isActive: Boolean = true
 ) {
     constructor() : this(
@@ -21,7 +21,7 @@ data class Match(
         result = null,
         type = "volleyball",
         playerList = emptyList(),
-        macPlayer = null,
+        maxPlayer = null,
         isActive = true
     )
 }
