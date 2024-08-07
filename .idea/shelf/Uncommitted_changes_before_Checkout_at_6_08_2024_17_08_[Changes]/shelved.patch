@@ -1,0 +1,285 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.profile\r\n\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.domain.use_cases.GetUserUseCase\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginViewModel.LoginScreenUIState\r\nimport dagger.hilt.android.lifecycle.HiltViewModel\r\nimport kotlinx.coroutines.flow.MutableStateFlow\r\nimport kotlinx.coroutines.flow.StateFlow\r\nimport kotlinx.coroutines.flow.asStateFlow\r\nimport kotlinx.coroutines.launch\r\nimport javax.inject.Inject\r\n\r\n@HiltViewModel\r\nclass ProfileViewModel @Inject constructor(\r\n    private val useCase: GetUserUseCase\r\n) : ViewModel() {\r\n    private var userResponse by mutableStateOf<Resource<User>>(Resource.Loading())\r\n\r\n    private var _user = MutableStateFlow(User())\r\n    var user = _user.asStateFlow()\r\n\r\n    init {\r\n        getProfile()\r\n    }\r\n\r\n    private fun getProfile() = viewModelScope.launch {\r\n        useCase().collect {\r\n            userResponse = it\r\n\r\n            when (userResponse) {\r\n                is Resource.Error -> \"TODO()\"\r\n                is Resource.Loading -> \"TODO()\"\r\n                is Resource.Success -> _user.value = it.data!!\r\n            }\r\n        }\r\n    }\r\n\r\n    private fun updateProfile() {\r\n\r\n    }\r\n}
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt	
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt	
+@@ -8,6 +8,7 @@
+ import com.yeceylan.groupmaker.core.Resource
+ import com.yeceylan.groupmaker.domain.model.User
+ import com.yeceylan.groupmaker.domain.use_cases.GetUserUseCase
++import com.yeceylan.groupmaker.domain.use_cases.UpdateUserUseCase
+ import com.yeceylan.groupmaker.ui.auth.login.LoginViewModel.LoginScreenUIState
+ import dagger.hilt.android.lifecycle.HiltViewModel
+ import kotlinx.coroutines.flow.MutableStateFlow
+@@ -18,7 +19,8 @@
+ 
+ @HiltViewModel
+ class ProfileViewModel @Inject constructor(
+-    private val useCase: GetUserUseCase
++    private val useCase: GetUserUseCase,
++    private val updateUseCase: UpdateUserUseCase
+ ) : ViewModel() {
+     private var userResponse by mutableStateOf<Resource<User>>(Resource.Loading())
+ 
+@@ -41,7 +43,9 @@
+         }
+     }
+ 
+-    private fun updateProfile() {
++    private fun updateProfile()=viewModelScope.launch {
++        updateUseCase(_user.value).collect{
+ 
++        }
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/profile/profile.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.profile\r\n\r\nimport android.annotation.SuppressLint\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxHeight\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.Button\r\nimport androidx.compose.material.ButtonDefaults\r\nimport androidx.compose.material.Card\r\nimport androidx.compose.material.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.R\r\n\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@SuppressLint(\"SuspiciousIndentation\")\r\n@Composable\r\nfun ProfileScreen( viewModel: ProfileViewModel = hiltViewModel()) {\r\n\r\n    val user = viewModel.user.collectAsState().value\r\n\r\n        Column(\r\n            Modifier\r\n                .fillMaxHeight()\r\n                .fillMaxWidth()\r\n                .background(color = Color(android.graphics.Color.parseColor(\"#ececec\"))),\r\n            horizontalAlignment = Alignment.CenterHorizontally\r\n        ) {\r\n\r\n            Box(modifier = Modifier.height(280.dp)) {\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.top_background),\r\n                    contentDescription = \"\",\r\n                    Modifier.fillMaxWidth(),\r\n                    contentScale = ContentScale.Crop\r\n                )\r\n\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    modifier = Modifier.fillMaxSize(),\r\n                    verticalArrangement = Arrangement.Bottom\r\n\r\n                ) {\r\n                    GlideImage(\r\n                        model = user.photo,\r\n                        contentDescription = \"\",\r\n                        contentScale = ContentScale.Crop,\r\n                        modifier = Modifier\r\n                            .size(200.dp)\r\n                            .clip(CircleShape)\r\n                            .border(4.dp, Color.White, CircleShape),\r\n                    )\r\n                }\r\n            }\r\n\r\n            Text(\r\n                text = user.name,\r\n                fontSize = 25.sp,\r\n                fontWeight = FontWeight.Bold,\r\n                modifier = Modifier.padding(top = 16.dp),\r\n                color = Color(android.graphics.Color.parseColor(\"#747679\"))\r\n            )\r\n            Text(\r\n                text = user.email,\r\n                fontSize = 20.sp,\r\n                color = Color(android.graphics.Color.parseColor(\"#747679\"))\r\n            )\r\n            Card(\r\n                modifier = Modifier\r\n                    .fillMaxWidth()\r\n                    .padding(32.dp, 32.dp),\r\n                elevation = 4.dp,\r\n                shape = RoundedCornerShape(8.dp),\r\n                backgroundColor = Color.White\r\n            ) {\r\n                Column(modifier = Modifier.padding(16.dp)) {\r\n                    Text(\r\n                        text = \"Bilgiler\",\r\n                        fontSize = 24.sp,\r\n                        fontWeight = FontWeight.Bold,\r\n                        color = Color(0xFF1E88E5),\r\n                        modifier = Modifier.padding(5.dp)\r\n                    )\r\n                    Spacer(modifier = Modifier.height(8.dp))\r\n                    Text(text = \"Adı: ${user.firstname}\", fontSize = 20.sp, modifier = Modifier.padding(8.dp))\r\n                    Text(text = \"Soyadı: ${user.surname}\", fontSize = 20.sp, modifier = Modifier.padding(8.dp))\r\n                    Text(text = \"Pozisyon: ${user.position}\", fontSize = 20.sp, modifier = Modifier.padding(8.dp))\r\n                    Text(text = \"Puan: ${user.point}\", fontSize = 20.sp, modifier = Modifier.padding(8.dp))\r\n                }\r\n            }\r\n\r\n            Button(\r\n                onClick = { /*TODO*/ },\r\n                Modifier\r\n                    .fillMaxWidth()\r\n                    .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 10.dp)\r\n                    .height(55.dp), colors = ButtonDefaults.buttonColors(\r\n                    backgroundColor = Color(android.graphics.Color.parseColor(\"#ffffff\"))\r\n                ), shape = RoundedCornerShape(15)\r\n            ) {\r\n                Column(\r\n                    modifier = Modifier.fillMaxHeight(),\r\n                    verticalArrangement = Arrangement.Center\r\n                ) {\r\n                    Image(painter = painterResource(id = R.drawable.ic_settings),\r\n                        contentDescription = \"\",\r\n                        modifier = Modifier\r\n                            .padding(end = 5.dp)\r\n                            .clickable {})\r\n                }\r\n                Column(\r\n                    modifier = Modifier\r\n                        .padding(start = 16.dp)\r\n                        .weight(1f),\r\n                    verticalArrangement = Arrangement.Center,\r\n                    horizontalAlignment = Alignment.Start\r\n                ) {\r\n                    Text(\r\n                        text = \"Profile Settings\",\r\n                        color = Color.Black,\r\n                        fontSize = 18.sp,\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n\r\n                }\r\n            }\r\n\r\n        }\r\n    }\r\n\r\n
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/profile.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/profile.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/profile.kt	
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/profile.kt	
+@@ -41,116 +41,136 @@
+ @OptIn(ExperimentalGlideComposeApi::class)
+ @SuppressLint("SuspiciousIndentation")
+ @Composable
+-fun ProfileScreen( viewModel: ProfileViewModel = hiltViewModel()) {
++fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
+ 
+     val user = viewModel.user.collectAsState().value
+ 
+-        Column(
+-            Modifier
+-                .fillMaxHeight()
+-                .fillMaxWidth()
+-                .background(color = Color(android.graphics.Color.parseColor("#ececec"))),
+-            horizontalAlignment = Alignment.CenterHorizontally
+-        ) {
++    Column(
++        Modifier
++            .fillMaxHeight()
++            .fillMaxWidth()
++            .background(color = Color(android.graphics.Color.parseColor("#ececec"))),
++        horizontalAlignment = Alignment.CenterHorizontally
++    ) {
+ 
+-            Box(modifier = Modifier.height(280.dp)) {
+-                Image(
+-                    painter = painterResource(id = R.drawable.top_background),
+-                    contentDescription = "",
+-                    Modifier.fillMaxWidth(),
+-                    contentScale = ContentScale.Crop
+-                )
++        Box(modifier = Modifier.height(280.dp)) {
++            Image(
++                painter = painterResource(id = R.drawable.top_background),
++                contentDescription = "",
++                Modifier.fillMaxWidth(),
++                contentScale = ContentScale.Crop
++            )
+ 
+-                Column(
+-                    horizontalAlignment = Alignment.CenterHorizontally,
+-                    modifier = Modifier.fillMaxSize(),
+-                    verticalArrangement = Arrangement.Bottom
++            Column(
++                horizontalAlignment = Alignment.CenterHorizontally,
++                modifier = Modifier.fillMaxSize(),
++                verticalArrangement = Arrangement.Bottom
+ 
+-                ) {
+-                    GlideImage(
+-                        model = user.photo,
+-                        contentDescription = "",
+-                        contentScale = ContentScale.Crop,
+-                        modifier = Modifier
+-                            .size(200.dp)
+-                            .clip(CircleShape)
+-                            .border(4.dp, Color.White, CircleShape),
+-                    )
+-                }
+-            }
++            ) {
++                GlideImage(
++                    model = user.photo,
++                    contentDescription = "",
++                    contentScale = ContentScale.Crop,
++                    modifier = Modifier
++                        .size(200.dp)
++                        .clip(CircleShape)
++                        .border(4.dp, Color.White, CircleShape),
++                )
++            }
++        }
+ 
+-            Text(
+-                text = user.name,
+-                fontSize = 25.sp,
+-                fontWeight = FontWeight.Bold,
+-                modifier = Modifier.padding(top = 16.dp),
+-                color = Color(android.graphics.Color.parseColor("#747679"))
+-            )
+-            Text(
+-                text = user.email,
+-                fontSize = 20.sp,
+-                color = Color(android.graphics.Color.parseColor("#747679"))
+-            )
+-            Card(
+-                modifier = Modifier
+-                    .fillMaxWidth()
+-                    .padding(32.dp, 32.dp),
+-                elevation = 4.dp,
+-                shape = RoundedCornerShape(8.dp),
+-                backgroundColor = Color.White
+-            ) {
+-                Column(modifier = Modifier.padding(16.dp)) {
+-                    Text(
+-                        text = "Bilgiler",
+-                        fontSize = 24.sp,
+-                        fontWeight = FontWeight.Bold,
+-                        color = Color(0xFF1E88E5),
+-                        modifier = Modifier.padding(5.dp)
+-                    )
+-                    Spacer(modifier = Modifier.height(8.dp))
+-                    Text(text = "Adı: ${user.firstname}", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+-                    Text(text = "Soyadı: ${user.surname}", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+-                    Text(text = "Pozisyon: ${user.position}", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+-                    Text(text = "Puan: ${user.point}", fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+-                }
+-            }
++        Text(
++            text = user.name,
++            fontSize = 25.sp,
++            fontWeight = FontWeight.Bold,
++            modifier = Modifier.padding(top = 16.dp),
++            color = Color(android.graphics.Color.parseColor("#747679"))
++        )
++        Text(
++            text = user.email,
++            fontSize = 20.sp,
++            color = Color(android.graphics.Color.parseColor("#747679"))
++        )
++        Card(
++            modifier = Modifier
++                .fillMaxWidth()
++                .padding(32.dp, 32.dp),
++            elevation = 4.dp,
++            shape = RoundedCornerShape(8.dp),
++            backgroundColor = Color.White
++        ) {
++            Column(modifier = Modifier.padding(16.dp)) {
++                Text(
++                    text = "Bilgiler",
++                    fontSize = 24.sp,
++                    fontWeight = FontWeight.Bold,
++                    color = Color(0xFF1E88E5),
++                    modifier = Modifier.padding(5.dp)
++                )
++                Spacer(modifier = Modifier.height(8.dp))
++                Text(
++                    text = "Adı: ${user.firstname}",
++                    fontSize = 20.sp,
++                    modifier = Modifier.padding(8.dp)
++                )
++                Text(
++                    text = "Soyadı: ${user.surname}",
++                    fontSize = 20.sp,
++                    modifier = Modifier.padding(8.dp)
++                )
++                Text(
++                    text = "Pozisyon: ${user.position}",
++                    fontSize = 20.sp,
++                    modifier = Modifier.padding(8.dp)
++                )
++                Text(
++                    text = "Puan: ${user.point}",
++                    fontSize = 20.sp,
++                    modifier = Modifier.padding(8.dp)
++                )
++            }
++        }
+ 
+-            Button(
+-                onClick = { /*TODO*/ },
+-                Modifier
+-                    .fillMaxWidth()
+-                    .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 10.dp)
+-                    .height(55.dp), colors = ButtonDefaults.buttonColors(
+-                    backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
+-                ), shape = RoundedCornerShape(15)
+-            ) {
+-                Column(
+-                    modifier = Modifier.fillMaxHeight(),
+-                    verticalArrangement = Arrangement.Center
+-                ) {
+-                    Image(painter = painterResource(id = R.drawable.ic_settings),
+-                        contentDescription = "",
+-                        modifier = Modifier
+-                            .padding(end = 5.dp)
+-                            .clickable {})
+-                }
+-                Column(
+-                    modifier = Modifier
+-                        .padding(start = 16.dp)
+-                        .weight(1f),
+-                    verticalArrangement = Arrangement.Center,
+-                    horizontalAlignment = Alignment.Start
+-                ) {
+-                    Text(
+-                        text = "Profile Settings",
+-                        color = Color.Black,
+-                        fontSize = 18.sp,
+-                        fontWeight = FontWeight.Bold
+-                    )
++        Button(
++            onClick = {
++
++            },
++            Modifier
++                .fillMaxWidth()
++                .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 10.dp)
++                .height(55.dp), colors = ButtonDefaults.buttonColors(
++                backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
++            ), shape = RoundedCornerShape(15)
++        ) {
++            Column(
++                modifier = Modifier.fillMaxHeight(),
++                verticalArrangement = Arrangement.Center
++            ) {
++                Image(
++                    painter = painterResource(id = R.drawable.ic_settings),
++                    contentDescription = "",
++                    modifier = Modifier
++                        .padding(end = 5.dp)
++
++                )
++            }
++            Column(
++                modifier = Modifier
++                    .padding(start = 16.dp)
++                    .weight(1f),
++                verticalArrangement = Arrangement.Center,
++                horizontalAlignment = Alignment.Start
++            ) {
++                Text(
++                    text = "Profile Settings",
++                    color = Color.Black,
++                    fontSize = 18.sp,
++                    fontWeight = FontWeight.Bold
++                )
+ 
+-                }
+-            }
++            }
++        }
+ 
+-        }
+-    }
++    }
++}
+ 

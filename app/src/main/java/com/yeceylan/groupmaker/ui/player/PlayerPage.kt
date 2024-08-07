@@ -71,7 +71,7 @@ fun PlayerPage(
                 ) {
                     Text(text = "Kullanıcıları Seçin")
                     LazyColumn(modifier = Modifier.height(300.dp)) {
-                        items(users) { user ->
+                        items(users.data!!) { user ->
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically

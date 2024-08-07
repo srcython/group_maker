@@ -11,6 +11,7 @@ data class Match(
     val playerList: List<User> = emptyList(),
     val playerList1: List<User> = emptyList(),
     val maxPlayer: String? = null,
+    val isActive:Boolean = true,
 ) {
     constructor() : this(
         id = "",
@@ -23,6 +24,7 @@ data class Match(
         playerList = emptyList(),
         playerList1 = emptyList(),
         maxPlayer = null,
+        isActive = true,
     )
 
 }

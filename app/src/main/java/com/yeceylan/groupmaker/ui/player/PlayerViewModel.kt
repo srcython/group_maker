@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
+import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
@@ -28,8 +29,8 @@ class PlayerViewModel @Inject constructor(
     private val addUserUseCase: AddUserUseCase,
     ) : ViewModel() {
 
-    private val _users = MutableStateFlow<List<User>>(emptyList())
-    val users: StateFlow<List<User>> = _users
+    private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
+    val users: StateFlow<Resource<List<User>>> = _users
 
     private val _selectedUsers = MutableStateFlow<List<User>>(emptyList())
     val selectedUsers: StateFlow<List<User>> = _selectedUsers
@@ -38,17 +39,13 @@ class PlayerViewModel @Inject constructor(
         fetchUsers()
     }
 
-    private fun fetchUsers() {
+    private fun fetchUsers() =
         viewModelScope.launch {
-            try {
-                Log.d("PlayerViewModel", "Fetching users...")
-                val fetchedUsers = getUsersUseCase()
-//                _users.value = fetchedUsers
-            } catch (e: Exception) {
-                Log.e("PlayerViewModel", "Error fetching users: ${e.message}", e)
+            getUsersUseCase().collect { resource ->
+                _users.value = resource
             }
         }
-    }
+
 
 
     fun addUserToFirestore(user: User) {
@@ -95,6 +92,7 @@ class PlayerViewModel @Inject constructor(
                     updateMatchUseCase(currentUserId, updatedMatch)
                     Log.d("PlayerViewModel", "Active match updated with new players: ${updatedMatch.id}")
                 } else {
+                    // Create a new match
                     val newMatch = Match(
                         id = UUID.randomUUID().toString(),
                         team1 = null,

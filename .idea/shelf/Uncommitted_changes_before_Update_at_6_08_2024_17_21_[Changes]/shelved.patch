@@ -1,0 +1,1829 @@
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1722953709404)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]/shelved.patch	(date 1722953709404)
+@@ -0,0 +1,545 @@
++Index: app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++rename from app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt
++rename to app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt	(revision ccad603bd1972110131c0470b7447397545e4c88)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(date 1722525013467)
++@@ -1,6 +1,5 @@
++-package com.yeceylan.groupmaker
+++package com.yeceylan.groupmaker.ui.sport_types
++ 
++-import android.util.Log
++ import androidx.compose.foundation.background
++ import androidx.compose.foundation.clickable
++ import androidx.compose.foundation.layout.Box
++@@ -16,9 +15,6 @@
++ import androidx.compose.material3.CardDefaults
++ import androidx.compose.material3.Text
++ import androidx.compose.runtime.Composable
++-import androidx.compose.runtime.LaunchedEffect
++-import androidx.compose.runtime.mutableStateListOf
++-import androidx.compose.runtime.remember
++ import androidx.compose.ui.Alignment
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.graphics.Brush
++@@ -26,76 +22,64 @@
++ import androidx.compose.ui.layout.ContentScale
++ import androidx.compose.ui.text.TextStyle
++ import androidx.compose.ui.text.font.FontStyle
++-import androidx.compose.ui.tooling.preview.Preview
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
+++import androidx.hilt.navigation.compose.hiltViewModel
+++import androidx.navigation.NavController
++ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
++ import com.bumptech.glide.integration.compose.GlideImage
++-import com.google.firebase.firestore.FirebaseFirestore
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++ 
++-data class SportType2(val title: String, val image: String)
++-
++-@Preview(showBackground = true)
++ @Composable
++-fun SportTypes() {
++-
++-    val myList = remember {
++-        mutableStateListOf<SportType2>()
++-    }
++-
++-    LaunchedEffect(key1 = true) {
++-        val db = FirebaseFirestore.getInstance()
++-        val docRef = db.collection("typeCollection")
++-        docRef.get().addOnSuccessListener {
++-
++-            val docList = it.documents
++-            Log.e("docList",docList.toString())
+++fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {
++ 
++-            for (document in docList){
++-
++-                val docMap = document.data!!
++-
++-                val image =docMap.get("image").toString()
++-                val title = docMap.get("title").toString()
++-
++-                myList.add(SportType2(title,image))
++-
++-            }
++-        }
++-    }
+++    when (val sportListResponse = viewModel.booksResponse) {
+++        is Response.Failure -> "TODO()"
+++        is Response.Loading -> "TODO()"
+++        is Response.Success ->
++ 
++-    Column(
++-        modifier = Modifier
++-            .fillMaxSize()
++-            .padding(top = 40.dp),
++-        horizontalAlignment = Alignment.CenterHorizontally,
++-    ) {
++-
++-        // Text(text = "Select a sport type ", Modifier.fillMaxWidth(), fontSize = 24.sp, textAlign = TextAlign.Center)
++-        LazyColumn() {
+++            Column(
+++                modifier = Modifier
+++                    .fillMaxSize()
+++                    .padding(top = 40.dp),
+++                horizontalAlignment = Alignment.CenterHorizontally,
+++            ) {
+++                LazyColumn() {
+++                    val a = sportListResponse.data
++ 
++-            items(myList) {
+++                    items(sportListResponse.data) {
++ 
++-                ImageCard(painter = it.image, contentDescription = "", title = it.title)
++-            }
++-        }
+++                        ImageCard(
+++                            painter = it.image!!,
+++                            contentDescription = "",
+++                            title = it.title!!,
+++                            navController = navController,
+++                        )
+++                    }
+++                }
+++            }
++     }
++ }
++ 
++ @OptIn(ExperimentalGlideComposeApi::class)
++ @Composable
++ fun ImageCard(
++-    painter: String, contentDescription: String, title: String, modifier: Modifier = Modifier
+++    painter: String,
+++    contentDescription: String,
+++    title: String,
+++    modifier: Modifier = Modifier,
+++    navController: NavController
++ ) {
++     Card(
++         modifier = modifier
++             .fillMaxWidth()
++             .padding(20.dp)
++             .clickable {
++-                Log.e("card", "click")
+++                navController.navigate(SportTypeScreens.SportTypeSetting)
++             },
++         shape = RoundedCornerShape(24.dp),
++-        elevation = CardDefaults.cardElevation(20.dp),
+++        elevation = CardDefaults.cardElevation(10.dp),
++ 
++         ) {
++         Box(modifier = Modifier.height(200.dp)) {
++@@ -104,7 +88,7 @@
++                 model = painter,
++                 contentDescription = contentDescription,
++                 modifier = Modifier.fillMaxSize(),
++-                contentScale = ContentScale.Crop
+++                contentScale = ContentScale.Crop,
++             )
++ 
++             Box(
++@@ -114,27 +98,24 @@
++                         brush = Brush.verticalGradient(
++                             colors = listOf(
++                                 Color.Transparent,
++-                                Color.Black
+++                                Color.Black,
++                             ),
++                             // startY = 100f,
++-                        )
++-                    )
++-            ) {
++-
++-            }
++-
+++                        ),
+++                    ),
+++            ) {}
++             Box(
++                 modifier = Modifier
++                     .fillMaxSize()
++                     .padding(12.dp),
++-                contentAlignment = Alignment.BottomCenter
+++                contentAlignment = Alignment.BottomCenter,
++             ) {
++                 Text(
++                     title,
++                     style = TextStyle(
++                         color = Color.White,
++                         fontSize = 16.sp,
++-                        fontStyle = FontStyle.Italic
+++                        fontStyle = FontStyle.Italic,
++                     )
++                 )
++             }
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.splash\r\n\r\n\r\nimport android.app.Activity\r\nimport android.content.Context\r\nimport androidx.compose.animation.core.Animatable\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.isSystemInDarkTheme\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.LaunchedEffect\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavHostController\r\nimport com.airbnb.lottie.compose.LottieAnimation\r\nimport com.airbnb.lottie.compose.LottieCompositionSpec\r\nimport com.airbnb.lottie.compose.LottieConstants\r\nimport com.airbnb.lottie.compose.rememberLottieComposition\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.yeceylan.groupmaker.MainActivity\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport kotlinx.coroutines.delay\r\n\r\n\r\n@Composable\r\nfun SplashScreen(navController: NavHostController) {\r\n\r\n    val context = LocalContext.current\r\n\r\n    val alpha = remember {\r\n        Animatable(0f)\r\n    }\r\n    val auth = FirebaseAuth.getInstance()\r\n    FirebaseAuth.getInstance().signOut()\r\n    LaunchedEffect(key1 = true) {\r\n        alpha.animateTo(\r\n            1f,\r\n            animationSpec = tween(2500)\r\n        )\r\n        delay(3000)\r\n        navController.popBackStack()\r\n        navController.navigate(SplashScreens.OnboardingScreen)\r\n\r\n        if (auth != null) {\r\n            navController.navigate(BottomBarScreen.Home.route)\r\n        } else {\r\n            navController.popBackStack()\r\n            navController.navigate(SplashScreens.OnboardingScreen)\r\n        }\r\n\r\n    }\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),\r\n        verticalArrangement = Arrangement.Center,\r\n        horizontalAlignment = Alignment.CenterHorizontally\r\n    ) {\r\n        LoaderAnimation(\r\n            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie\r\n        )\r\n        Spacer(modifier = Modifier.height(25.dp))\r\n        Text(\r\n            text = \"Let's Play\",\r\n            modifier = Modifier.alpha(alpha.value),\r\n            fontSize = 52.sp,\r\n            fontWeight = FontWeight.Light\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun LoaderAnimation(modifier: Modifier, anim: Int) {\r\n    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(anim))\r\n\r\n    LottieAnimation(\r\n        composition = composition, iterations = LottieConstants.IterateForever,\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {\r\n    val sharedPreferences = context.getSharedPreferences(\"onBoarding\", Context.MODE_PRIVATE)\r\n    return sharedPreferences.getBoolean(\"isFinished\", false)\r\n\r\n}\r\n\r\n */
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(revision ccad603bd1972110131c0470b7447397545e4c88)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(date 1722500976272)
++@@ -59,12 +59,14 @@
++         navController.navigate(SplashScreens.OnboardingScreen)
++ 
++         if (auth != null) {
+++           // auth.signOut()
++             navController.navigate(BottomBarScreen.Home.route)
++         } else {
++             navController.popBackStack()
++             navController.navigate(SplashScreens.OnboardingScreen)
++         }
++ 
+++
++     }
++ 
++     Column(
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++new file mode 100644
++--- /dev/null	(date 1722525043604)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt	(date 1722525043604)
++@@ -0,0 +1,32 @@
+++package com.yeceylan.groupmaker.ui.sport_types
+++
+++import android.util.Log
+++import androidx.compose.runtime.getValue
+++import androidx.compose.runtime.mutableStateOf
+++import androidx.compose.runtime.setValue
+++import androidx.lifecycle.ViewModel
+++import androidx.lifecycle.viewModelScope
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
+++import dagger.hilt.android.lifecycle.HiltViewModel
+++import kotlinx.coroutines.launch
+++import javax.inject.Inject
+++
+++@HiltViewModel
+++class SportTypeViewModel @Inject constructor(
+++    private val sportTypeUseCase: GetSportTypeUseCase
+++) : ViewModel() {
+++    var booksResponse by mutableStateOf<Response<List<SportTypeData>>>(Response.Loading)
+++
+++    init {
+++        getBooks()
+++    }
+++
+++    private fun getBooks() = viewModelScope.launch {
+++        sportTypeUseCase.invoke().collect { response ->
+++            booksResponse = response
+++            Log.e("response",booksResponse.toString())
+++        }
+++    }
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt
++new file mode 100644
++--- /dev/null	(date 1722525254753)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt	(date 1722525254753)
++@@ -0,0 +1,7 @@
+++package com.yeceylan.groupmaker.domain.model
+++
+++data class SportTypeData(
+++    val title: String? = null,
+++    val image: String? = null,
+++    val size: Int? = null,
+++)
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.bottombar\r\n\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.navigation.NavHostController\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.composable\r\nimport com.yeceylan.groupmaker.SportTypes\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginScreen\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen\r\nimport com.yeceylan.groupmaker.ui.onboarding.OnBoarding\r\nimport com.yeceylan.groupmaker.ui.splash.SplashScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\n\r\n\r\n@Composable\r\nfun MainNavGraph(\r\n    navController: NavHostController,\r\n    isShowBottomBar: MutableState<Boolean>,\r\n) {\r\n    NavHost(\r\n        navController = navController,\r\n        startDestination = SplashScreens.SplashScreen,\r\n    ) {\r\n\r\n        composable<AuthenticationScreens.LoginScreen> {\r\n            isShowBottomBar.value = false\r\n            LoginScreen(navController = navController)\r\n        }\r\n        composable< AuthenticationScreens.SignUpScreen> {\r\n            isShowBottomBar.value = false\r\n            SignUpScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.OnboardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.Home.route) {\r\n            isShowBottomBar.value = true\r\n            SportTypes()\r\n        }\r\n        composable(route = BottomBarScreen.History.route) {\r\n            isShowBottomBar.value = true\r\n            HistoryScreen()\r\n        }\r\n        composable(route = BottomBarScreen.Profile.route) {\r\n            isShowBottomBar.value = true\r\n            ProfileScreen()\r\n        }\r\n    }\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(revision ccad603bd1972110131c0470b7447397545e4c88)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(date 1722505818209)
++@@ -5,16 +5,17 @@
++ import androidx.navigation.NavHostController
++ import androidx.navigation.compose.NavHost
++ import androidx.navigation.compose.composable
++-import com.yeceylan.groupmaker.SportTypes
+++import com.yeceylan.groupmaker.ui.sport_types.SportTypes
++ import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
++ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
++ import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
++ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
++-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen
++ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
++ import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
++ import com.yeceylan.groupmaker.ui.splash.SplashScreen
++ import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
+++import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
+++import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++ 
++ 
++ @Composable
++@@ -45,7 +46,7 @@
++         }
++         composable(route = BottomBarScreen.Home.route) {
++             isShowBottomBar.value = true
++-            SportTypes()
+++            SportTypes(navController = navController)
++         }
++         composable(route = BottomBarScreen.History.route) {
++             isShowBottomBar.value = true
++@@ -55,5 +56,9 @@
++             isShowBottomBar.value = true
++             ProfileScreen()
++         }
+++        composable<SportTypeScreens.SportTypeSetting> {
+++            isShowBottomBar.value = true
+++            SportTypeSetting()
+++        }
++     }
++ }
++Index: app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt b/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt
++new file mode 100644
++--- /dev/null	(date 1722512568158)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt	(date 1722512568158)
++@@ -0,0 +1,27 @@
+++package com.yeceylan.groupmaker.data.di
+++
+++import com.google.firebase.Firebase
+++import com.google.firebase.firestore.CollectionReference
+++import com.google.firebase.firestore.firestore
+++import com.yeceylan.groupmaker.data.repository.SportTypeRepositoryImpl
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
+++import dagger.Module
+++import dagger.Provides
+++import dagger.hilt.InstallIn
+++import dagger.hilt.components.SingletonComponent
+++
+++@Module
+++@InstallIn(SingletonComponent::class)
+++object AppModule {
+++    @Provides
+++    fun provideSportTypeRef() = Firebase.firestore.collection("typeCollection")
+++
+++    @Provides
+++    fun provideBooksRepository(
+++        sportTypeRef: CollectionReference
+++    ): SportTypeRepository = SportTypeRepositoryImpl(sportTypeRef)
+++
+++    @Provides
+++    fun provideUseCases(repo: SportTypeRepository) = GetSportTypeUseCase(repo)
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++new file mode 100644
++--- /dev/null	(date 1722505105082)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt	(date 1722505105082)
++@@ -0,0 +1,13 @@
+++package com.yeceylan.groupmaker.ui.sport_types.navigation
+++
+++import kotlinx.serialization.Serializable
+++
+++@Serializable
+++sealed class SportTypeScreens {
+++
+++    @Serializable
+++    data object SportTypes : SportTypeScreens()
+++
+++    @Serializable
+++    data object SportTypeSetting : SportTypeScreens()
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt
++new file mode 100644
++--- /dev/null	(date 1722514595741)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt	(date 1722514595741)
++@@ -0,0 +1,9 @@
+++package com.yeceylan.groupmaker.domain.use_cases.sport_type
+++
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++
+++class GetSportTypeUseCase(private val repo: SportTypeRepository) {
+++
+++    operator fun invoke() = repo.getSportTypeFromFirestore()
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt
++new file mode 100644
++--- /dev/null	(date 1722524801587)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt	(date 1722524801587)
++@@ -0,0 +1,11 @@
+++package com.yeceylan.groupmaker.domain.repository
+++
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import kotlinx.coroutines.flow.Flow
+++
+++interface SportTypeRepository {
+++
+++    fun getSportTypeFromFirestore(): Flow<Response<List<SportTypeData>>>
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt b/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt
++new file mode 100644
++--- /dev/null	(date 1722525224053)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt	(date 1722525224053)
++@@ -0,0 +1,37 @@
+++package com.yeceylan.groupmaker.data.repository
+++
+++import com.google.firebase.firestore.CollectionReference
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++import kotlinx.coroutines.channels.awaitClose
+++import kotlinx.coroutines.flow.callbackFlow
+++import javax.inject.Inject
+++import javax.inject.Singleton
+++
+++@Singleton
+++class SportTypeRepositoryImpl @Inject constructor(
+++    private val sportTypeRef: CollectionReference
+++) : SportTypeRepository {
+++
+++    override fun getSportTypeFromFirestore() = callbackFlow {
+++
+++        val snapshotListener = sportTypeRef.orderBy("title").addSnapshotListener { snapshot, e ->
+++
+++            val sportTypeResponse = if (snapshot != null) {
+++
+++                val sportTypes = snapshot.toObjects(SportTypeData::class.java)
+++                Response.Success(sportTypes)
+++
+++            } else {
+++                Response.Failure(e)
+++            }
+++            trySend(sportTypeResponse)
+++        }
+++        awaitClose {
+++            snapshotListener.remove()
+++        }
+++    }
+++
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++rename from app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt
++rename to app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt	(revision ccad603bd1972110131c0470b7447397545e4c88)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1722500806682)
++@@ -1,4 +1,4 @@
++-package com.yeceylan.groupmaker
+++package com.yeceylan.groupmaker.ui.sport_types
++ 
++ import android.util.Log
++ import androidx.compose.foundation.Image
++@@ -26,6 +26,7 @@
++ import androidx.compose.ui.tooling.preview.Preview
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
+++import com.yeceylan.groupmaker.R
++ 
++ @Preview
++ @Composable
++Index: app/src/main/java/com/yeceylan/groupmaker/core/Response.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt b/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt
++new file mode 100644
++--- /dev/null	(date 1722524801592)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt	(date 1722524801592)
++@@ -0,0 +1,15 @@
+++package com.yeceylan.groupmaker.core
+++
+++sealed class Response<out T> {
+++
+++    object Loading : Response<Nothing>()
+++
+++    data class Success<out T>(
+++        val data: T
+++    ) : Response<T>()
+++
+++    data class Failure(
+++        val e: Exception?
+++    ) : Response<Nothing>()
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.os.Bundle\r\nimport androidx.activity.ComponentActivity\r\nimport androidx.activity.compose.setContent\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.material3.Scaffold\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBar\r\nimport com.yeceylan.groupmaker.ui.bottombar.MainNavGraph\r\nimport com.yeceylan.groupmaker.ui.theme.GroupMakerTheme\r\nimport dagger.hilt.android.AndroidEntryPoint\r\n\r\n@AndroidEntryPoint\r\nclass MainActivity : ComponentActivity() {\r\n    @SuppressLint(\"UnusedMaterial3ScaffoldPaddingParameter\")\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        enableEdgeToEdge()\r\n        setContent {\r\n            val navController = rememberNavController()\r\n            val isBottomBarShow = remember { mutableStateOf(true) }\r\n\r\n\r\n            GroupMakerTheme {\r\n                Scaffold(\r\n                    modifier = Modifier.fillMaxSize(),\r\n                    bottomBar = { if (isBottomBarShow.value) {\r\n                        BottomBar(navController = navController)\r\n                    } }\r\n                ) {\r\n                    MainNavGraph(navController = navController, isShowBottomBar =  isBottomBarShow)\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun Greeting(name: String, modifier: Modifier = Modifier) {\r\n    Text(\r\n        text = \"Hello $name!\",\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun GreetingPreview() {\r\n    GroupMakerTheme {\r\n        Greeting(\"Android\")\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt b/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt	(revision ccad603bd1972110131c0470b7447397545e4c88)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt	(date 1722439050010)
++@@ -14,6 +14,7 @@
++ import androidx.compose.runtime.remember
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.tooling.preview.Preview
+++import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
++ import androidx.navigation.compose.rememberNavController
++ import com.yeceylan.groupmaker.ui.bottombar.BottomBar
++ import com.yeceylan.groupmaker.ui.bottombar.MainNavGraph
++@@ -25,6 +26,7 @@
++     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
++     override fun onCreate(savedInstanceState: Bundle?) {
++         super.onCreate(savedInstanceState)
+++        installSplashScreen()
++         enableEdgeToEdge()
++         setContent {
++             val navController = rememberNavController()
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1722953773258)
++++ b/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41__Changes_.xml	(date 1722953773258)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]" date="1722527033453" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_1_08_2024_18_41_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Update at 1.08.2024 18:41 [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1722953709415)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]/shelved.patch	(date 1722953709415)
+@@ -0,0 +1,596 @@
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.splash\r\n\r\n\r\nimport android.app.Activity\r\nimport android.content.Context\r\nimport androidx.compose.animation.core.Animatable\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.isSystemInDarkTheme\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.LaunchedEffect\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavHostController\r\nimport com.airbnb.lottie.compose.LottieAnimation\r\nimport com.airbnb.lottie.compose.LottieCompositionSpec\r\nimport com.airbnb.lottie.compose.LottieConstants\r\nimport com.airbnb.lottie.compose.rememberLottieComposition\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.yeceylan.groupmaker.MainActivity\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport kotlinx.coroutines.delay\r\n\r\n\r\n@Composable\r\nfun SplashScreen(navController: NavHostController) {\r\n\r\n    val context = LocalContext.current\r\n\r\n    val alpha = remember {\r\n        Animatable(0f)\r\n    }\r\n    val auth = FirebaseAuth.getInstance()\r\n    FirebaseAuth.getInstance().signOut()\r\n    LaunchedEffect(key1 = true) {\r\n        alpha.animateTo(\r\n            1f,\r\n            animationSpec = tween(2500)\r\n        )\r\n        delay(3000)\r\n        navController.popBackStack()\r\n        navController.navigate(SplashScreens.OnboardingScreen)\r\n\r\n        if (auth != null) {\r\n           // auth.signOut()\r\n            navController.navigate(BottomBarScreen.Home.route)\r\n        } else {\r\n            navController.popBackStack()\r\n            navController.navigate(SplashScreens.OnboardingScreen)\r\n        }\r\n\r\n\r\n    }\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),\r\n        verticalArrangement = Arrangement.Center,\r\n        horizontalAlignment = Alignment.CenterHorizontally\r\n    ) {\r\n        LoaderAnimation(\r\n            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie\r\n        )\r\n        Spacer(modifier = Modifier.height(25.dp))\r\n        Text(\r\n            text = \"Let's Play\",\r\n            modifier = Modifier.alpha(alpha.value),\r\n            fontSize = 52.sp,\r\n            fontWeight = FontWeight.Light\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun LoaderAnimation(modifier: Modifier, anim: Int) {\r\n    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(anim))\r\n\r\n    LottieAnimation(\r\n        composition = composition, iterations = LottieConstants.IterateForever,\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {\r\n    val sharedPreferences = context.getSharedPreferences(\"onBoarding\", Context.MODE_PRIVATE)\r\n    return sharedPreferences.getBoolean(\"isFinished\", false)\r\n\r\n}\r\n\r\n */
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(date 1722587830436)
++@@ -1,8 +1,5 @@
++ package com.yeceylan.groupmaker.ui.splash
++ 
++-
++-import android.app.Activity
++-import android.content.Context
++ import androidx.compose.animation.core.Animatable
++ import androidx.compose.animation.core.tween
++ import androidx.compose.foundation.background
++@@ -22,7 +19,6 @@
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.draw.alpha
++ import androidx.compose.ui.graphics.Color
++-import androidx.compose.ui.platform.LocalContext
++ import androidx.compose.ui.text.font.FontWeight
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
++@@ -32,7 +28,6 @@
++ import com.airbnb.lottie.compose.LottieConstants
++ import com.airbnb.lottie.compose.rememberLottieComposition
++ import com.google.firebase.auth.FirebaseAuth
++-import com.yeceylan.groupmaker.MainActivity
++ import com.yeceylan.groupmaker.R
++ import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
++ import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
++@@ -42,31 +37,32 @@
++ @Composable
++ fun SplashScreen(navController: NavHostController) {
++ 
++-    val context = LocalContext.current
++-
++     val alpha = remember {
++         Animatable(0f)
++     }
++-    val auth = FirebaseAuth.getInstance()
++-    FirebaseAuth.getInstance().signOut()
+++    val auth = FirebaseAuth.getInstance().currentUser
+++
++     LaunchedEffect(key1 = true) {
++         alpha.animateTo(
++             1f,
++             animationSpec = tween(2500)
++         )
++         delay(3000)
++-        navController.popBackStack()
++-        navController.navigate(SplashScreens.OnboardingScreen)
++ 
++         if (auth != null) {
++-           // auth.signOut()
++-            navController.navigate(BottomBarScreen.Home.route)
+++            //clear back stack
+++            navController.navigate(BottomBarScreen.Home.route){
+++                popUpTo(navController.graph.id){
+++                    inclusive = true
+++                }
+++            }
++         } else {
++-            navController.popBackStack()
++-            navController.navigate(SplashScreens.OnboardingScreen)
+++            navController.navigate(SplashScreens.OnboardingScreen){
+++                popUpTo(navController.graph.id){
+++                    inclusive = true
+++                }
+++            }
++         }
++-
++-
++     }
++ 
++     Column(
++@@ -98,11 +94,3 @@
++         modifier = modifier
++     )
++ }
++-
++-/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {
++-    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
++-    return sharedPreferences.getBoolean("isFinished", false)
++-
++-}
++-
++- */
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.bottombar\r\n\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.navigation.NavHostController\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.composable\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypes\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginScreen\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen\r\nimport com.yeceylan.groupmaker.ui.match.MakeMatchScreen\r\nimport com.yeceylan.groupmaker.ui.onboarding.OnBoarding\r\nimport com.yeceylan.groupmaker.ui.player.PlayerPage\r\nimport com.yeceylan.groupmaker.ui.splash.SplashScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n\r\n@Composable\r\nfun MainNavGraph(\r\n    navController: NavHostController,\r\n    isShowBottomBar: MutableState<Boolean>,\r\n) {\r\n    NavHost(\r\n        navController = navController,\r\n        startDestination = SplashScreens.SplashScreen,\r\n    ) {\r\n\r\n        composable<AuthenticationScreens.LoginScreen> {\r\n            isShowBottomBar.value = false\r\n            LoginScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.SignUpScreen> {\r\n            isShowBottomBar.value = false\r\n            SignUpScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.MakeMatchScreen> {\r\n            isShowBottomBar.value = false\r\n            MakeMatchScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.OnboardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.Home.route) {\r\n            isShowBottomBar.value = true\r\n            SportTypes(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.History.route) {\r\n            isShowBottomBar.value = true\r\n            PlayerPage()\r\n        }\r\n        composable(route = BottomBarScreen.Profile.route) {\r\n            isShowBottomBar.value = true\r\n            ProfileScreen()\r\n        }\r\n        composable<SportTypeScreens.SportTypeSetting> {\r\n            isShowBottomBar.value = true\r\n            SportTypeSetting()\r\n        }\r\n    }\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(date 1722607004929)
++@@ -3,13 +3,14 @@
++ import androidx.compose.runtime.Composable
++ import androidx.compose.runtime.MutableState
++ import androidx.navigation.NavHostController
+++import androidx.navigation.NavType
++ import androidx.navigation.compose.NavHost
++ import androidx.navigation.compose.composable
+++import androidx.navigation.navArgument
++ import com.yeceylan.groupmaker.ui.sport_types.SportTypes
++ import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
++ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
++ import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
++-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
++ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
++ import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
++ import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
++@@ -62,9 +63,23 @@
++             isShowBottomBar.value = true
++             ProfileScreen()
++         }
++-        composable<SportTypeScreens.SportTypeSetting> {
+++       /* composable<SportTypeScreens.SportTypeSetting> {
++             isShowBottomBar.value = true
++             SportTypeSetting()
+++
+++        }*/
+++        composable(
+++            route = SportTypeScreens.SportTypeSetting.route,
+++            arguments = listOf(
+++                navArgument("title"){ type = NavType.StringType},
+++                navArgument("size"){ type = NavType.IntType}
+++            )
+++        ) {
+++            val title = it.arguments?.getString("title")!!
+++            val size = it.arguments?.getInt("size")!!
+++            isShowBottomBar.value = true
+++            SportTypeSetting(title,size)
+++
++         }
++     }
++ }
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.lazy.items\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.font.FontStyle\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.core.Response\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n@Composable\r\nfun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {\r\n\r\n    when (val sportListResponse = viewModel.booksResponse) {\r\n        is Response.Failure -> \"TODO()\"\r\n        is Response.Loading -> \"TODO()\"\r\n        is Response.Success ->\r\n\r\n            Column(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(top = 40.dp),\r\n                horizontalAlignment = Alignment.CenterHorizontally,\r\n            ) {\r\n                LazyColumn() {\r\n                    val a = sportListResponse.data\r\n\r\n                    items(sportListResponse.data) {\r\n\r\n                        ImageCard(\r\n                            painter = it.image!!,\r\n                            contentDescription = \"\",\r\n                            title = it.title!!,\r\n                            navController = navController,\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@Composable\r\nfun ImageCard(\r\n    painter: String,\r\n    contentDescription: String,\r\n    title: String,\r\n    modifier: Modifier = Modifier,\r\n    navController: NavController\r\n) {\r\n    Card(\r\n        modifier = modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                navController.navigate(SportTypeScreens.SportTypeSetting)\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n\r\n            GlideImage(\r\n                model = painter,\r\n                contentDescription = contentDescription,\r\n                modifier = Modifier.fillMaxSize(),\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black,\r\n                            ),\r\n                            // startY = 100f,\r\n                        ),\r\n                    ),\r\n            ) {}\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter,\r\n            ) {\r\n                Text(\r\n                    title,\r\n                    style = TextStyle(\r\n                        color = Color.White,\r\n                        fontSize = 16.sp,\r\n                        fontStyle = FontStyle.Italic,\r\n                    )\r\n                )\r\n            }\r\n        }\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(date 1722603827166)
++@@ -29,6 +29,7 @@
++ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
++ import com.bumptech.glide.integration.compose.GlideImage
++ import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
++ import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++ 
++ @Composable
++@@ -37,30 +38,37 @@
++     when (val sportListResponse = viewModel.booksResponse) {
++         is Response.Failure -> "TODO()"
++         is Response.Loading -> "TODO()"
++-        is Response.Success ->
+++        is Response.Success -> SportList(
+++            list = sportListResponse.data,
+++            navController = navController
+++        )
+++    }
+++}
++ 
++-            Column(
++-                modifier = Modifier
++-                    .fillMaxSize()
++-                    .padding(top = 40.dp),
++-                horizontalAlignment = Alignment.CenterHorizontally,
++-            ) {
++-                LazyColumn() {
++-                    val a = sportListResponse.data
+++@Composable
+++fun SportList(list: List<SportTypeData>, navController: NavController) {
+++    Column(
+++        modifier = Modifier
+++            .fillMaxSize()
+++            .padding(top = 40.dp),
+++        horizontalAlignment = Alignment.CenterHorizontally,
+++    ) {
+++        LazyColumn() {
++ 
++-                    items(sportListResponse.data) {
+++            items(list) {
++ 
++-                        ImageCard(
++-                            painter = it.image!!,
++-                            contentDescription = "",
++-                            title = it.title!!,
++-                            navController = navController,
++-                        )
++-                    }
++-                }
++-            }
+++                ImageCard(
+++                    painter = it.image!!,
+++                    contentDescription = "",
+++                    title = it.title!!,
+++                    navController = navController,
+++                    teamSize = it.size!!
+++                )
+++            }
+++        }
++     }
++ }
+++
++ 
++ @OptIn(ExperimentalGlideComposeApi::class)
++ @Composable
++@@ -69,14 +77,16 @@
++     contentDescription: String,
++     title: String,
++     modifier: Modifier = Modifier,
++-    navController: NavController
+++    navController: NavController,
+++    teamSize:Int
+++
++ ) {
++     Card(
++         modifier = modifier
++             .fillMaxWidth()
++             .padding(20.dp)
++             .clickable {
++-                navController.navigate(SportTypeScreens.SportTypeSetting)
+++                navController.navigate("${SportTypeScreens.SportTypeSetting.pass}/$title/$teamSize")
++             },
++         shape = RoundedCornerShape(24.dp),
++         elevation = CardDefaults.cardElevation(10.dp),
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport android.util.Log\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.Card\r\nimport androidx.compose.material.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.graphics.painter.Painter\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport com.yeceylan.groupmaker.R\r\n\r\n@Preview\r\n@Composable\r\nfun SportTypeSetting() {\r\n    val create = painterResource(id = R.drawable.create_match)\r\n    val players = painterResource(id = R.drawable.players)\r\n\r\n    Column(\r\n        modifier = Modifier.fillMaxSize(),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.Center\r\n    ) {\r\n        SportTypeSettingItem(painter = create,\"Create a Match\")\r\n        SportTypeSettingItem(painter = players,\"Players\")\r\n\r\n\r\n    }\r\n\r\n}\r\n\r\n@Composable\r\nfun SportTypeSettingItem(painter: Painter,text:String) {\r\n\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                Log.e(\"card\", \"click\")\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = 10.dp,\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n            Image(\r\n                modifier = Modifier.fillMaxWidth(),\r\n                painter = painter,\r\n                contentDescription = \"\",\r\n                contentScale = ContentScale.Crop\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black\r\n                            ),\r\n                            // startY = 00f,\r\n                        )\r\n                    )\r\n            ) {\r\n\r\n            }\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter\r\n            ) {\r\n                Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))\r\n            }\r\n        }\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1722603053370)
++@@ -12,8 +12,9 @@
++ import androidx.compose.foundation.layout.height
++ import androidx.compose.foundation.layout.padding
++ import androidx.compose.foundation.shape.RoundedCornerShape
++-import androidx.compose.material.Card
++-import androidx.compose.material.Text
+++import androidx.compose.material3.Card
+++import androidx.compose.material3.CardDefaults
+++import androidx.compose.material3.Text
++ import androidx.compose.runtime.Composable
++ import androidx.compose.ui.Alignment
++ import androidx.compose.ui.Modifier
++@@ -23,24 +24,32 @@
++ import androidx.compose.ui.layout.ContentScale
++ import androidx.compose.ui.res.painterResource
++ import androidx.compose.ui.text.TextStyle
++-import androidx.compose.ui.tooling.preview.Preview
+++import androidx.compose.ui.text.style.TextAlign
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
++ import com.yeceylan.groupmaker.R
++ 
++-@Preview
++ @Composable
++-fun SportTypeSetting() {
+++fun SportTypeSetting(title: String, teamSize: Int) {
++     val create = painterResource(id = R.drawable.create_match)
++     val players = painterResource(id = R.drawable.players)
++ 
+++    Text(
+++        text = title,
+++        fontSize = 30.sp,
+++        textAlign = TextAlign.Center,
+++        modifier = Modifier
+++            .fillMaxWidth()
+++            .padding(top = 70.dp)
+++    )
++     Column(
++         modifier = Modifier.fillMaxSize(),
++         horizontalAlignment = Alignment.CenterHorizontally,
++         verticalArrangement = Arrangement.Center
++     ) {
++-        SportTypeSettingItem(painter = create,"Create a Match")
++-        SportTypeSettingItem(painter = players,"Players")
+++
+++        SportTypeSettingItem(painter = create, "Create a Match")
+++        SportTypeSettingItem(painter = players, "Players")
++ 
++ 
++     }
++@@ -48,7 +57,7 @@
++ }
++ 
++ @Composable
++-fun SportTypeSettingItem(painter: Painter,text:String) {
+++fun SportTypeSettingItem(painter: Painter, text: String) {
++ 
++     Card(
++         modifier = Modifier
++@@ -58,7 +67,7 @@
++                 Log.e("card", "click")
++             },
++         shape = RoundedCornerShape(24.dp),
++-        elevation = 10.dp,
+++        elevation = CardDefaults.cardElevation(10.dp),
++ 
++         ) {
++         Box(modifier = Modifier.height(200.dp)) {
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.sport_types.navigation\r\n\r\nimport kotlinx.serialization.Serializable\r\n\r\n@Serializable\r\nsealed class SportTypeScreens {\r\n\r\n    @Serializable\r\n    data object SportTypes : SportTypeScreens()\r\n\r\n    @Serializable\r\n    data object SportTypeSetting : SportTypeScreens()\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt	(date 1722603922769)
++@@ -3,11 +3,14 @@
++ import kotlinx.serialization.Serializable
++ 
++ @Serializable
++-sealed class SportTypeScreens {
+++sealed class SportTypeScreens(
+++    val route: String,
+++    val pass:String,
++ 
+++    ) {
++     @Serializable
++-    data object SportTypes : SportTypeScreens()
++-
++-    @Serializable
++-    data object SportTypeSetting : SportTypeScreens()
+++    data object SportTypeSetting : SportTypeScreens(
+++        route = "sportTypeSetting/{title}/{size}",
+++        pass = "sportTypeSetting"
+++    )
++ }
++\ No newline at end of file
++Index: app/src/main/AndroidManifest.xml
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\r\n<manifest xmlns:android=\"http://schemas.android.com/apk/res/android\"\r\n    xmlns:tools=\"http://schemas.android.com/tools\">\r\n\r\n    <uses-permission android:name=\"android.permission.INTERNET\" />\r\n\r\n    <application\r\n        android:name=\".App\"\r\n        android:allowBackup=\"true\"\r\n        android:dataExtractionRules=\"@xml/data_extraction_rules\"\r\n        android:fullBackupContent=\"@xml/backup_rules\"\r\n        android:icon=\"@mipmap/ic_launcher\"\r\n        android:label=\"@string/app_name\"\r\n        android:roundIcon=\"@mipmap/ic_launcher_round\"\r\n        android:supportsRtl=\"true\"\r\n        android:theme=\"@style/Theme.GroupMaker\"\r\n        tools:targetApi=\"31\">\r\n        <activity\r\n            android:name=\".MainActivity\"\r\n            android:exported=\"true\"\r\n            android:theme=\"@style/Theme.GroupMaker\" >\r\n        <intent-filter>\r\n            <action android:name=\"android.intent.action.MAIN\" />\r\n\r\n            <category android:name=\"android.intent.category.LAUNCHER\" />\r\n        </intent-filter>\r\n        </activity>\r\n\r\n\r\n\r\n    </application>\r\n\r\n</manifest>
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/AndroidManifest.xml b/app/src/main/AndroidManifest.xml
++--- a/app/src/main/AndroidManifest.xml	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/AndroidManifest.xml	(date 1722539666925)
++@@ -13,12 +13,12 @@
++         android:label="@string/app_name"
++         android:roundIcon="@mipmap/ic_launcher_round"
++         android:supportsRtl="true"
++-        android:theme="@style/Theme.GroupMaker"
+++        android:theme="@style/Theme.MySplashScreen"
++         tools:targetApi="31">
++         <activity
++             android:name=".MainActivity"
++             android:exported="true"
++-            android:theme="@style/Theme.GroupMaker" >
+++            android:theme="@style/Theme.MySplashScreen" >
++         <intent-filter>
++             <action android:name="android.intent.action.MAIN" />
++ 
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoardingData.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoardingData.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/OnBoardingData.kt
++rename from app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoardingData.kt
++rename to app/src/main/java/com/yeceylan/groupmaker/domain/model/OnBoardingData.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoardingData.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/OnBoardingData.kt	(date 1722604106923)
++@@ -1,3 +1,3 @@
++-package com.yeceylan.groupmaker.ui.onboarding
+++package com.yeceylan.groupmaker.domain.model
++ 
++ data class OnBoardingData(val titleR: Int, val textR: Int, val imageR: Int)
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/auth/login/LoginScreen.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.auth.login\r\n\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.width\r\nimport androidx.compose.foundation.rememberScrollState\r\nimport androidx.compose.foundation.text.KeyboardOptions\r\nimport androidx.compose.foundation.verticalScroll\r\nimport androidx.compose.material.Divider\r\nimport androidx.compose.material3.CircularProgressIndicator\r\nimport androidx.compose.material3.MaterialTheme\r\nimport androidx.compose.material3.OutlinedTextFieldDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.material3.TextButton\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.res.stringResource\r\nimport androidx.compose.ui.text.input.KeyboardType\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.components.DButton\r\nimport com.yeceylan.groupmaker.ui.components.DGoogleLoginButton\r\nimport com.yeceylan.groupmaker.ui.components.DOutlinedTextField\r\nimport com.yeceylan.groupmaker.ui.theme.Dimen\r\nimport com.yeceylan.groupmaker.ui.theme.GroupMakerTheme\r\n\r\n\r\n@Composable\r\nfun LoginScreen(\r\n    navController: NavController,\r\n    viewModel: LoginViewModel = hiltViewModel(),\r\n) {\r\n    val uiState by viewModel.uiState.collectAsState()\r\n    val context = LocalContext.current\r\n\r\n    with(uiState) {\r\n        if (isLoading) {\r\n            CircularProgressIndicator()\r\n            return@with\r\n        }\r\n\r\n        if (isSuccessGoogleLogin) {\r\n            navController.navigate(BottomBarScreen.Home.route)\r\n        }\r\n\r\n        if (isSuccessEmailAndPasswordLogin) {\r\n            viewModel.resetUIState()\r\n            navController.navigate(BottomBarScreen.Home.route)\r\n        }\r\n\r\n        LoginScreenUI(\r\n            navController = navController,\r\n            loginWithGoogle = { viewModel.loginWithGoogle() },\r\n            errorMessage = errorMessage,\r\n            isError = isHaveError,\r\n            onClickToTextField = {\r\n                viewModel.updateErrorStatesWithDefaultValues()\r\n            },\r\n            loginWithEmailAndPassword = { email, password ->\r\n                viewModel.loginWithEmailAndPassword(email, password, context)\r\n            },\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun LoginScreenUI(\r\n    navController: NavController,\r\n    isError: Boolean,\r\n    errorMessage: String,\r\n    loginWithGoogle: () -> Unit,\r\n    onClickToTextField: () -> Unit,\r\n    loginWithEmailAndPassword: (String, String) -> Unit,\r\n) {\r\n    val emailState = remember { mutableStateOf(\"\") }\r\n    val passwordState = remember { mutableStateOf(\"\") }\r\n    val verticalScroll = rememberScrollState()\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .padding(Dimen.spacing_m1)\r\n            .verticalScroll(verticalScroll),\r\n    ) {\r\n        Text(\r\n            modifier = Modifier.fillMaxWidth(),\r\n            text = stringResource(R.string.login),\r\n            textAlign = TextAlign.Center,\r\n            style = MaterialTheme.typography.headlineLarge,\r\n        )\r\n\r\n        Spacer(modifier = Modifier.height(Dimen.spacing_xxl))\r\n\r\n        DGoogleLoginButton(modifier = Modifier,\r\n            onClick = {\r\n                navController.navigate(AuthenticationScreens.MakeMatchScreen)\r\n        })\r\n//        {\r\n////            loginWithGoogle()\r\n//        }\r\n\r\n        DividerSignInWith(modifier = Modifier.padding(vertical = Dimen.spacing_m1))\r\n\r\n        Spacer(modifier = Modifier.height(Dimen.spacing_m1))\r\n\r\n        SignInOutlineTextField(\r\n            modifier = Modifier.clickable {\r\n                onClickToTextField()\r\n            },\r\n            value = stringResource(id = R.string.email),\r\n            onValueChange = { emailState.value = it },\r\n            isError = isError,\r\n            hint = stringResource(R.string.hint_mail),\r\n            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),\r\n        )\r\n\r\n        SignInOutlineTextField(\r\n            modifier = Modifier\r\n                .padding(top = Dimen.spacing_m1)\r\n                .clickable {\r\n                    onClickToTextField()\r\n                },\r\n            value = stringResource(id = R.string.password),\r\n            onValueChange = { passwordState.value = it },\r\n            hint = stringResource(R.string.hint_password),\r\n            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),\r\n            isError = isError,\r\n            columnContent = {\r\n                Text(\r\n                    text = errorMessage,\r\n                    color = MaterialTheme.colorScheme.error,\r\n                )\r\n            },\r\n        )\r\n\r\n        DButton(\r\n            modifier = Modifier.padding(top = Dimen.spacing_m1),\r\n            text = stringResource(R.string.login),\r\n        ) {\r\n            loginWithEmailAndPassword(emailState.value, passwordState.value)\r\n        }\r\n\r\n        SignUpButton(modifier = Modifier.padding(top = Dimen.spacing_xs)) {\r\n            navController.navigate(AuthenticationScreens.SignUpScreen)\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nprivate fun SignInOutlineTextField(\r\n    modifier: Modifier = Modifier,\r\n    hint: String,\r\n    value: String,\r\n    isError: Boolean = false,\r\n    keyboardOptions: KeyboardOptions = KeyboardOptions(),\r\n    onValueChange: (String) -> Unit,\r\n    rowContent: @Composable () -> Unit = { /* sonar - comment */ },\r\n    columnContent: @Composable () -> Unit = { /* sonar - comment */ },\r\n) {\r\n    DOutlinedTextField(\r\n        modifier = modifier,\r\n        textFieldValue = value,\r\n        enabled = true,\r\n        isError = isError,\r\n        columnContent = columnContent,\r\n        onValueChange = onValueChange,\r\n        textFieldHint = hint,\r\n        colors = OutlinedTextFieldDefaults.colors(\r\n            focusedBorderColor = Color.Blue,\r\n            disabledBorderColor = Color.Gray,\r\n            unfocusedBorderColor = Color.Gray,\r\n        ),\r\n        rowContent = rowContent,\r\n        keyboardOptions = keyboardOptions,\r\n    )\r\n}\r\n\r\n@Composable\r\nprivate fun DividerSignInWith(modifier: Modifier = Modifier) {\r\n    Row(\r\n        modifier = modifier.fillMaxWidth(),\r\n        horizontalArrangement = Arrangement.Center,\r\n    ) {\r\n        Divider(\r\n            modifier = Modifier\r\n                .padding(\r\n                    start = Dimen.spacing_xxxxs,\r\n                    top = Dimen.spacing_s1,\r\n                    end = Dimen.spacing_xs,\r\n                    bottom = Dimen.spacing_xxxxs,\r\n                )\r\n                .width(Dimen.spacing_xxl * 2),\r\n            color = Color.Gray,\r\n        )\r\n\r\n        Text(\r\n            text = stringResource(R.string.or_sign_in_with),\r\n            textAlign = TextAlign.Center,\r\n            style = MaterialTheme.typography.bodyLarge,\r\n        )\r\n\r\n        Divider(\r\n            modifier = Modifier\r\n                .padding(top = Dimen.spacing_s1, start = Dimen.spacing_xs)\r\n                .width(Dimen.spacing_xxl * 2),\r\n            color = Color.Gray,\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nprivate fun SignUpButton(modifier: Modifier = Modifier, onClick: () -> Unit) {\r\n    Row(\r\n        modifier = modifier.fillMaxWidth(),\r\n        verticalAlignment = Alignment.CenterVertically,\r\n        horizontalArrangement = Arrangement.Center,\r\n    ) {\r\n        Text(\r\n            text = stringResource(R.string.don_t_have_an_account),\r\n            textAlign = TextAlign.Start,\r\n            style = MaterialTheme.typography.bodyMedium,\r\n        )\r\n\r\n        TextButton(\r\n            onClick = onClick,\r\n        ) {\r\n            Text(text = stringResource(R.string.sign_up_here))\r\n        }\r\n    }\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nprivate fun LoginScreenPreview() {\r\n    GroupMakerTheme {\r\n        LoginScreen(\r\n            navController = rememberNavController(),\r\n        )\r\n    }\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/auth/login/LoginScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/auth/login/LoginScreen.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/auth/login/LoginScreen.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/auth/login/LoginScreen.kt	(date 1722586907706)
++@@ -65,6 +65,7 @@
++ 
++         if (isSuccessEmailAndPasswordLogin) {
++             viewModel.resetUIState()
+++            navController.popBackStack()
++             navController.navigate(BottomBarScreen.Home.route)
++         }
++ 
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.onboarding\r\n\r\n\r\nimport androidx.compose.animation.core.Spring\r\nimport androidx.compose.animation.core.animateDpAsState\r\nimport androidx.compose.animation.core.spring\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.BoxScope\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.layout.width\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.material.FloatingActionButton\r\nimport androidx.compose.material.Icon\r\nimport androidx.compose.material.MaterialTheme\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.material3.TextButton\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.rememberCoroutineScope\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.res.stringResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavController\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.google.accompanist.pager.ExperimentalPagerApi\r\nimport com.google.accompanist.pager.HorizontalPager\r\nimport com.google.accompanist.pager.rememberPagerState\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.theme.GroupMakerTheme\r\nimport kotlinx.coroutines.launch\r\n\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nprivate fun OnBoardinPreview() {\r\n    GroupMakerTheme {\r\n        OnBoarding(navController = rememberNavController())\r\n    }\r\n}\r\n\r\n\r\nfun getData(): List<OnBoardingData> {\r\n    return listOf(\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle1,\r\n            textR = R.string.onBoardingText1,\r\n            imageR = R.drawable.onboarding1\r\n        ),\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle2,\r\n            textR = R.string.onBoardingText2,\r\n            imageR = R.drawable.onboarding2\r\n        ),\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle3,\r\n            textR = R.string.onBoardingText3,\r\n            imageR = R.drawable.onboarding3\r\n        ),\r\n    )\r\n}\r\n\r\n@OptIn(ExperimentalPagerApi::class)\r\n@Composable\r\nfun OnBoarding(navController: NavController) {\r\n    val scope = rememberCoroutineScope()\r\n    val mContext = LocalContext.current\r\n    Column(modifier = Modifier.fillMaxSize()) {\r\n        //Top alanını oluşturan compose çağırıyoruz\r\n        TopSection(navController)\r\n        //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz\r\n        val item = getData()\r\n        val state = rememberPagerState(pageCount = item.size)\r\n        //OnBoardingItem'a item resim ve yazıları arayüz elementlerine aktarmasını\r\n        //sağlıyoruz\r\n        HorizontalPager(\r\n            state = state,\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .weight(0.8f)\r\n        ) { page ->\r\n            OnBoardingItem(item = item[page])\r\n        }\r\n        //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi\r\n        BottomSection(size = item.size, index = state.currentPage) {\r\n            if (state.currentPage + 1 < item.size) {\r\n                scope.launch {\r\n                    state.scrollToPage(page = state.currentPage + 1)\r\n                }\r\n            } else {\r\n                navController.navigate(AuthenticationScreens.LoginScreen)\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n//Top alanını oluşturan compose\r\n@Composable\r\n\r\nfun TopSection(navController: NavController) {\r\n    //Padding 12dp olan kutu oluşturuyoruz\r\n    val mContext = LocalContext.current\r\n    Box(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(12.dp)\r\n    ) {\r\n        //Skip adlı text buttonunu oluşturma\r\n        TextButton(\r\n            onClick = {\r\n                navController.navigate(AuthenticationScreens.LoginScreen)\r\n            },\r\n            modifier = Modifier.align(Alignment.CenterEnd)\r\n        ) {\r\n            Text(\r\n                text = \"Skip\",\r\n                color = MaterialTheme.colors.onBackground\r\n            )\r\n        }\r\n    }\r\n}\r\n\r\n//Pager görselini ekran sayısı kadar çoğaltan compose\r\n@Composable\r\nfun BoxScope.Indicators(size: Int, index: Int) {\r\n    Row(\r\n        verticalAlignment = Alignment.CenterVertically,\r\n        horizontalArrangement = Arrangement.spacedBy(12.dp),\r\n        modifier = Modifier.align(Alignment.CenterStart)\r\n    ) {\r\n        repeat(size) {\r\n            Indicator(isSelected = it == index)\r\n        }\r\n\r\n    }\r\n\r\n}\r\n\r\n//Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma\r\n@Composable\r\nfun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {\r\n    Box(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(12.dp)\r\n    ) {//Pager bölümünü oluşturan compose çağırıyoruz\r\n        Indicators(size = size, index = index)\r\n        //Sağdaki FloatingActionButton rengini, iconunu tanımalama\r\n        FloatingActionButton(\r\n            onClick = onNextClicked,\r\n            modifier = Modifier.align(Alignment.CenterEnd),\r\n            backgroundColor = MaterialTheme.colors.primary,\r\n            contentColor = MaterialTheme.colors.onPrimary\r\n        ) {\r\n            Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)\r\n        }\r\n    }\r\n}\r\n\r\n//Bir tane Circle şeklinde pager oluşturma\r\n@Composable\r\nfun Indicator(isSelected: Boolean) {\r\n    //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm\r\n    val width = animateDpAsState(\r\n        targetValue = if (isSelected) 25.dp else 10.dp,\r\n        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy)\r\n    )\r\n    //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama\r\n    Box(\r\n        modifier = Modifier\r\n            .height(10.dp)\r\n            .width(width = width.value)\r\n            .clip(shape = CircleShape)\r\n            .background(\r\n                if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground.copy(\r\n                    alpha = 0.5f\r\n                )\r\n            )\r\n    ) {\r\n\r\n    }\r\n\r\n}\r\n\r\n//OnBoardingData sınıfından gelen resim ve yazıların arayüz elementlerine aktarılması\r\n@Composable\r\nfun OnBoardingItem(item: OnBoardingData) {\r\n    //İçereklerin konumu belirleniyorz\r\n    Column(\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly,\r\n        modifier = Modifier.fillMaxSize()\r\n    ) {\r\n        //Resim, image özelliğine atanıyor\r\n        Image(\r\n            painter = painterResource(id = item.imageR), contentDescription = null,\r\n            Modifier.size(300.dp)\r\n        )\r\n        //Bold ana başlık Text özelliğine atanıyor\r\n        Text(\r\n            text = stringResource(id = item.titleR),\r\n            fontSize = 24.sp,\r\n            color = MaterialTheme.colors.onBackground,\r\n            fontWeight = FontWeight.Bold\r\n        )\r\n        //Açıklama yazısı Text özelliğine atanıyor\r\n        Text(\r\n            text = stringResource(id = item.textR),\r\n            color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),\r\n            textAlign = TextAlign.Center\r\n        )\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt	(date 1722604106928)
++@@ -1,6 +1,5 @@
++ package com.yeceylan.groupmaker.ui.onboarding
++ 
++-
++ import androidx.compose.animation.core.Spring
++ import androidx.compose.animation.core.animateDpAsState
++ import androidx.compose.animation.core.spring
++@@ -18,11 +17,11 @@
++ import androidx.compose.foundation.layout.size
++ import androidx.compose.foundation.layout.width
++ import androidx.compose.foundation.shape.CircleShape
++-import androidx.compose.material.FloatingActionButton
++-import androidx.compose.material.Icon
++-import androidx.compose.material.MaterialTheme
++ import androidx.compose.material.icons.Icons
++ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
+++import androidx.compose.material3.FloatingActionButton
+++import androidx.compose.material3.Icon
+++import androidx.compose.material3.MaterialTheme
++ import androidx.compose.material3.Text
++ import androidx.compose.material3.TextButton
++ import androidx.compose.runtime.Composable
++@@ -30,7 +29,6 @@
++ import androidx.compose.ui.Alignment
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.draw.clip
++-import androidx.compose.ui.platform.LocalContext
++ import androidx.compose.ui.res.painterResource
++ import androidx.compose.ui.res.stringResource
++ import androidx.compose.ui.text.font.FontWeight
++@@ -44,11 +42,11 @@
++ import com.google.accompanist.pager.HorizontalPager
++ import com.google.accompanist.pager.rememberPagerState
++ import com.yeceylan.groupmaker.R
+++import com.yeceylan.groupmaker.domain.model.OnBoardingData
++ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
++ import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
++ import kotlinx.coroutines.launch
++ 
++-
++ @Preview(showBackground = true)
++ @Composable
++ private fun OnBoardinPreview() {
++@@ -57,7 +55,6 @@
++     }
++ }
++ 
++-
++ fun getData(): List<OnBoardingData> {
++     return listOf(
++         OnBoardingData(
++@@ -81,8 +78,9 @@
++ @OptIn(ExperimentalPagerApi::class)
++ @Composable
++ fun OnBoarding(navController: NavController) {
+++
++     val scope = rememberCoroutineScope()
++-    val mContext = LocalContext.current
+++
++     Column(modifier = Modifier.fillMaxSize()) {
++         //Top alanını oluşturan compose çağırıyoruz
++         TopSection(navController)
++@@ -106,7 +104,9 @@
++                     state.scrollToPage(page = state.currentPage + 1)
++                 }
++             } else {
+++                navController.popBackStack()
++                 navController.navigate(AuthenticationScreens.LoginScreen)
+++
++             }
++         }
++     }
++@@ -114,10 +114,8 @@
++ 
++ //Top alanını oluşturan compose
++ @Composable
++-
++ fun TopSection(navController: NavController) {
++-    //Padding 12dp olan kutu oluşturuyoruz
++-    val mContext = LocalContext.current
+++
++     Box(
++         modifier = Modifier
++             .fillMaxWidth()
++@@ -126,13 +124,14 @@
++         //Skip adlı text buttonunu oluşturma
++         TextButton(
++             onClick = {
+++                navController.popBackStack()
++                 navController.navigate(AuthenticationScreens.LoginScreen)
++             },
++             modifier = Modifier.align(Alignment.CenterEnd)
++         ) {
++             Text(
++                 text = "Skip",
++-                color = MaterialTheme.colors.onBackground
+++                color = MaterialTheme.colorScheme.onBackground
++             )
++         }
++     }
++@@ -149,9 +148,7 @@
++         repeat(size) {
++             Indicator(isSelected = it == index)
++         }
++-
++     }
++-
++ }
++ 
++ //Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma
++@@ -167,8 +164,8 @@
++         FloatingActionButton(
++             onClick = onNextClicked,
++             modifier = Modifier.align(Alignment.CenterEnd),
++-            backgroundColor = MaterialTheme.colors.primary,
++-            contentColor = MaterialTheme.colors.onPrimary
+++            containerColor = MaterialTheme.colorScheme.primary,
+++            contentColor = MaterialTheme.colorScheme.onPrimary
++         ) {
++             Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)
++         }
++@@ -181,7 +178,7 @@
++     //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm
++     val width = animateDpAsState(
++         targetValue = if (isSelected) 25.dp else 10.dp,
++-        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy)
+++        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy), label = ""
++     )
++     //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama
++     Box(
++@@ -190,13 +187,11 @@
++             .width(width = width.value)
++             .clip(shape = CircleShape)
++             .background(
++-                if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.onBackground.copy(
+++                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(
++                     alpha = 0.5f
++                 )
++             )
++-    ) {
++-
++-    }
+++    ) {}
++ 
++ }
++ 
++@@ -218,13 +213,13 @@
++         Text(
++             text = stringResource(id = item.titleR),
++             fontSize = 24.sp,
++-            color = MaterialTheme.colors.onBackground,
+++            color = MaterialTheme.colorScheme.onBackground,
++             fontWeight = FontWeight.Bold
++         )
++         //Açıklama yazısı Text özelliğine atanıyor
++         Text(
++             text = stringResource(id = item.textR),
++-            color = MaterialTheme.colors.onBackground.copy(alpha = 0.8f),
+++            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
++             textAlign = TextAlign.Center
++         )
++     }
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport android.util.Log\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.yeceylan.groupmaker.core.Response\r\nimport com.yeceylan.groupmaker.domain.model.SportTypeData\r\nimport com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase\r\nimport dagger.hilt.android.lifecycle.HiltViewModel\r\nimport kotlinx.coroutines.launch\r\nimport javax.inject.Inject\r\n\r\n@HiltViewModel\r\nclass SportTypeViewModel @Inject constructor(\r\n    private val sportTypeUseCase: GetSportTypeUseCase\r\n) : ViewModel() {\r\n    var booksResponse by mutableStateOf<Response<List<SportTypeData>>>(Response.Loading)\r\n\r\n    init {\r\n        getBooks()\r\n    }\r\n\r\n    private fun getBooks() = viewModelScope.launch {\r\n        sportTypeUseCase.invoke().collect { response ->\r\n            booksResponse = response\r\n            Log.e(\"response\",booksResponse.toString())\r\n        }\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt	(revision 5f711b6c74a8337133d1ca7060ece6ee291765e9)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt	(date 1722587830443)
++@@ -26,7 +26,6 @@
++     private fun getBooks() = viewModelScope.launch {
++         sportTypeUseCase.invoke().collect { response ->
++             booksResponse = response
++-            Log.e("response",booksResponse.toString())
++         }
++     }
++ }
++\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1722953773271)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00__Changes_.xml	(date 1722953773271)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]" date="1722528006102" recycled="false" toDelete="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 1.08.2024 19:00 [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1722953773291)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44__Changes_.xml	(date 1722953773291)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]" date="1722527163009" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 1.08.2024 18:44 [Changes]" />
++</changelist>
+\ No newline at end of file
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1722953709431)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]/shelved.patch	(date 1722953709431)
+@@ -0,0 +1,16 @@
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.lazy.items\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.font.FontStyle\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.core.Response\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n@Composable\r\nfun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {\r\n\r\n    when (val sportListResponse = viewModel.booksResponse) {\r\n        is Response.Failure -> \"TODO()\"\r\n        is Response.Loading -> \"TODO()\"\r\n        is Response.Success ->\r\n\r\n            Column(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(top = 40.dp),\r\n                horizontalAlignment = Alignment.CenterHorizontally,\r\n            ) {\r\n                LazyColumn() {\r\n                    val a = sportListResponse.data\r\n\r\n                    items(sportListResponse.data) {\r\n\r\n                        ImageCard(\r\n                            painter = it.image!!,\r\n                            contentDescription = \"\",\r\n                            title = it.title!!,\r\n                            navController = navController,\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@Composable\r\nfun ImageCard(\r\n    painter: String,\r\n    contentDescription: String,\r\n    title: String,\r\n    modifier: Modifier = Modifier,\r\n    navController: NavController\r\n) {\r\n    Card(\r\n        modifier = modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                navController.navigate(SportTypeScreens.SportTypeSetting)\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n\r\n            GlideImage(\r\n                model = painter,\r\n                contentDescription = contentDescription,\r\n                modifier = Modifier.fillMaxSize(),\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black,\r\n                            ),\r\n                            // startY = 100f,\r\n                        ),\r\n                    ),\r\n            ) {}\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter,\r\n            ) {\r\n                Text(\r\n                    title,\r\n                    style = TextStyle(\r\n                        color = Color.White,\r\n                        fontSize = 16.sp,\r\n                        fontStyle = FontStyle.Italic,\r\n                    )\r\n                )\r\n            }\r\n        }\r\n    }\r\n}
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	
++@@ -46,7 +46,6 @@
++                 horizontalAlignment = Alignment.CenterHorizontally,
++             ) {
++                 LazyColumn() {
++-                    val a = sportListResponse.data
++ 
++                     items(sportListResponse.data) {
++ 
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n        <DropdownSelection timestamp=\"2024-08-05T09:23:32.170077500Z\">\r\n          <Target type=\"DEFAULT_BOOT\">\r\n            <handle>\r\n              <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\serca\\.android\\avd\\Pixel_8_API_35.avd\" />\r\n            </handle>\r\n          </Target>\r\n        </DropdownSelection>\r\n        <DialogSelection />\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision e47d784b322fa81b3835e8423c1a9c58757525ce)
++++ b/.idea/deploymentTargetSelector.xml	(date 1722953709435)
+@@ -4,10 +4,10 @@
+     <selectionStates>
+       <SelectionState runConfigName="app">
+         <option name="selectionMode" value="DROPDOWN" />
+-        <DropdownSelection timestamp="2024-08-05T09:23:32.170077500Z">
++        <DropdownSelection timestamp="2024-08-06T09:46:06.766567500Z">
+           <Target type="DEFAULT_BOOT">
+             <handle>
+-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\serca\.android\avd\Pixel_8_API_35.avd" />
++              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Ali\.android\avd\Pixel_8_API_34.avd" />
+             </handle>
+           </Target>
+         </DropdownSelection>
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]/shelved.patch
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]/shelved.patch
+new file mode 100644
+--- /dev/null	(date 1722953709439)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_18_44_[Changes]/shelved.patch	(date 1722953709439)
+@@ -0,0 +1,547 @@
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt
++new file mode 100644
++--- /dev/null	(date 1722527033090)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/use_cases/sport_type/GetSportTypeUseCase.kt	(date 1722527033090)
++@@ -0,0 +1,9 @@
+++package com.yeceylan.groupmaker.domain.use_cases.sport_type
+++
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++
+++class GetSportTypeUseCase(private val repo: SportTypeRepository) {
+++
+++    operator fun invoke() = repo.getSportTypeFromFirestore()
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.splash\r\n\r\n\r\nimport android.app.Activity\r\nimport android.content.Context\r\nimport androidx.compose.animation.core.Animatable\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.isSystemInDarkTheme\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.LaunchedEffect\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavHostController\r\nimport com.airbnb.lottie.compose.LottieAnimation\r\nimport com.airbnb.lottie.compose.LottieCompositionSpec\r\nimport com.airbnb.lottie.compose.LottieConstants\r\nimport com.airbnb.lottie.compose.rememberLottieComposition\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.yeceylan.groupmaker.MainActivity\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport kotlinx.coroutines.delay\r\n\r\n\r\n@Composable\r\nfun SplashScreen(navController: NavHostController) {\r\n\r\n    val context = LocalContext.current\r\n\r\n    val alpha = remember {\r\n        Animatable(0f)\r\n    }\r\n    val auth = FirebaseAuth.getInstance()\r\n    FirebaseAuth.getInstance().signOut()\r\n    LaunchedEffect(key1 = true) {\r\n        alpha.animateTo(\r\n            1f,\r\n            animationSpec = tween(2500)\r\n        )\r\n        delay(3000)\r\n        navController.popBackStack()\r\n        navController.navigate(SplashScreens.OnboardingScreen)\r\n\r\n        if (auth != null) {\r\n            navController.navigate(BottomBarScreen.Home.route)\r\n        } else {\r\n            navController.popBackStack()\r\n            navController.navigate(SplashScreens.OnboardingScreen)\r\n        }\r\n\r\n    }\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),\r\n        verticalArrangement = Arrangement.Center,\r\n        horizontalAlignment = Alignment.CenterHorizontally\r\n    ) {\r\n        LoaderAnimation(\r\n            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie\r\n        )\r\n        Spacer(modifier = Modifier.height(25.dp))\r\n        Text(\r\n            text = \"Let's Play\",\r\n            modifier = Modifier.alpha(alpha.value),\r\n            fontSize = 52.sp,\r\n            fontWeight = FontWeight.Light\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun LoaderAnimation(modifier: Modifier, anim: Int) {\r\n    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(anim))\r\n\r\n    LottieAnimation(\r\n        composition = composition, iterations = LottieConstants.IterateForever,\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {\r\n    val sharedPreferences = context.getSharedPreferences(\"onBoarding\", Context.MODE_PRIVATE)\r\n    return sharedPreferences.getBoolean(\"isFinished\", false)\r\n\r\n}\r\n\r\n */
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(revision ae71212272c84754c6839b4c00fa521775cb9d73)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(date 1722526865870)
++@@ -59,12 +59,14 @@
++         navController.navigate(SplashScreens.OnboardingScreen)
++ 
++         if (auth != null) {
+++           // auth.signOut()
++             navController.navigate(BottomBarScreen.Home.route)
++         } else {
++             navController.popBackStack()
++             navController.navigate(SplashScreens.OnboardingScreen)
++         }
++ 
+++
++     }
++ 
++     Column(
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt
++new file mode 100644
++--- /dev/null	(date 1722527033095)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/repository/SportTypeRepository.kt	(date 1722527033095)
++@@ -0,0 +1,11 @@
+++package com.yeceylan.groupmaker.domain.repository
+++
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import kotlinx.coroutines.flow.Flow
+++
+++interface SportTypeRepository {
+++
+++    fun getSportTypeFromFirestore(): Flow<Response<List<SportTypeData>>>
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt b/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt
++new file mode 100644
++--- /dev/null	(date 1722527033097)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/data/repository/SportTypeRepositoryImpl.kt	(date 1722527033097)
++@@ -0,0 +1,37 @@
+++package com.yeceylan.groupmaker.data.repository
+++
+++import com.google.firebase.firestore.CollectionReference
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++import kotlinx.coroutines.channels.awaitClose
+++import kotlinx.coroutines.flow.callbackFlow
+++import javax.inject.Inject
+++import javax.inject.Singleton
+++
+++@Singleton
+++class SportTypeRepositoryImpl @Inject constructor(
+++    private val sportTypeRef: CollectionReference
+++) : SportTypeRepository {
+++
+++    override fun getSportTypeFromFirestore() = callbackFlow {
+++
+++        val snapshotListener = sportTypeRef.orderBy("title").addSnapshotListener { snapshot, e ->
+++
+++            val sportTypeResponse = if (snapshot != null) {
+++
+++                val sportTypes = snapshot.toObjects(SportTypeData::class.java)
+++                Response.Success(sportTypes)
+++
+++            } else {
+++                Response.Failure(e)
+++            }
+++            trySend(sportTypeResponse)
+++        }
+++        awaitClose {
+++            snapshotListener.remove()
+++        }
+++    }
+++
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/core/Response.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt b/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt
++new file mode 100644
++--- /dev/null	(date 1722527033115)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/core/Response.kt	(date 1722527033115)
++@@ -0,0 +1,15 @@
+++package com.yeceylan.groupmaker.core
+++
+++sealed class Response<out T> {
+++
+++    object Loading : Response<Nothing>()
+++
+++    data class Success<out T>(
+++        val data: T
+++    ) : Response<T>()
+++
+++    data class Failure(
+++        val e: Exception?
+++    ) : Response<Nothing>()
+++
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker.ui.bottombar\r\n\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.navigation.NavHostController\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.composable\r\nimport com.yeceylan.groupmaker.SportTypes\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginScreen\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen\r\nimport com.yeceylan.groupmaker.ui.match.MakeMatchScreen\r\nimport com.yeceylan.groupmaker.ui.onboarding.OnBoarding\r\nimport com.yeceylan.groupmaker.ui.splash.SplashScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\n\r\n\r\n@Composable\r\nfun MainNavGraph(\r\n    navController: NavHostController,\r\n    isShowBottomBar: MutableState<Boolean>,\r\n) {\r\n    NavHost(\r\n        navController = navController,\r\n        startDestination = SplashScreens.SplashScreen,\r\n    ) {\r\n\r\n        composable<AuthenticationScreens.LoginScreen> {\r\n            isShowBottomBar.value = false\r\n            LoginScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.SignUpScreen> {\r\n            isShowBottomBar.value = false\r\n            SignUpScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.MakeMatchScreen> {\r\n            isShowBottomBar.value = false\r\n            MakeMatchScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<SplashScreens.OnboardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.Home.route) {\r\n            isShowBottomBar.value = true\r\n            SportTypes()\r\n        }\r\n        composable(route = BottomBarScreen.History.route) {\r\n            isShowBottomBar.value = true\r\n            HistoryScreen()\r\n        }\r\n        composable(route = BottomBarScreen.Profile.route) {\r\n            isShowBottomBar.value = true\r\n            ProfileScreen()\r\n        }\r\n\r\n    }\r\n}\r\n
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(revision ae71212272c84754c6839b4c00fa521775cb9d73)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(date 1722527033064)
++@@ -5,17 +5,18 @@
++ import androidx.navigation.NavHostController
++ import androidx.navigation.compose.NavHost
++ import androidx.navigation.compose.composable
++-import com.yeceylan.groupmaker.SportTypes
+++import com.yeceylan.groupmaker.ui.sport_types.SportTypes
++ import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
++ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
++ import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
++ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
++-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HomeScreen
++ import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
++ import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
++ import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
++ import com.yeceylan.groupmaker.ui.splash.SplashScreen
++ import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
+++import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
+++import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++ 
++ 
++ @Composable
++@@ -50,7 +51,7 @@
++         }
++         composable(route = BottomBarScreen.Home.route) {
++             isShowBottomBar.value = true
++-            SportTypes()
+++            SportTypes(navController = navController)
++         }
++         composable(route = BottomBarScreen.History.route) {
++             isShowBottomBar.value = true
++@@ -60,6 +61,9 @@
++             isShowBottomBar.value = true
++             ProfileScreen()
++         }
++-
+++        composable<SportTypeScreens.SportTypeSetting> {
+++            isShowBottomBar.value = true
+++            SportTypeSetting()
+++        }
++     }
++ }
++Index: app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++rename from app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt
++rename to app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/SportTypes.kt	(revision ae71212272c84754c6839b4c00fa521775cb9d73)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(date 1722526865845)
++@@ -1,6 +1,5 @@
++-package com.yeceylan.groupmaker
+++package com.yeceylan.groupmaker.ui.sport_types
++ 
++-import android.util.Log
++ import androidx.compose.foundation.background
++ import androidx.compose.foundation.clickable
++ import androidx.compose.foundation.layout.Box
++@@ -16,9 +15,6 @@
++ import androidx.compose.material3.CardDefaults
++ import androidx.compose.material3.Text
++ import androidx.compose.runtime.Composable
++-import androidx.compose.runtime.LaunchedEffect
++-import androidx.compose.runtime.mutableStateListOf
++-import androidx.compose.runtime.remember
++ import androidx.compose.ui.Alignment
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.graphics.Brush
++@@ -26,76 +22,64 @@
++ import androidx.compose.ui.layout.ContentScale
++ import androidx.compose.ui.text.TextStyle
++ import androidx.compose.ui.text.font.FontStyle
++-import androidx.compose.ui.tooling.preview.Preview
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
+++import androidx.hilt.navigation.compose.hiltViewModel
+++import androidx.navigation.NavController
++ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
++ import com.bumptech.glide.integration.compose.GlideImage
++-import com.google.firebase.firestore.FirebaseFirestore
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++ 
++-data class SportType2(val title: String, val image: String)
++-
++-@Preview(showBackground = true)
++ @Composable
++-fun SportTypes() {
++-
++-    val myList = remember {
++-        mutableStateListOf<SportType2>()
++-    }
++-
++-    LaunchedEffect(key1 = true) {
++-        val db = FirebaseFirestore.getInstance()
++-        val docRef = db.collection("typeCollection")
++-        docRef.get().addOnSuccessListener {
++-
++-            val docList = it.documents
++-            Log.e("docList",docList.toString())
+++fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {
++ 
++-            for (document in docList){
++-
++-                val docMap = document.data!!
++-
++-                val image =docMap.get("image").toString()
++-                val title = docMap.get("title").toString()
++-
++-                myList.add(SportType2(title,image))
++-
++-            }
++-        }
++-    }
+++    when (val sportListResponse = viewModel.booksResponse) {
+++        is Response.Failure -> "TODO()"
+++        is Response.Loading -> "TODO()"
+++        is Response.Success ->
++ 
++-    Column(
++-        modifier = Modifier
++-            .fillMaxSize()
++-            .padding(top = 40.dp),
++-        horizontalAlignment = Alignment.CenterHorizontally,
++-    ) {
++-
++-        // Text(text = "Select a sport type ", Modifier.fillMaxWidth(), fontSize = 24.sp, textAlign = TextAlign.Center)
++-        LazyColumn() {
+++            Column(
+++                modifier = Modifier
+++                    .fillMaxSize()
+++                    .padding(top = 40.dp),
+++                horizontalAlignment = Alignment.CenterHorizontally,
+++            ) {
+++                LazyColumn() {
+++                    val a = sportListResponse.data
++ 
++-            items(myList) {
+++                    items(sportListResponse.data) {
++ 
++-                ImageCard(painter = it.image, contentDescription = "", title = it.title)
++-            }
++-        }
+++                        ImageCard(
+++                            painter = it.image!!,
+++                            contentDescription = "",
+++                            title = it.title!!,
+++                            navController = navController,
+++                        )
+++                    }
+++                }
+++            }
++     }
++ }
++ 
++ @OptIn(ExperimentalGlideComposeApi::class)
++ @Composable
++ fun ImageCard(
++-    painter: String, contentDescription: String, title: String, modifier: Modifier = Modifier
+++    painter: String,
+++    contentDescription: String,
+++    title: String,
+++    modifier: Modifier = Modifier,
+++    navController: NavController
++ ) {
++     Card(
++         modifier = modifier
++             .fillMaxWidth()
++             .padding(20.dp)
++             .clickable {
++-                Log.e("card", "click")
+++                navController.navigate(SportTypeScreens.SportTypeSetting)
++             },
++         shape = RoundedCornerShape(24.dp),
++-        elevation = CardDefaults.cardElevation(20.dp),
+++        elevation = CardDefaults.cardElevation(10.dp),
++ 
++         ) {
++         Box(modifier = Modifier.height(200.dp)) {
++@@ -104,7 +88,7 @@
++                 model = painter,
++                 contentDescription = contentDescription,
++                 modifier = Modifier.fillMaxSize(),
++-                contentScale = ContentScale.Crop
+++                contentScale = ContentScale.Crop,
++             )
++ 
++             Box(
++@@ -114,27 +98,24 @@
++                         brush = Brush.verticalGradient(
++                             colors = listOf(
++                                 Color.Transparent,
++-                                Color.Black
+++                                Color.Black,
++                             ),
++                             // startY = 100f,
++-                        )
++-                    )
++-            ) {
++-
++-            }
++-
+++                        ),
+++                    ),
+++            ) {}
++             Box(
++                 modifier = Modifier
++                     .fillMaxSize()
++                     .padding(12.dp),
++-                contentAlignment = Alignment.BottomCenter
+++                contentAlignment = Alignment.BottomCenter,
++             ) {
++                 Text(
++                     title,
++                     style = TextStyle(
++                         color = Color.White,
++                         fontSize = 16.sp,
++-                        fontStyle = FontStyle.Italic
+++                        fontStyle = FontStyle.Italic,
++                     )
++                 )
++             }
++Index: app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++rename from app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt
++rename to app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/SportTypeSetting.kt	(revision ae71212272c84754c6839b4c00fa521775cb9d73)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1722527033101)
++@@ -1,4 +1,4 @@
++-package com.yeceylan.groupmaker
+++package com.yeceylan.groupmaker.ui.sport_types
++ 
++ import android.util.Log
++ import androidx.compose.foundation.Image
++@@ -26,6 +26,7 @@
++ import androidx.compose.ui.tooling.preview.Preview
++ import androidx.compose.ui.unit.dp
++ import androidx.compose.ui.unit.sp
+++import com.yeceylan.groupmaker.R
++ 
++ @Preview
++ @Composable
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt
++new file mode 100644
++--- /dev/null	(date 1722526865875)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeViewModel.kt	(date 1722526865875)
++@@ -0,0 +1,32 @@
+++package com.yeceylan.groupmaker.ui.sport_types
+++
+++import android.util.Log
+++import androidx.compose.runtime.getValue
+++import androidx.compose.runtime.mutableStateOf
+++import androidx.compose.runtime.setValue
+++import androidx.lifecycle.ViewModel
+++import androidx.lifecycle.viewModelScope
+++import com.yeceylan.groupmaker.core.Response
+++import com.yeceylan.groupmaker.domain.model.SportTypeData
+++import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
+++import dagger.hilt.android.lifecycle.HiltViewModel
+++import kotlinx.coroutines.launch
+++import javax.inject.Inject
+++
+++@HiltViewModel
+++class SportTypeViewModel @Inject constructor(
+++    private val sportTypeUseCase: GetSportTypeUseCase
+++) : ViewModel() {
+++    var booksResponse by mutableStateOf<Response<List<SportTypeData>>>(Response.Loading)
+++
+++    init {
+++        getBooks()
+++    }
+++
+++    private fun getBooks() = viewModelScope.launch {
+++        sportTypeUseCase.invoke().collect { response ->
+++            booksResponse = response
+++            Log.e("response",booksResponse.toString())
+++        }
+++    }
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt
++new file mode 100644
++--- /dev/null	(date 1722526865882)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/SportTypeData.kt	(date 1722526865882)
++@@ -0,0 +1,7 @@
+++package com.yeceylan.groupmaker.domain.model
+++
+++data class SportTypeData(
+++    val title: String? = null,
+++    val image: String? = null,
+++    val size: Int? = null,
+++)
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt b/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt
++new file mode 100644
++--- /dev/null	(date 1722527033078)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/data/di/SportTypeModule.kt	(date 1722527033078)
++@@ -0,0 +1,27 @@
+++package com.yeceylan.groupmaker.data.di
+++
+++import com.google.firebase.Firebase
+++import com.google.firebase.firestore.CollectionReference
+++import com.google.firebase.firestore.firestore
+++import com.yeceylan.groupmaker.data.repository.SportTypeRepositoryImpl
+++import com.yeceylan.groupmaker.domain.repository.SportTypeRepository
+++import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
+++import dagger.Module
+++import dagger.Provides
+++import dagger.hilt.InstallIn
+++import dagger.hilt.components.SingletonComponent
+++
+++@Module
+++@InstallIn(SingletonComponent::class)
+++object AppModule {
+++    @Provides
+++    fun provideSportTypeRef() = Firebase.firestore.collection("typeCollection")
+++
+++    @Provides
+++    fun provideBooksRepository(
+++        sportTypeRef: CollectionReference
+++    ): SportTypeRepository = SportTypeRepositoryImpl(sportTypeRef)
+++
+++    @Provides
+++    fun provideUseCases(repo: SportTypeRepository) = GetSportTypeUseCase(repo)
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt
++new file mode 100644
++--- /dev/null	(date 1722527033084)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/navigation/SportTypeScreens.kt	(date 1722527033084)
++@@ -0,0 +1,13 @@
+++package com.yeceylan.groupmaker.ui.sport_types.navigation
+++
+++import kotlinx.serialization.Serializable
+++
+++@Serializable
+++sealed class SportTypeScreens {
+++
+++    @Serializable
+++    data object SportTypes : SportTypeScreens()
+++
+++    @Serializable
+++    data object SportTypeSetting : SportTypeScreens()
+++}
++\ No newline at end of file
++Index: app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt
++IDEA additional info:
++Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
++<+>package com.yeceylan.groupmaker\r\n\r\nimport android.annotation.SuppressLint\r\nimport android.os.Bundle\r\nimport androidx.activity.ComponentActivity\r\nimport androidx.activity.compose.setContent\r\nimport androidx.activity.enableEdgeToEdge\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.material3.Scaffold\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBar\r\nimport com.yeceylan.groupmaker.ui.bottombar.MainNavGraph\r\nimport com.yeceylan.groupmaker.ui.theme.GroupMakerTheme\r\nimport dagger.hilt.android.AndroidEntryPoint\r\n\r\n@AndroidEntryPoint\r\nclass MainActivity : ComponentActivity() {\r\n    @SuppressLint(\"UnusedMaterial3ScaffoldPaddingParameter\")\r\n    override fun onCreate(savedInstanceState: Bundle?) {\r\n        super.onCreate(savedInstanceState)\r\n        enableEdgeToEdge()\r\n        setContent {\r\n            val navController = rememberNavController()\r\n            val isBottomBarShow = remember { mutableStateOf(true) }\r\n\r\n\r\n            GroupMakerTheme {\r\n                Scaffold(\r\n                    modifier = Modifier.fillMaxSize(),\r\n                    bottomBar = { if (isBottomBarShow.value) {\r\n                        BottomBar(navController = navController)\r\n                    } }\r\n                ) {\r\n                    MainNavGraph(navController = navController, isShowBottomBar =  isBottomBarShow)\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun Greeting(name: String, modifier: Modifier = Modifier) {\r\n    Text(\r\n        text = \"Hello $name!\",\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nfun GreetingPreview() {\r\n    GroupMakerTheme {\r\n        Greeting(\"Android\")\r\n    }\r\n}
++Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
++<+>UTF-8
++===================================================================
++diff --git a/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt b/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt
++--- a/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt	(revision ae71212272c84754c6839b4c00fa521775cb9d73)
+++++ b/app/src/main/java/com/yeceylan/groupmaker/MainActivity.kt	(date 1722527033119)
++@@ -14,6 +14,7 @@
++ import androidx.compose.runtime.remember
++ import androidx.compose.ui.Modifier
++ import androidx.compose.ui.tooling.preview.Preview
+++import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
++ import androidx.navigation.compose.rememberNavController
++ import com.yeceylan.groupmaker.ui.bottombar.BottomBar
++ import com.yeceylan.groupmaker.ui.bottombar.MainNavGraph
++@@ -25,6 +26,7 @@
++     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
++     override fun onCreate(savedInstanceState: Bundle?) {
++         super.onCreate(savedInstanceState)
+++        installSplashScreen()
++         enableEdgeToEdge()
++         setContent {
++             val navController = rememberNavController()
+Index: .idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46__Changes_.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46__Changes_.xml b/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46__Changes_.xml
+new file mode 100644
+--- /dev/null	(date 1722953773310)
++++ b/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46__Changes_.xml	(date 1722953773310)
+@@ -0,0 +1,4 @@
++<changelist name="Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]" date="1722610006046" recycled="true" deleted="true">
++  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2_08_2024_17_46_[Changes]/shelved.patch" />
++  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 2.08.2024 17:46 [Changes]" />
++</changelist>
+\ No newline at end of file
+diff --git a/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]1/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Checkout_at_1_08_2024_19_00_[Changes]1/shelved.patch
+new file mode 100644
