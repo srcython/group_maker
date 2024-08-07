@@ -14,7 +14,7 @@ import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.ProfileScreen
+import com.yeceylan.groupmaker.ui.profile.ProfileScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
 import com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
@@ -76,7 +76,7 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
-            PlayerPage()
+            HistoryScreen()
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true

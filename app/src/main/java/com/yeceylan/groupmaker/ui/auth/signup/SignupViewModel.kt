@@ -40,7 +40,9 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Success -> {
                     val user = it.data
                     val userId = user?.user?.uid
-                    val newUser = User(id = userId.toString(), email = email, userName = name)
+                    val defaultImage =
+                        "https://firebasestorage.googleapis.com/v0/b/groupmaker-b7bd3.appspot.com/o/users%2Fplaceholder.jpg?alt=media&token=79670420-0237-4ce2-a470-b2d614bf7baf"
+                    val newUser = User(id = userId.toString(), email = email, userName = name, photoUrl = defaultImage)
                     addUserToFirestore(newUser)
                 }
 
