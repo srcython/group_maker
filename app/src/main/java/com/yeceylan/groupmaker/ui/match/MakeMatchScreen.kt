@@ -101,7 +101,7 @@ fun MakeMatchScreen(
                 Spacer(modifier = Modifier.height(5.dp))
 
                 MatchLocationInputField(
-                    label = "Maç konumu giriniz",
+                    label = "Maç konumu arayınız",
                     value = matchLocation,
                     onValueChange = { matchLocation = it },
                     viewModel = locationViewModel
