@@ -1,33 +1,8 @@
 package com.yeceylan.groupmaker.domain.model
 
+import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
-
-
-data class WeatherResponse(
-    val forecast: Forecast
-)
-
-data class Forecast(
-    val forecastday: List<ForecastDay>
-)
-
-data class ForecastDay(
-    val date: String,
-    val hour: List<Hour>
-)
-
-data class Hour(
-    val time: String,
-    val temp_c: Double,
-    val condition: Condition,
-    val precip_mm: Double,
-
-)
-
-data class Condition(
-    val text: String
-)
 
 interface WeatherApiService {
     @GET("forecast.json")

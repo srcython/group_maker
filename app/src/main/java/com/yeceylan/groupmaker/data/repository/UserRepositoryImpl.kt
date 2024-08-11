@@ -66,19 +66,24 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun updateMatch(userId: String, match: Match) {
         val userDocument = firestore.collection("users").document(userId)
         val matchesCollection = userDocument.collection("matches")
+
         matchesCollection.document(match.id)
             .update(
-                "team1", match.team1,
-                "team2", match.team2,
-                "date", match.date,
-                "location", match.location,
-                "result", match.result,
+                "matchLocationTitle", match.matchLocationTitle,
+                "matchLocation", match.matchLocation,
+                "matchDate", match.matchDate,
+                "firstTeamName", match.firstTeamName,
+                "matchTime", match.matchTime,
+                "latLng", match.latLng,
+                "secondTeamName", match.secondTeamName,
                 "type", match.type,
                 "playerList", match.playerList,
-                "maxPlayer", match.maxPlayer,
+                "firstTeamPlayerList", match.firstTeamPlayerList,
+                "secondTeamPlayerList", match.secondTeamPlayerList
             )
             .await()
     }
+
 
     override suspend fun addMatch(userId: String, match: Match) {
         val userDocument = firestore.collection("users").document(userId)
