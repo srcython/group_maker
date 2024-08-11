@@ -4,13 +4,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class SportTypeScreens(
-    val route: String,
-    val pass:String,
+    //val route: String,
+   // val pass:String,
 
     ) {
     @Serializable
-    data object SportTypeSetting : SportTypeScreens(
-        route = "sportTypeSetting/{title}/{size}",
-        pass = "sportTypeSetting"
+    data class SportTypeSetting(val title: String, val teamSize: Int) : SportTypeScreens(
+        // route = "sportTypeSetting/{title}/{size}",
+        //pass = "sportTypeSetting"
     )
 }

@@ -1,5 +1,6 @@
 package com.yeceylan.groupmaker.domain.repository
 
+import android.net.Uri
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
@@ -13,4 +14,5 @@ interface UserRepository {
     suspend fun addMatch(userId: String, match: Match)
     suspend fun updateMatch(userId: String, match: Match) // New method
     suspend fun getActiveMatch(userId: String): Match?
+    suspend fun addStorage(uri: Uri,userId: String): Flow<Resource<String>>
 }
