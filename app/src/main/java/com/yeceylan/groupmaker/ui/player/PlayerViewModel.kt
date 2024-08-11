@@ -12,6 +12,7 @@ import com.yeceylan.groupmaker.domain.use_cases.AddMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
 import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +30,7 @@ class PlayerViewModel @Inject constructor(
     private val updateMatchUseCase: UpdateMatchUseCase,
     private val getActiveMatchUseCase: GetActiveMatchUseCase,
     private val addUserUseCase: AddUserUseCase,
+    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,
 ) : ViewModel() {
 
     private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
@@ -47,21 +49,31 @@ class PlayerViewModel @Inject constructor(
 
     private fun fetchUsers() =
         viewModelScope.launch {
+            val currentUserId = getCurrentUserUidUseCase()
+            if (currentUserId.isEmpty()) return@launch
+
             getUsersUseCase().collect { resource ->
                 _users.value = resource
                 _filteredUsers.value = resource
             }
         }
 
+
     private fun fetchActiveMatch() =
         viewModelScope.launch {
-            val auth = FirebaseAuth.getInstance()
-            val currentUserId = auth.currentUser?.uid ?: return@launch
+            val currentUserId = getCurrentUserUidUseCase()
+            if (currentUserId.isEmpty()) return@launch
+
             val activeMatch = getActiveMatchUseCase(currentUserId)
             if (activeMatch != null && activeMatch.playerList.isNotEmpty()) {
                 _selectedUsers.value = activeMatch.playerList
             }
+
+            _users.value.data?.firstOrNull { it.id == currentUserId }?.let { currentUser ->
+                addUser(currentUser)
+            }
         }
+
 
     fun searchUsers(query: String) {
         val usersList = _users.value.data ?: return
@@ -83,9 +95,14 @@ class PlayerViewModel @Inject constructor(
     }
 
     fun addUser(user: User) {
-        _selectedUsers.value = _selectedUsers.value + user
+        _selectedUsers.value = _selectedUsers.value.toMutableList().apply {
+            if (none { it.id == user.id }) {
+                add(user)
+            }
+        }
         updateCurrentMatch()
     }
+
 
     fun removeUser(user: User) {
         _selectedUsers.value = _selectedUsers.value - user
