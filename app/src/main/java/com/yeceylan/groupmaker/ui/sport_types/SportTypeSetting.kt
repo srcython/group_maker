@@ -65,7 +65,6 @@ fun SportTypeSetting(
             }
         }
     }
-
 }
 
 @Composable
@@ -85,7 +84,7 @@ fun SportTypeSettingItem(
             .clickable {
                 viewModel.addMatch(title,teamSize)
                 if (text !="Players"){
-                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
+                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))
                 }else{
                     navController.navigate(PlayerScreens.PlayerPage)
                 }

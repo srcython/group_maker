@@ -38,12 +38,7 @@ class ProfileViewModel @Inject constructor(
     private fun getProfile() = viewModelScope.launch {
         useCase().collect {
             userResponse = it
-
-            when (userResponse) {
-                is Resource.Error -> "TODO()"
-                is Resource.Loading -> ""
-                is Resource.Success -> _user.value = it.data!!
-            }
+            _user.value = it.data!!
         }
     }
 
@@ -56,7 +51,7 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun logout()=viewModelScope.launch{
+    fun logout() = viewModelScope.launch {
         logoutUseCase()
     }
 }
