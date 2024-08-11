@@ -46,6 +46,7 @@ fun PlayerPage(
             is Resource.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
+
             is Resource.Error -> {
                 Text(
                     text = usersState.message ?: "Bir hata oluştu",
@@ -53,6 +54,7 @@ fun PlayerPage(
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
             }
+
             is Resource.Success -> {
                 SelectedPlayersGrid(
                     modifier = Modifier.weight(1f),
@@ -115,6 +117,7 @@ fun PlayerPage(
                         is Resource.Loading -> {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                         }
+
                         is Resource.Error -> {
                             Text(
                                 text = usersState.message ?: "Bir hata oluştu",
@@ -122,6 +125,7 @@ fun PlayerPage(
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         }
+
                         is Resource.Success -> {
                             LazyColumn(modifier = Modifier.height(300.dp)) {
                                 items(usersState.data!!) { user ->
@@ -191,47 +195,41 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                 .heightIn(max = 400.dp)
         ) {
             items(selectedPersons) { person ->
-                Box(
-                    contentAlignment = Alignment.TopEnd,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(80.dp)
-                        .border(2.dp, Color.Gray, CircleShape)
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        Box {
-                            Image(
-                                painter = painterResource(id = person.photoUrl?.toIntOrNull() ?: R.drawable.ic_launcher_background),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(CircleShape)
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .size(16.dp)
-                                    .align(Alignment.TopEnd)
-                                    .clickable {
-                                        setSelectedPersons(selectedPersons - person)
-                                    }
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_remove),
-                                    contentDescription = "Remove",
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
-                        Text(
-                            text = person.userName,
+                    Box {
+                        Image(
+                            painter = painterResource(id = person.photoUrl?.toIntOrNull() ?: R.drawable.ic_launcher_background),
+                            contentDescription = null,
                             modifier = Modifier
-                                .align(Alignment.CenterHorizontally)
-                                .padding(top = 4.dp)
+                                .size(60.dp)
+                                .clip(CircleShape)
                         )
+                        Box(
+                            modifier = Modifier
+                                .size(16.dp)
+                                .align(Alignment.TopEnd)
+                                .clickable {
+                                    setSelectedPersons(selectedPersons - person)
+                                }
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_remove),
+                                contentDescription = "Remove",
+                                modifier = Modifier.size(16.dp)
+                            )
+                        }
                     }
+                    Text(
+                        text = person.userName,
+                        modifier = Modifier
+                            .align(Alignment.CenterHorizontally)
+                            .padding(top = 4.dp)
+                    )
+
                 }
             }
         }
