@@ -1,7 +1,11 @@
 package com.yeceylan.groupmaker.ui.bottombar
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -10,13 +14,10 @@ import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.google.gson.Gson
 import com.yeceylan.groupmaker.domain.model.Match
-import com.yeceylan.groupmaker.domain.model.MatchInfo
-import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
 import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
-import com.yeceylan.groupmaker.ui.profile.ProfileScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
 import com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
@@ -24,9 +25,11 @@ import com.yeceylan.groupmaker.ui.onboarding.OnBoarding
 import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
 import com.yeceylan.groupmaker.ui.player.PlayerPage
 import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
+import com.yeceylan.groupmaker.ui.profile.ProfileScreen
 import com.yeceylan.groupmaker.ui.splash.SplashScreen
 import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
 import com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting
+import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
 
 
@@ -59,7 +62,7 @@ fun MainNavGraph(
         composable<MatchScreens.MakeMatchScreen> {
             val args = it.toRoute<MatchScreens.MakeMatchScreen>()
             isShowBottomBar.value = false
-            MakeMatchScreen(args.size,navController = navController)
+            MakeMatchScreen(args.size, navController = navController)
         }
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false
@@ -71,20 +74,28 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Home.route) {
             isShowBottomBar.value = true
-            SportTypes(navController = navController)
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                SportTypes(navController = navController)
+            }
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
-            HistoryScreen()
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                HistoryScreen()
+            }
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true
-            ProfileScreen(navController = navController)
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                ProfileScreen(navController = navController)
+            }
         }
         composable<SportTypeScreens.SportTypeSetting> {
             isShowBottomBar.value = true
-            val args=it.toRoute<SportTypeScreens.SportTypeSetting>()
-            SportTypeSetting(args.title,args.teamSize,navController)
+            val args = it.toRoute<SportTypeScreens.SportTypeSetting>()
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                SportTypeSetting(args.title, args.teamSize, navController)
+            }
         }
         composable(
             route = "matchInfo/{matchJson}",
@@ -96,7 +107,9 @@ fun MainNavGraph(
         }
         composable<PlayerScreens.PlayerPage> {
             isShowBottomBar.value = true
-            PlayerPage()
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                PlayerPage()
+            }
         }
     }
 }
