@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -49,12 +50,14 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                         Box {
                             AsyncImage(
                                 model = person.photoUrl,
+                                placeholder = painterResource(id = R.drawable.ic_clock),
+                                error = painterResource(id = R.drawable.ic_clock),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(60.dp)
                                     .clip(CircleShape),
-                                placeholder = painterResource(id = R.drawable.ic_clock), // Yüklenirken gösterilen resim
-                                error = painterResource(id = R.drawable.ic_clock) // Hata durumunda gösterilen resim
+                                contentScale = ContentScale.Crop,
+                                alignment = Alignment.Center
                             )
 
                             Box(

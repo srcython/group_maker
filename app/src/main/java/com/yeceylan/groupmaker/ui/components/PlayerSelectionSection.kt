@@ -117,7 +117,8 @@ fun PlayerSelectionSection(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Seçilecek kimse kalmadı")
+                            //Seçilecek kimse kalmadı
+                            Text("Seçilecek kimse yok")
                         }
                     }
                 } else {
@@ -195,7 +196,7 @@ fun PlayerSelectionSection(
                                         error = painterResource(id = R.drawable.ic_clock),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(60.dp)
+                                            .size(40.dp)
                                             .clip(CircleShape),
                                         contentScale = ContentScale.Crop,
                                         alignment = Alignment.Center

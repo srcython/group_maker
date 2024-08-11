@@ -2,8 +2,8 @@ package com.yeceylan.groupmaker.data.repository
 
 import android.util.Log
 import com.yeceylan.groupmaker.domain.model.WeatherApiService
-import com.yeceylan.groupmaker.domain.model.WeatherResponse
 import com.yeceylan.groupmaker.core.Resource
+import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
 import com.yeceylan.groupmaker.domain.repository.WeatherRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

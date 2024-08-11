@@ -1,8 +1,8 @@
 package com.yeceylan.groupmaker.domain.use_cases.weather
 
-import com.yeceylan.groupmaker.domain.model.WeatherResponse
 import com.yeceylan.groupmaker.domain.repository.WeatherRepository
 import com.yeceylan.groupmaker.core.Resource
+import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

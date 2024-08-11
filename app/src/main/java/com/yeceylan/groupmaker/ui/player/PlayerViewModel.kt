@@ -114,15 +114,20 @@ class PlayerViewModel @Inject constructor(
                 } else {
                     val newMatch = Match(
                         id = UUID.randomUUID().toString(),
-                        team1 = null,
-                        team2 = null,
-                        date = null,
-                        location = null,
-                        result = null,
-                        type = "volleyball",
+                        matchLocationTitle = "",
+                        matchLocation = "",
+                        matchDate = "",
+                        matchTime = "",
+                        firstTeamName = "",
+                        secondTeamName = "",
+                        type = "",
+                        maxPlayer = 0,
                         playerList = _selectedUsers.value,
-                        playerList1 = emptyList(),
-                        maxPlayer = null,
+                        firstTeamPlayerList = emptyList(),
+                        secondTeamPlayerList = emptyList(),
+                        result = null,
+                        latLng = null,
+                        isActive = true
                     )
 
                     addMatchUseCase(currentUserId, newMatch)
