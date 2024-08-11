@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.google.gson.Gson
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.MatchInfo
@@ -55,13 +56,10 @@ fun MainNavGraph(
             isShowBottomBar.value = false
             SignUpScreen(navController = navController)
         }
-        composable(
-            route = MatchScreens.MakeMatchScreen().route,
-            arguments = listOf(navArgument("teamSize"){ type = NavType.IntType}),
-        ) {
-            val teamSize = it.arguments?.getInt("teamSize")!!
+        composable<MatchScreens.MakeMatchScreen> {
+            val args = it.toRoute<MatchScreens.MakeMatchScreen>()
             isShowBottomBar.value = false
-            MakeMatchScreen(teamSize,navController = navController)
+            MakeMatchScreen(args.size,navController = navController)
         }
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false
@@ -81,19 +79,12 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true
-            ProfileScreen()
+            ProfileScreen(navController = navController)
         }
-        composable(
-            route = SportTypeScreens.SportTypeSetting.route,
-            arguments = listOf(
-                navArgument("title"){ type = NavType.StringType},
-                navArgument("size"){ type = NavType.IntType}
-            )
-        ) {
-            val title = it.arguments?.getString("title")!!
-            val size = it.arguments?.getInt("size")!!
+        composable<SportTypeScreens.SportTypeSetting> {
             isShowBottomBar.value = true
-            SportTypeSetting(title,size,navController)
+            val args=it.toRoute<SportTypeScreens.SportTypeSetting>()
+            SportTypeSetting(args.title,args.teamSize,navController)
         }
         composable(
             route = "matchInfo/{matchJson}",

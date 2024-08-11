@@ -8,7 +8,6 @@ import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.RegisterUseCase
-import com.yeceylan.groupmaker.ui.auth.login.LoginViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -40,9 +39,8 @@ class SignUpViewModel @Inject constructor(
                 is Resource.Success -> {
                     val user = it.data
                     val userId = user?.user?.uid
-                    val defaultImage =
-                        "https://firebasestorage.googleapis.com/v0/b/groupmaker-b7bd3.appspot.com/o/users%2Fplaceholder.jpg?alt=media&token=79670420-0237-4ce2-a470-b2d614bf7baf"
-                    val newUser = User(id = userId.toString(), email = email, userName = name, photoUrl = defaultImage)
+                    val photoUrl = "https://firebasestorage.googleapis.com/v0/b/groupmaker-b7bd3.appspot.com/o/users%2Fplaceholder.jpg?alt=media&token=79670420-0237-4ce2-a470-b2d614bf7baf"
+                    val newUser = User(id = userId.toString(), email = email, userName = name, photoUrl = photoUrl)
                     addUserToFirestore(newUser)
                 }
 

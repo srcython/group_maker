@@ -7,9 +7,5 @@ sealed class MatchScreens(
 ) {
 
     @Serializable
-    data class MakeMatchScreen(
-
-        val route: String = "makeMatch/{teamSize}",
-        val pass:String = "makeMatch",
-    ) : MatchScreens()
+    data class MakeMatchScreen(val size: Int) : MatchScreens()
 }
