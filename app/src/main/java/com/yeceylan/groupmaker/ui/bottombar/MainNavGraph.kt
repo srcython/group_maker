@@ -63,7 +63,7 @@ fun MainNavGraph(
         composable<MatchScreens.MakeMatchScreen> {
             val args = it.toRoute<MatchScreens.MakeMatchScreen>()
             isShowBottomBar.value = false
-            MakeMatchScreen(args.size, navController = navController)
+            MakeMatchScreen(args.title,args.size, navController = navController)
         }
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false

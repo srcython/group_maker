@@ -9,6 +9,7 @@ data class User(
     var photoUrl: String? = "",
     var position: String = "",
     val point: Int = 0,
+    var iban: String = "",
 ) {
     constructor() : this(
         id = "",
@@ -19,6 +20,7 @@ data class User(
         photoUrl = "",
         position = "",
         point = 0,
+        iban = "",
     )
 }
 

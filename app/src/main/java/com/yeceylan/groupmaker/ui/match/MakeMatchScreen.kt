@@ -26,6 +26,7 @@ import com.yeceylan.groupmaker.ui.location.LocationViewModel
 
 @Composable
 fun MakeMatchScreen(
+    sportTitle:String,
     teamSize: Int,
     navController: NavController,
     makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),

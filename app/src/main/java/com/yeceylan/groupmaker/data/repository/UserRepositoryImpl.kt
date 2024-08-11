@@ -34,16 +34,13 @@ class UserRepositoryImpl @Inject constructor(
                 }else{
                     Resource.Error("user repo imp addStorage resource failed")
                 }
-
                 trySend(response)
-                Log.e("repo-it",it.toString())
             }
         }
         awaitClose {
             listener.cancel()
         }
     }
-
 
     override suspend fun addUser(user: User) {
         firestore.collection("users")
@@ -110,7 +107,6 @@ class UserRepositoryImpl @Inject constructor(
             .await()
     }
 
-
     override suspend fun addMatch(userId: String, match: Match) {
         val userDocument = firestore.collection("users").document(userId)
         val matchesCollection = userDocument.collection("matches")
@@ -161,5 +157,4 @@ class UserRepositoryImpl @Inject constructor(
             Log.d("UserRepositoryImpl", "Match Document: ${document.id}, Data: ${document.data}")
         }
     }
-
 }
