@@ -3,9 +3,11 @@ package com.yeceylan.groupmaker.ui.auth.login
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.use_cases.auth.LoginUseCase
+import com.yeceylan.groupmaker.domain.use_cases.auth.SignInWithGoogleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,13 +19,42 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
+    private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginScreenUIState())
     val uiState = _uiState.asStateFlow()
 
-    fun loginWithGoogle() {
-        //TODO: Implement login with Google
+
+    fun loginWithGoogle(account: GoogleSignInAccount) {
+        signInWithGoogleUseCase(account).onEach {
+            when (it) {
+                is Resource.Loading -> {
+                    _uiState.update { state ->
+                        state.copy(isLoading = true)
+                    }
+                }
+
+                is Resource.Success -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            isSuccessGoogleLogin = true,
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    _uiState.update { state ->
+                        state.copy(
+                            isLoading = false,
+                            isHaveError = true,
+                            errorMessage = it.errorMessage ?: "",
+                        )
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     fun loginWithEmailAndPassword(email: String, password: String, context: Context) {

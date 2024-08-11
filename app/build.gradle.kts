@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.firebase.bom)
     implementation(libs.firebase.auth)
+    implementation(libs.gms.play.services.auth)
     implementation(libs.hilt.android)
     implementation(libs.navigation.compose.hilt)
     kapt(libs.hilt.android.compiler)

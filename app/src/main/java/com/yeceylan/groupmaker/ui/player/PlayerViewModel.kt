@@ -20,6 +20,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import java.util.UUID
 
+import kotlinx.coroutines.flow.*
+
 @HiltViewModel
 class PlayerViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersUseCase,
@@ -27,35 +29,54 @@ class PlayerViewModel @Inject constructor(
     private val updateMatchUseCase: UpdateMatchUseCase,
     private val getActiveMatchUseCase: GetActiveMatchUseCase,
     private val addUserUseCase: AddUserUseCase,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
     val users: StateFlow<Resource<List<User>>> = _users
+
+    private val _filteredUsers = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
+    val filteredUsers: StateFlow<Resource<List<User>>> = _filteredUsers
 
     private val _selectedUsers = MutableStateFlow<List<User>>(emptyList())
     val selectedUsers: StateFlow<List<User>> = _selectedUsers
 
     init {
         fetchUsers()
+        fetchActiveMatch()
     }
 
     private fun fetchUsers() =
         viewModelScope.launch {
             getUsersUseCase().collect { resource ->
                 _users.value = resource
+                _filteredUsers.value = resource
             }
         }
 
+    private fun fetchActiveMatch() =
+        viewModelScope.launch {
+            val auth = FirebaseAuth.getInstance()
+            val currentUserId = auth.currentUser?.uid ?: return@launch
+            val activeMatch = getActiveMatchUseCase(currentUserId)
+            if (activeMatch != null && activeMatch.playerList.isNotEmpty()) {
+                _selectedUsers.value = activeMatch.playerList
+            }
+        }
 
+    fun searchUsers(query: String) {
+        val usersList = _users.value.data ?: return
+        _filteredUsers.value = Resource.Success(usersList.filter { it.userName.contains(query, ignoreCase = true) })
+    }
 
     fun addUserToFirestore(user: User) {
-         val userId = UUID.randomUUID().toString()
-         val userWithId = user.copy(id = userId)
+        val userId = UUID.randomUUID().toString()
+        val userWithId = user.copy(id = userId)
         viewModelScope.launch {
             addUserUseCase(userWithId)
         }
-         addUser(userWithId)
+        addUser(userWithId)
     }
+
     fun updateSelectedUsers(updatedList: List<User>) {
         _selectedUsers.value = updatedList
         updateCurrentMatch()
@@ -82,7 +103,6 @@ class PlayerViewModel @Inject constructor(
             try {
                 val activeMatch = getActiveMatchUseCase(currentUserId)
                 if (activeMatch != null) {
-                    // Update the existing match
                     val updatedPlayerList = activeMatch.playerList!!.toMutableList().apply {
                         clear()
                         addAll(_selectedUsers.value)
@@ -92,7 +112,6 @@ class PlayerViewModel @Inject constructor(
                     updateMatchUseCase(currentUserId, updatedMatch)
                     Log.d("PlayerViewModel", "Active match updated with new players: ${updatedMatch.id}")
                 } else {
-                    // Create a new match
                     val newMatch = Match(
                         id = UUID.randomUUID().toString(),
                         team1 = null,
