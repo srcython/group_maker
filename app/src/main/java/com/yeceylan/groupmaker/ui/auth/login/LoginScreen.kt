@@ -114,7 +114,6 @@ fun LoginScreenUI(
 
         DGoogleLoginButton(modifier = Modifier,
             onClick = {
-                //sayfa uygulamada gereken yere kondu
                 //navController.navigate(AuthenticationScreens.MakeMatchScreen)
         })
 //        {

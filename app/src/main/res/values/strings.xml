@@ -2,35 +2,34 @@
     <string name="app_name">GroupMaker</string>
 
     <!-- Sign Up Screen -->
-    <string name="sign_up">Sign Up</string>
-    <string name="username">Username</string>
-    <string name="username_hint">username</string>
+    <string name="sign_up">Kayıt ol</string>
+    <string name="username">Kullanıcı Adı</string>
+    <string name="username_hint">Kullanıcı Adı</string>
     <string name="email">Email</string>
     <string name="hint_mail">test@testmail.com</string>
-    <string name="password">Password</string>
+    <string name="password">Şİfre</string>
     <string name="hint_password">*********</string>
-    <string name="button_sign_up">Sign Up</string>
-    <string name="verify_password_text">Password</string>
+    <string name="button_sign_up">Giriş Yap</string>
+    <string name="verify_password_text">Şifre</string>
     <string name="verify_password_hint_text">*********</string>
-    <string name="or_sign_up_with_text">or sign up with</string>
-    <string name="by_creating_an_account_i_accept_hiring_hub_terms_of_use_and_privacy_policy">By Creating an account, i accept Hiring Hub terms of Use and Privacy Policy</string>
-    <string name="already_have_an_account">Already have an account?</string>
-    <string name="sign_up_login_text_button_text">Login</string>
+    <string name="or_sign_up_with_text">veya giriş yap</string>
+    <string name="by_creating_an_account_i_accept_hiring_hub_terms_of_use_and_privacy_policy">Kaydolarak sözleşmeyi kabul ediyorum.</string>
+    <string name="already_have_an_account">Zaten bir hesabım var?</string>
+    <string name="sign_up_login_text_button_text">Giriş</string>
 
     <!-- Authentication Screen -->
-    <string name="email_address">Email Address</string>
-    <string name="text_field_value_password">Password</string>
-    <string name="login">Login</string>
-    <string name="keep_me_signed_in">Keep me signed in</string>
-    <string name="or_sign_in_with">or sign in with</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="sign_up_here">Sign up here</string>
-    <string name="password_not_match">Password Not Match</string>
+    <string name="email_address">Email Adrei</string>
+    <string name="text_field_value_password">Şifre</string>
+    <string name="login">Giriş</string>
+    <string name="keep_me_signed_in">Giriş yapılı tut.</string>
+    <string name="or_sign_in_with">veya giriş yap</string>
+    <string name="don_t_have_an_account">Bir hesabın yok mu?</string>
+    <string name="sign_up_here">Buradan kayıt ol</string>
+    <string name="password_not_match">Şifre uyuşmuyor.</string>
 
     <!-- Content Descriptions -->
     <string name="content_description_app_image">App Image</string>
     <string name="content_description_dictionary_logo">Dictionary Logo</string>
-    <string name="content_description_third_onboarding_image">Third Onboarding Image</string>
     <string name="content_description_visibility_icon">Show Password Icon</string>
     <string name="password_must_be_at_least_6_characters_long">Password must be at least 6 characters long</string>
     <string name="email_and_password_cannot_be_empty">Email and password cannot be empty</string>
@@ -53,6 +52,27 @@
     <string name="title_activity_on_boarding">OnBoardingActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+
+    <!-- Player Screen-->
+
+    <string name="se_ili_oyuncular">Seçili Oyuncular</string>
+    <string name="bir_hata_olu_tu">Bir hata oluştu</string>
+    <string name="no_players_selected">Oyuncu Seçilmedi.</string>
+    <string name="oyuncu_ekle">Oyuncu Ekle</string>
+    <string name="oyuncu_a_r">Oyuncu Çağır</string>
+    <string name="kullan_c_lar_se_in">Kullanıcıları Seçin</string>
+    <string name="ara">Ara</string>
+    <string name="tamam">Tamam</string>
+    <string name="remove">Remove</string>
+    <string name="star">Star</string>
+    <string name="yeni_oyuncu_ekle">Yeni Oyuncu Ekle</string>
+    <string name="kullan_c_ad">Kullanıcı adı</string>
+    <string name="isim">isim</string>
+    <string name="soyisim">Soyisim</string>
+    <string name="pozisyon">Pozisyon</string>
+    <string name="puan">Puan</string>
+    <string name="ptal">İptal</string>
+    <string name="ekle">Ekle</string>
 
 
 </resources>
