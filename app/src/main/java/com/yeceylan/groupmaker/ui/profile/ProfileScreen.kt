@@ -37,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -78,7 +79,13 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
         Modifier
             .fillMaxHeight()
             .fillMaxWidth()
-            .background(color = Color(android.graphics.Color.parseColor("#ececec"))),
+            .background(
+                brush = Brush.verticalGradient(
+                colors = listOf(
+                    Color(0xFF808080),
+                    Color(0xFFFFFFFF)
+                ),
+            )),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -125,12 +132,12 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
         Card(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(32.dp, 32.dp),
+                .padding(32.dp, 24.dp),
             elevation = 4.dp,
             shape = RoundedCornerShape(8.dp),
             backgroundColor = Color.White,
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(modifier = Modifier.padding(12.dp)) {
                 Text(
                     text = "Bilgiler",
                     fontSize = 24.sp,
@@ -166,7 +173,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
             onClick = { showDialog = true },
             Modifier
                 .fillMaxWidth()
-                .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)
                 .height(55.dp), colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
             ), shape = RoundedCornerShape(15)
@@ -212,7 +219,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
                 }
             },
             Modifier
-                .padding(start = 32.dp, end = 32.dp, top = 10.dp, bottom = 10.dp)
+                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)
                 .height(55.dp), colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
             ), shape = RoundedCornerShape(15)

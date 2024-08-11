@@ -1,7 +1,14 @@
 package com.yeceylan.groupmaker.ui.bottombar
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -59,7 +66,7 @@ fun MainNavGraph(
         composable<MatchScreens.MakeMatchScreen> {
             val args = it.toRoute<MatchScreens.MakeMatchScreen>()
             isShowBottomBar.value = false
-            MakeMatchScreen(args.size,navController = navController)
+            MakeMatchScreen(args.size, navController = navController)
         }
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false
@@ -71,7 +78,9 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Home.route) {
             isShowBottomBar.value = true
-            SportTypes(navController = navController)
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                SportTypes(navController = navController)
+            }
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
@@ -79,12 +88,14 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.Profile.route) {
             isShowBottomBar.value = true
-            ProfileScreen(navController = navController)
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                ProfileScreen(navController = navController)
+            }
         }
         composable<SportTypeScreens.SportTypeSetting> {
             isShowBottomBar.value = true
-            val args=it.toRoute<SportTypeScreens.SportTypeSetting>()
-            SportTypeSetting(args.title,args.teamSize,navController)
+            val args = it.toRoute<SportTypeScreens.SportTypeSetting>()
+            SportTypeSetting(args.title, args.teamSize, navController)
         }
         composable(
             route = "matchInfo/{matchJson}",
@@ -96,7 +107,9 @@ fun MainNavGraph(
         }
         composable<PlayerScreens.PlayerPage> {
             isShowBottomBar.value = true
-            PlayerPage()
+            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                PlayerPage()
+            }
         }
     }
 }
