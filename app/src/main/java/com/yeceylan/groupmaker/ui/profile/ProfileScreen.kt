@@ -2,6 +2,7 @@ package com.yeceylan.groupmaker.ui.profile
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -41,6 +42,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,8 +50,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import coil.annotation.ExperimentalCoilApi
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
@@ -58,22 +58,27 @@ import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
-import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.components.ProgressBar
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: NavController) {
 
-    var showDialog by remember { mutableStateOf(false) }
-    val user = viewModel.user.collectAsState().value
+    val context = LocalContext.current
 
-    /*when (viewModel.userResponse) {
-        is Resource.Error -> "TODO()"
+    when (viewModel.userResponse) {
+        is Resource.Error -> Toast.makeText(context,"Hata",Toast.LENGTH_SHORT).show()
         is Resource.Loading -> ProgressBar()
-        is Resource.Success -> user = viewModel.userResponse.data!!
-    }*/
+        is Resource.Success -> ProfileSucces(
+            user = viewModel.userResponse.data!!,
+            viewModel = viewModel,
+            navController = navController,
+        )
+    }
+}
 
-
+@Composable
+fun ProfileSucces(user: User,viewModel: ProfileViewModel,navController: NavController){
+    var showDialog by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -81,11 +86,12 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
             .fillMaxWidth()
             .background(
                 brush = Brush.verticalGradient(
-                colors = listOf(
-                    Color(0xFF808080),
-                    Color(0xFFFFFFFF)
-                ),
-            )),
+                    colors = listOf(
+                        Color(0xFF808080),
+                        Color(0xFFFFFFFF)
+                    ),
+                )
+            ),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
@@ -166,6 +172,11 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
                     fontSize = 20.sp,
                     modifier = Modifier.padding(8.dp),
                 )
+                Text(
+                    text = "Iban: ${user.iban}",
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(8.dp),
+                )
             }
         }
 
@@ -205,7 +216,6 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
 
             }
         }
-
 
         Button(
             onClick = {
@@ -248,20 +258,13 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )
-
             }
-
         }
-
-
     }
 
     if (showDialog) {
         ProfileSettingsDialog(onDismiss = { showDialog = false }, user)
-
-
     }
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -269,10 +272,10 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: 
 fun ProfileSettingsDialog(
     onDismiss: () -> Unit,
     user: User,
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
-    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl)) }
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
         onResult = { uri: Uri? -> imageUri = uri ?: Uri.parse(user.photoUrl) }
@@ -281,6 +284,7 @@ fun ProfileSettingsDialog(
     var surname by remember { mutableStateOf(user.surname) }
     var position by remember { mutableStateOf(user.position) }
     var firstname by remember { mutableStateOf(user.firstName) }
+    var iban by remember { mutableStateOf(user.iban) }
 
     Dialog(onDismiss) {
         Surface(shape = MaterialTheme.shapes.medium, elevation = 8.dp) {
@@ -325,6 +329,11 @@ fun ProfileSettingsDialog(
                     onValueChange = { position = it },
                     label = { Text(text = "Pozisyon") }
                 )
+                OutlinedTextField(
+                    value = iban,
+                    onValueChange = { iban = it },
+                    label = { Text(text = "Iban") }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -341,19 +350,14 @@ fun ProfileSettingsDialog(
                         user.surname = surname
                         user.position = position
                         user.photoUrl = imageUri.toString()
+                        user.iban = iban
 
-                        //Log.e("user-profile",user.toString())
-                        //Log.e("uri-profile",imageUri.toString())
-
-                        viewModel.updateProfile(user, imageUri!!)
-
-
+                        imageUri?.let { viewModel.updateProfile(user, it) }
                         onDismiss()
                     }) {
                         Text(text = "Ekle")
                     }
                 }
-                //
             }
         }
     }
