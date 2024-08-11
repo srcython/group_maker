@@ -7,21 +7,18 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
-import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
-import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
+import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.*
 import javax.inject.Inject
-import java.util.UUID
-
-import kotlinx.coroutines.flow.*
 
 @HiltViewModel
 class PlayerViewModel @Inject constructor(

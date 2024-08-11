@@ -37,48 +37,92 @@ import com.yeceylan.groupmaker.domain.model.weather.ForecastDay
 import com.yeceylan.groupmaker.domain.model.weather.Hour
 import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
 import com.yeceylan.groupmaker.domain.model.weather.WeatherType
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.weather.WeatherViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.TextButton
+import androidx.compose.runtime.*
+
 @Composable
 fun MatchInfoScreen(
     navController: NavController,
     match: Match,
-    viewModel: WeatherViewModel = hiltViewModel()
+    viewModel: WeatherViewModel = hiltViewModel(),
+    matchInfoViewModel: MatchInfoViewModel = hiltViewModel()
 ) {
     val weatherResource by viewModel.weatherInfo.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.fetchWeatherDataForMatch(match)
     }
 
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 50.dp, start = 16.dp, end = 16.dp)
     ) {
-        MatchInfoContent(match, MatchInfoViewModel())
+        item {
+            Button(
+                onClick = {
+                    showDialog = true
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = "Maçı Bitir", fontSize = 18.sp)
+            }
 
-        Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(10.dp))
+            MatchInfoContent(match, matchInfoViewModel)
+            Spacer(modifier = Modifier.height(10.dp))
+            WeatherInfoContent(weatherResource, match)
+            Spacer(modifier = Modifier.height(10.dp))
+            TeamNamesWithBackground(
+                team1Name = match.firstTeamName ?: "Takım 1",
+                team2Name = match.secondTeamName ?: "Takım 2",
+                backgroundImage = R.drawable.img_stadium_background,
+                team1Players = match.firstTeamPlayerList.map { it.firstName },
+                team2Players = match.secondTeamPlayerList.map { it.firstName }
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            IbanRow(viewModel = matchInfoViewModel, iban = "TR33 0006 1005 1978 6457 8413 26")
+            Spacer(modifier = Modifier.height(20.dp))
+        }
+    }
 
-        WeatherInfoContent(weatherResource, match)
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        TeamNamesWithBackground(
-            team1Name = match.firstTeamName ?: "Takım 1",
-            team2Name = match.secondTeamName ?: "Takım 2",
-            backgroundImage = R.drawable.img_stadium_background,
-            team1Players = match.firstTeamPlayerList.map { it.firstName },  // Player isimleri
-            team2Players = match.secondTeamPlayerList.map { it.firstName }
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Emin misiniz?") },
+            text = { Text(text = "Maçı bitirmek istediğinizden emin misiniz?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        matchInfoViewModel.finishMatch()
+                        navController.navigate(BottomBarScreen.Home.route)
+                        showDialog = false
+                    }
+                ) {
+                    Text("Evet")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDialog = false }
+                ) {
+                    Text("Hayır")
+                }
+            }
         )
-        Spacer(modifier = Modifier.height(20.dp))
-        IbanRow(viewModel = MatchInfoViewModel(), iban = "TR33 0006 1005 1978 6457 8413 26")
-
     }
 }
+
+
 
 
 @Composable
@@ -408,7 +452,7 @@ fun MatchInfoContentPreview() {
         maxPlayer = 22
     )
 
-    MatchInfoContent(match = match, viewModel = MatchInfoViewModel())
+    //MatchInfoContent(match = match, viewModel = MatchInfoViewModel())
 }
 
 @Preview(showBackground = true)
