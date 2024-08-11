@@ -79,15 +79,19 @@ class SportTypeViewModel @Inject constructor(
                 } else {
                     val newMatch = Match(
                         id = UUID.randomUUID().toString(),
-                        team1 = null,
-                        team2 = null,
-                        date = null,
-                        location = null,
-                        result = null,
+                        matchLocationTitle = "",
+                        matchLocation = "",
+                        matchDate = "",
+                        matchTime = "",
+                        firstTeamName = "",
+                        secondTeamName = "",
                         type = title,
-                        playerList = emptyList(),
-                        playerList1 = emptyList(),
                         maxPlayer = teamSize,
+                        firstTeamPlayerList = emptyList(),
+                        secondTeamPlayerList = emptyList(),
+                        result = null,
+                        latLng = null,
+                        isActive = true
                     )
 
                     addMatchUseCase(currentUserId, newMatch)
