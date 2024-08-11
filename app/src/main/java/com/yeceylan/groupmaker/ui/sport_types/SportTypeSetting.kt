@@ -27,13 +27,18 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
 import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
 
 @Composable
-fun SportTypeSetting(title: String, teamSize: Int, navController: NavController) {
+fun SportTypeSetting(
+    title: String,
+    teamSize: Int,
+    navController: NavController,
+) {
 
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
@@ -53,10 +58,10 @@ fun SportTypeSetting(title: String, teamSize: Int, navController: NavController)
         )
         LazyColumn {
             item {
-                SportTypeSettingItem(painter = create, "Create a Match", navController,teamSize)
+                SportTypeSettingItem(painter = create, "Create a Match", navController,teamSize,title)
             }
             item {
-                SportTypeSettingItem(painter = players, "Players", navController,teamSize)
+                SportTypeSettingItem(painter = players, "Players", navController,teamSize,title)
             }
         }
     }
@@ -64,14 +69,21 @@ fun SportTypeSetting(title: String, teamSize: Int, navController: NavController)
 }
 
 @Composable
-fun SportTypeSettingItem(painter: Painter, text: String, navController: NavController,teamSize: Int) {
+fun SportTypeSettingItem(
+    painter: Painter,
+    text: String,
+    navController: NavController,
+    teamSize: Int,
+    title: String,
+    viewModel:SportTypeViewModel = hiltViewModel(),
+    ) {
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
-
+                viewModel.addMatch(title,teamSize)
                 if (text !="Players"){
                     navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
                 }else{

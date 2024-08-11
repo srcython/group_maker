@@ -71,7 +71,7 @@ fun LoginScreen(
 
         LoginScreenUI(
             navController = navController,
-            loginWithGoogle = { viewModel.loginWithGoogle() },
+            loginWithGoogle = { /*viewModel.loginWithGoogle()*/ },
             errorMessage = errorMessage,
             isError = isHaveError,
             onClickToTextField = {
