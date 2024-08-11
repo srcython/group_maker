@@ -2,6 +2,8 @@ package com.yeceylan.groupmaker.ui.components
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -33,6 +35,7 @@ fun MatchDateInputField(
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
+
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
@@ -43,6 +46,8 @@ fun MatchDateInputField(
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
+
+    datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
     Box(
         modifier = modifier
@@ -72,15 +77,38 @@ fun MatchTimeInputField(
     label: String,
     value: String,
     onValueChange: (String) -> Unit,
+    matchDate: String,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val calendar = Calendar.getInstance()
+
+    if (matchDate.isNotEmpty()) {
+        val dateParts = matchDate.split("-")
+        if (dateParts.size == 3) {
+            calendar.set(Calendar.YEAR, dateParts[2].toInt())
+            calendar.set(Calendar.MONTH, dateParts[1].toInt() - 1)
+            calendar.set(Calendar.DAY_OF_MONTH, dateParts[0].toInt())
+        }
+    }
+
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hour: Int, minute: Int ->
-            val formattedTime = String.format("%02d:%02d", hour, minute)
-            onValueChange(formattedTime)
+            val selectedCalendar = Calendar.getInstance().apply {
+                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+                set(Calendar.HOUR_OF_DAY, hour)
+                set(Calendar.MINUTE, minute)
+            }
+
+            if (selectedCalendar.timeInMillis < System.currentTimeMillis()) {
+                Toast.makeText(context, "Geçmiş bir saat seçtiniz, lütfen geçerli bir saat seçin!", Toast.LENGTH_SHORT).show()
+            } else {
+                val formattedTime = String.format("%02d:%02d", hour, minute)
+                onValueChange(formattedTime)
+            }
         },
         calendar.get(Calendar.HOUR_OF_DAY),
         calendar.get(Calendar.MINUTE),
@@ -103,7 +131,7 @@ fun MatchTimeInputField(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (value.isEmpty()) label else value,
+                text = value.ifEmpty { label },
                 color = if (value.isEmpty()) Color.Gray else Color.Black
             )
         }

@@ -1,30 +1,42 @@
 package com.yeceylan.groupmaker.domain.model
 
+import com.google.android.gms.maps.model.LatLng
+import java.io.Serializable
+
 data class Match(
     val id: String = "",
-    val team1: String? = null,
-    val team2: String? = null,
-    val date: String? = null,
-    val location: String? = null,
-    val result: String? = null,
-    val type: String = "volleyball",
+    val matchLocationTitle: String? = null,
+    val matchLocation: String? = null,
+    val matchDate: String? = null,
+    val matchTime: String? = null,
+    val firstTeamName: String? = null,
+    val secondTeamName: String? = null,
+    val type: String = "",
     val playerList: List<User> = emptyList(),
-    val playerList1: List<User> = emptyList(),
-    val maxPlayer: String? = null,
-    val isActive:Boolean = true,
-) {
+    val firstTeamPlayerList: List<User> = emptyList(),
+    val secondTeamPlayerList: List<User> = emptyList(),
+    val result: String? = null,
+    val latLng: LatLng?,
+    val isActive: Boolean = true,
+    val maxPlayer : Int = 0
+
+    ):Serializable {
     constructor() : this(
         id = "",
-        team1 = null,
-        team2 = null,
-        date = null,
-        location = null,
-        result = null,
-        type = "volleyball",
+        matchLocationTitle = null,
+        matchLocation = null,
+        matchDate = null,
+        matchTime = null,
+        firstTeamName = null,
+        secondTeamName = null,
+        type = "",
         playerList = emptyList(),
-        playerList1 = emptyList(),
-        maxPlayer = null,
+        firstTeamPlayerList = emptyList(),
+        secondTeamPlayerList = emptyList(),
+        result = null,
+        latLng = null,
         isActive = true,
+        maxPlayer = 0
     )
 
 }

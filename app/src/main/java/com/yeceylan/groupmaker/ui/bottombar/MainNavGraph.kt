@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.google.gson.Gson
+import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.MatchInfo
 import com.yeceylan.groupmaker.ui.sport_types.SportTypes
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
@@ -95,19 +96,16 @@ fun MainNavGraph(
             SportTypeSetting(title,size,navController)
         }
         composable(
-            route = "matchInfo/{matchInfoJson}",
-            arguments = listOf(navArgument("matchInfoJson") { type = NavType.StringType })
+            route = "matchInfo/{matchJson}",
+            arguments = listOf(navArgument("matchJson") { type = NavType.StringType })
         ) { backStackEntry ->
-            val matchInfoJson =
-                backStackEntry.arguments?.getString("matchInfoJson") ?: return@composable
-            val matchInfo = Gson().fromJson(matchInfoJson, MatchInfo::class.java)
-            MatchInfoScreen(navController, matchInfo)
+            val matchJson = backStackEntry.arguments?.getString("matchJson") ?: return@composable
+            val match = Gson().fromJson(matchJson, Match::class.java)
+            MatchInfoScreen(navController = navController, match = match)
         }
         composable<PlayerScreens.PlayerPage> {
             isShowBottomBar.value = true
             PlayerPage()
         }
-
-
     }
 }

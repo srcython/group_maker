@@ -1,7 +1,8 @@
 package com.yeceylan.groupmaker.ui.match
 
 import android.widget.Toast
-import androidx.compose.foundation.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,49 +19,42 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.google.gson.Gson
-import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.MatchInfo
 import com.yeceylan.groupmaker.domain.model.User
-import com.yeceylan.groupmaker.ui.components.ChangeTeamNamesDialog
-import com.yeceylan.groupmaker.ui.components.MatchDateInputField
-import com.yeceylan.groupmaker.ui.components.MatchLocationInputField
-import com.yeceylan.groupmaker.ui.components.MatchTimeInputField
-import com.yeceylan.groupmaker.ui.components.PlayerCountDialog
-import com.yeceylan.groupmaker.ui.components.PlayerSelectionSection
-import com.yeceylan.groupmaker.ui.components.SelectedPlayersGrid
+import com.yeceylan.groupmaker.ui.components.*
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
-import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @Composable
 fun MakeMatchScreen(
     teamSize: Int,
     navController: NavController,
     makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),
-    locationViewModel: LocationViewModel = hiltViewModel()
+    locationViewModel: LocationViewModel = hiltViewModel(),
 ) {
     val focusManager = LocalFocusManager.current
-    var team1Name by remember { mutableStateOf("Takım 1") }
-    var team2Name by remember { mutableStateOf("Takım 2") }
-    val usersResource by makeMatchViewModel.users.collectAsState()
-
+    val team1Name by makeMatchViewModel.team1Name.collectAsState()
+    val team2Name by makeMatchViewModel.team2Name.collectAsState()
+    val userList by makeMatchViewModel.users.collectAsState()
+    val activeMatch by makeMatchViewModel.activeMatch.collectAsState(initial = null)
     var expanded1 by remember { mutableStateOf(false) }
     var expanded2 by remember { mutableStateOf(false) }
-    var selectedPersons1 by remember { mutableStateOf(listOf<User>()) }
-    var selectedPersons2 by remember { mutableStateOf(listOf<User>()) }
+    val selectedPersons1 by makeMatchViewModel.selectedPersons1.collectAsState()
+    val selectedPersons2 by makeMatchViewModel.selectedPersons2.collectAsState()
     var maxPlayers by remember { mutableIntStateOf(teamSize) }
-    var showPlayerCountDialog by remember { mutableStateOf(false) }
-    var showChangeTeamNamesDialog by remember { mutableStateOf(false) }
-    var matchLocation by remember { mutableStateOf("") }
+    val showPlayerCountDialog by makeMatchViewModel.showPlayerCountDialog.collectAsState()
+    val showChangeTeamNamesDialog by makeMatchViewModel.showChangeTeamNamesDialog.collectAsState()
+    val matchLocation by makeMatchViewModel.matchLocation.collectAsState()
     val locationLatLng by locationViewModel.selectedLocation.collectAsState(initial = null)
     val selectedAddress by locationViewModel.selectedAddress.collectAsState(initial = "")
-    var matchDate by remember { mutableStateOf("") }
-    var matchTime by remember { mutableStateOf("") }
+    val matchDate by makeMatchViewModel.matchDate.collectAsState()
+    val matchTime by makeMatchViewModel.matchTime.collectAsState()
 
     if (showPlayerCountDialog) {
-        PlayerCountDialog(maxPlayers) { maxPlayers = it; showPlayerCountDialog = false }
+        PlayerCountDialog(maxPlayers) {
+            maxPlayers = it; makeMatchViewModel.togglePlayerCountDialog(
+            false
+        )
+        }
     }
 
     if (showChangeTeamNamesDialog) {
@@ -68,9 +62,9 @@ fun MakeMatchScreen(
             team1Name = team1Name,
             team2Name = team2Name,
             onTeamNamesChanged = { newTeam1Name, newTeam2Name ->
-                team1Name = newTeam1Name
-                team2Name = newTeam2Name
-                showChangeTeamNamesDialog = false
+                makeMatchViewModel.setTeam1Name(newTeam1Name)
+                makeMatchViewModel.setTeam2Name(newTeam2Name)
+                makeMatchViewModel.toggleChangeTeamNamesDialog(false)
             }
         )
     }
@@ -103,7 +97,7 @@ fun MakeMatchScreen(
                 MatchLocationInputField(
                     label = "Maç konumu giriniz",
                     value = matchLocation,
-                    onValueChange = { matchLocation = it },
+                    onValueChange = { makeMatchViewModel.setMatchLocation(it) },
                     viewModel = locationViewModel
                 )
 
@@ -115,14 +109,15 @@ fun MakeMatchScreen(
                     MatchDateInputField(
                         label = "Maç Tarihi: ",
                         value = matchDate,
-                        onValueChange = { matchDate = it },
+                        onValueChange = { makeMatchViewModel.setMatchDate(it) },
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     MatchTimeInputField(
                         label = "Maç Saati: ",
                         value = matchTime,
-                        onValueChange = { matchTime = it },
+                        onValueChange = { makeMatchViewModel.setMatchTime(it) },
+                        matchDate = matchDate, // Yeni eklenen parametreyi geçiyoruz
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -143,17 +138,15 @@ fun MakeMatchScreen(
                         horizontalArrangement = Arrangement.Center,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-
                         Button(
-                            onClick = { showPlayerCountDialog = true },
+                            onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(text = "Takımlar kaç kişilik?", fontSize = 14.sp)
                         }
-
                         Spacer(modifier = Modifier.width(16.dp))
                         Button(
-                            onClick = { showChangeTeamNamesDialog = true },
+                            onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },
                             modifier = Modifier.padding(8.dp)
                         ) {
                             Text(text = "Takım Adlarını Değiştir", fontSize = 14.sp)
@@ -169,17 +162,30 @@ fun MakeMatchScreen(
                         .background(Color.White)
                         .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
                 ) {
-                    when (usersResource) {
+                    when (userList) {
                         is Resource.Loading -> {
                             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                         }
+
                         is Resource.Success -> {
-                            val users = usersResource.data ?: emptyList()
+                            val users = userList.data ?: emptyList()
+                            if (users.isEmpty()) {
+                                Text(
+                                    text = "Herhangi bir oyuncu eklemediniz...",
+                                    modifier = Modifier.align(Alignment.Center)
+                                )
+                                return@Scaffold
+                            }
 
                             LazyColumn(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(top = 10.dp, start = 10.dp, end = 10.dp, bottom = 50.dp)
+                                    .padding(
+                                        top = 10.dp,
+                                        start = 10.dp,
+                                        end = 10.dp,
+                                        bottom = 50.dp
+                                    )
                             ) {
                                 item {
                                     PlayerSelectionSection(
@@ -189,9 +195,17 @@ fun MakeMatchScreen(
                                         maxPlayers = maxPlayers,
                                         expanded = expanded1,
                                         setExpanded = { expanded1 = it },
-                                        setSelectedPersons = { selectedPersons1 = it }
+                                        setSelectedPersons = {
+                                            makeMatchViewModel.setSelectedPersons1(
+                                                it
+                                            )
+                                        }
                                     )
-                                    SelectedPlayersGrid(selectedPersons1) { selectedPersons1 = it }
+                                    SelectedPlayersGrid(selectedPersons1) {
+                                        makeMatchViewModel.setSelectedPersons1(
+                                            it
+                                        )
+                                    }
                                     Spacer(modifier = Modifier.height(16.dp))
                                     PlayerSelectionSection(
                                         teamName = team2Name,
@@ -200,15 +214,24 @@ fun MakeMatchScreen(
                                         maxPlayers = maxPlayers,
                                         expanded = expanded2,
                                         setExpanded = { expanded2 = it },
-                                        setSelectedPersons = { selectedPersons2 = it }
+                                        setSelectedPersons = {
+                                            makeMatchViewModel.setSelectedPersons2(
+                                                it
+                                            )
+                                        }
                                     )
-                                    SelectedPlayersGrid(selectedPersons2) { selectedPersons2 = it }
+                                    SelectedPlayersGrid(selectedPersons2) {
+                                        makeMatchViewModel.setSelectedPersons2(
+                                            it
+                                        )
+                                    }
                                 }
                             }
                         }
+
                         is Resource.Error -> {
                             Text(
-                                text = "Hata: ${usersResource.message}",
+                                text = "Hata: ${userList.message}",
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.Center)
                             )
@@ -240,32 +263,22 @@ fun MakeMatchScreen(
                             } else if (selectedPersons1.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "$team1Name için oyuncu seçin!",
+                                    "Lütfen ilk takımın oyuncularını seçin!",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else if (selectedPersons2.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "$team2Name için oyuncu seçin!",
+                                    "Lütfen ikinci takımın oyuncularını seçin!",
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
-                                val matchInfo = MatchInfo(
-                                    team1Name = team1Name,
-                                    team2Name = team2Name,
-                                    matchLocation = matchLocation,
-                                    matchDate = matchDate,
-                                    matchTime = matchTime,
-                                    latLng = locationLatLng,
-                                    address = selectedAddress ?: "Bilinmeyen Addres"
-                                )
-
-                                val matchInfoJson = Gson().toJson(matchInfo)
-                                val encodedJson = URLEncoder.encode(
-                                    matchInfoJson,
-                                    StandardCharsets.UTF_8.toString()
-                                ).replace("+", "%20")
-                                navController.navigate("matchInfo/$encodedJson")
+                                selectedAddress?.let {
+                                    makeMatchViewModel.updateMatchAndNavigate(
+                                        navController, locationLatLng,
+                                        it
+                                    )
+                                }
                             }
                         },
                         modifier = Modifier
@@ -274,8 +287,10 @@ fun MakeMatchScreen(
                     ) {
                         Text(text = "Maç Oluştur")
                     }
+
                 }
             }
         }
+
     )
 }
