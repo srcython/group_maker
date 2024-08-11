@@ -105,11 +105,11 @@ class UserRepositoryImpl @Inject constructor(
                 "type", match.type,
                 "playerList", match.playerList,
                 "firstTeamPlayerList", match.firstTeamPlayerList,
-                "secondTeamPlayerList", match.secondTeamPlayerList
+                "secondTeamPlayerList", match.secondTeamPlayerList,
+                "active", match.isActive
             )
             .await()
     }
-
 
     override suspend fun addMatch(userId: String, match: Match) {
         val userDocument = firestore.collection("users").document(userId)

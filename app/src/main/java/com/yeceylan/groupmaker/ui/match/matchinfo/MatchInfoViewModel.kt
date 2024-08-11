@@ -54,7 +54,7 @@ class MatchInfoViewModel @Inject constructor(
 
                 if (activeMatch != null) {
                     val updatedMatch = activeMatch.copy(isActive = false)
-                    updateMatchUseCase(userId, updatedMatch)
+                    updateMatchUseCase(userId, updatedMatch) // This should now correctly update the match
                     addOldMatchUseCase(updatedMatch)
                 }
             } catch (e: Exception) {
@@ -62,5 +62,6 @@ class MatchInfoViewModel @Inject constructor(
             }
         }
     }
+
 }
 
