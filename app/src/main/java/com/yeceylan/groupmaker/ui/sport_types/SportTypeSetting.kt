@@ -73,7 +73,7 @@ fun SportTypeSettingItem(painter: Painter, text: String, navController: NavContr
             .clickable {
 
                 if (text !="Players"){
-                    navController.navigate("${MatchScreens.MakeMatchScreen().pass}/$teamSize")
+                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
                 }else{
                     navController.navigate(PlayerScreens.PlayerPage)
                 }

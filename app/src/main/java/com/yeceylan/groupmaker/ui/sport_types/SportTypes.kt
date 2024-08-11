@@ -83,7 +83,7 @@ fun ImageCard(
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
-                navController.navigate("${SportTypeScreens.SportTypeSetting.pass}/$title/$teamSize")
+                navController.navigate(SportTypeScreens.SportTypeSetting(title,teamSize))
             },
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(10.dp),
