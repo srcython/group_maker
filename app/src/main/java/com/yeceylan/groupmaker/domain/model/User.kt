@@ -10,6 +10,7 @@ data class User(
     var position: String = "",
     val point: Int = 0,
     var iban: String = "",
+    var scoreCount: Int? = 0,
 ) {
     constructor() : this(
         id = "",
