@@ -7,6 +7,7 @@ import com.yeceylan.groupmaker.domain.use_cases.GetAllMatchesUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -18,6 +19,7 @@ class OldMatchesViewModel @Inject constructor(
     private val getAllMatchesUseCase: GetAllMatchesUseCase,
     private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,
     private val addUserUseCase: AddUserUseCase,
+    private val addOldMatchUseCase: AddOldMatchUseCase,
 ) : ViewModel() {
 
     private val _oldMatches = MutableStateFlow<Resource<List<Match>>>(Resource.Loading())
@@ -40,6 +42,18 @@ class OldMatchesViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 _oldMatches.value = Resource.Error("Eski maçlar yüklenirken bir hata oluştu: ${e.message}")
+            }
+        }
+    }
+
+    fun updateMatchResult(match: Match, result: String) {
+        viewModelScope.launch {
+            try {
+                val updatedMatch = match.copy(result = result)
+                addOldMatchUseCase(updatedMatch) // Update match in Firebase
+                fetchOldMatches() // Refresh the list to show updated result
+            } catch (e: Exception) {
+                // Handle errors, such as logging or showing a user-friendly message
             }
         }
     }
