@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.components.*
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
 
@@ -118,7 +117,7 @@ fun MakeMatchScreen(
                         label = "Maç Saati: ",
                         value = matchTime,
                         onValueChange = { makeMatchViewModel.setMatchTime(it) },
-                        matchDate = matchDate, // Yeni eklenen parametreyi geçiyoruz
+                        matchDate = matchDate,
                         modifier = Modifier.weight(1f)
                     )
                 }

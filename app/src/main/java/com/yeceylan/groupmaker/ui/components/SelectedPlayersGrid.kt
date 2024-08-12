@@ -25,7 +25,6 @@ import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.domain.model.User
 
-
 @Composable
 fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<User>) -> Unit) {
     if (selectedUsers.isNotEmpty()) {
@@ -76,7 +75,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                             }
                         }
                         Text(
-                            text = person.firstName,
+                            text = person.firstName.ifEmpty { person.userName },
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
                                 .padding(top = 4.dp)

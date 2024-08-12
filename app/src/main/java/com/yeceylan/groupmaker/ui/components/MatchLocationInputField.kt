@@ -36,14 +36,11 @@ fun MatchLocationInputField(
     var isDropdownOpen by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
 
-    // Update search results based on the query
     LaunchedEffect(searchQuery) {
         if (searchQuery.isNotEmpty()) {
             viewModel.searchLocations(searchQuery)
         }
     }
-
-//    val selectedLocation by viewModel.selectedLocation.collectAsState()
 
     Column {
         OutlinedTextField(
@@ -90,7 +87,6 @@ fun MatchLocationInputField(
             ) {
                 items(predictions) { prediction ->
                     PredictionItem(prediction) { selectedLocationName ->
-                        // Fetch details for the selected place
                         viewModel.fetchLocationDetails(prediction.placeId)
                         searchQuery = selectedLocationName
                         onValueChange(selectedLocationName)
@@ -101,17 +97,6 @@ fun MatchLocationInputField(
                 }
             }
         }
-
-//        selectedLocation?.let { location ->
-//            val formattedLatitude = String.format("%.4f", location.latitude)
-//            val formattedLongitude = String.format("%.4f", location.longitude)
-//
-//            Text(
-//                text = "Latitude: $formattedLatitude, Longitude: $formattedLongitude",
-//                style = MaterialTheme.typography.subtitle1,
-//                modifier = Modifier.padding(top = 8.dp)
-//            )
-//        }
     }
 }
 

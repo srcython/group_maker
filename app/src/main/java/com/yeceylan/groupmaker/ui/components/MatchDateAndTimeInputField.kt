@@ -2,7 +2,6 @@ package com.yeceylan.groupmaker.ui.components
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.yeceylan.groupmaker.R
 import java.util.Calendar
+import java.util.Locale
+import java.util.TimeZone
 
 @Composable
 fun MatchDateInputField(
@@ -34,19 +35,21 @@ fun MatchDateInputField(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance().apply {
+        timeZone = TimeZone.getTimeZone("Europe/Istanbul")
+    }
 
     val datePickerDialog = DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            val formattedDate = String.format("%02d-%02d-%d", dayOfMonth, month + 1, year)
+            val formattedDate =
+                String.format(Locale.getDefault(), "%02d-%02d-%d", dayOfMonth, month + 1, year)
             onValueChange(formattedDate)
         },
         calendar.get(Calendar.YEAR),
         calendar.get(Calendar.MONTH),
         calendar.get(Calendar.DAY_OF_MONTH)
     )
-
     datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
     Box(
@@ -65,7 +68,7 @@ fun MatchDateInputField(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = if (value.isEmpty()) label else value,
+                text = value.ifEmpty { label },
                 color = if (value.isEmpty()) Color.Gray else Color.Black
             )
         }
@@ -81,7 +84,9 @@ fun MatchTimeInputField(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance().apply {
+        timeZone = TimeZone.getTimeZone("Europe/Istanbul")
+    }
 
     if (matchDate.isNotEmpty()) {
         val dateParts = matchDate.split("-")
@@ -95,16 +100,21 @@ fun MatchTimeInputField(
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hour: Int, minute: Int ->
-            val selectedCalendar = Calendar.getInstance().apply {
-                set(Calendar.YEAR, calendar.get(Calendar.YEAR))
-                set(Calendar.MONTH, calendar.get(Calendar.MONTH))
-                set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minute)
-            }
+            val selectedCalendar =
+                Calendar.getInstance(TimeZone.getTimeZone("Europe/Istanbul")).apply {
+                    set(Calendar.YEAR, calendar.get(Calendar.YEAR))
+                    set(Calendar.MONTH, calendar.get(Calendar.MONTH))
+                    set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH))
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minute)
+                }
 
             if (selectedCalendar.timeInMillis < System.currentTimeMillis()) {
-                Toast.makeText(context, "Geçmiş bir saat seçtiniz, lütfen geçerli bir saat seçin!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Geçmiş bir saat seçtiniz, lütfen geçerli bir saat seçin!",
+                    Toast.LENGTH_SHORT
+                ).show()
             } else {
                 val formattedTime = String.format("%02d:%02d", hour, minute)
                 onValueChange(formattedTime)

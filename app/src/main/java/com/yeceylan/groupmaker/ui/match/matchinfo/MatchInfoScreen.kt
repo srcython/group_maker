@@ -42,24 +42,26 @@ import com.yeceylan.groupmaker.ui.weather.WeatherViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
+import com.yeceylan.groupmaker.ui.profile.ProfileViewModel
 
 @Composable
 fun MatchInfoScreen(
     navController: NavController,
     match: Match,
-    viewModel: WeatherViewModel = hiltViewModel(),
-    matchInfoViewModel: MatchInfoViewModel = hiltViewModel()
+    weatherViewModel: WeatherViewModel = hiltViewModel(),
+    matchInfoViewModel: MatchInfoViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val weatherResource by viewModel.weatherInfo.collectAsState()
+    val weatherResource by weatherViewModel.weatherInfo.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    val user by profileViewModel.user.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchWeatherDataForMatch(match)
+        weatherViewModel.fetchWeatherDataForMatch(match)
     }
 
     LazyColumn(
@@ -76,21 +78,27 @@ fun MatchInfoScreen(
             ) {
                 Text(text = "Maçı Bitir", fontSize = 18.sp)
             }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            MatchInfoContent(match, matchInfoViewModel)
 
             Spacer(modifier = Modifier.height(10.dp))
-            MatchInfoContent(match, matchInfoViewModel)
-            Spacer(modifier = Modifier.height(10.dp))
+
             WeatherInfoContent(weatherResource, match)
+
             Spacer(modifier = Modifier.height(10.dp))
+
             TeamNamesWithBackground(
                 team1Name = match.firstTeamName ?: "Takım 1",
                 team2Name = match.secondTeamName ?: "Takım 2",
                 backgroundImage = R.drawable.img_stadium_background,
-                team1Players = match.firstTeamPlayerList.map { it.firstName },
-                team2Players = match.secondTeamPlayerList.map { it.firstName }
+                team1Players = match.firstTeamPlayerList.map { it.firstName.ifEmpty { it.userName } },
+                team2Players = match.secondTeamPlayerList.map { it.firstName.ifEmpty { it.userName } }
             )
             Spacer(modifier = Modifier.height(20.dp))
-            IbanRow(viewModel = matchInfoViewModel, iban = "TR33 0006 1005 1978 6457 8413 26")
+
+            IbanRow(viewModel = matchInfoViewModel, user.iban ?: "Iban henüz eklenmedi")
+
             Spacer(modifier = Modifier.height(20.dp))
         }
     }
@@ -121,9 +129,6 @@ fun MatchInfoScreen(
         )
     }
 }
-
-
-
 
 @Composable
 fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
@@ -168,7 +173,7 @@ fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
                     text = "${match.matchTime}"
                 )
                 Spacer(modifier = Modifier.height(4.dp))
-                MatchInfoRow(
+                MatchInfoRowWithModifier(
                     iconPainter = painterResource(id = R.drawable.ic_maps),
                     text = "${match.matchLocation}",
                     modifier = Modifier.clickable {
@@ -181,7 +186,7 @@ fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
 }
 
 @Composable
-fun MatchInfoRow(iconPainter: Painter, text: String, modifier: Modifier = Modifier) {
+fun MatchInfoRowWithModifier(modifier: Modifier, iconPainter: Painter, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(
             painter = iconPainter,
@@ -192,7 +197,6 @@ fun MatchInfoRow(iconPainter: Painter, text: String, modifier: Modifier = Modifi
         Text(text = text, fontSize = 16.sp, color = Color.White)
     }
 }
-
 
 @Composable
 fun MatchInfoRow(iconPainter: Painter, text: String) {
@@ -206,7 +210,6 @@ fun MatchInfoRow(iconPainter: Painter, text: String) {
         Text(text = text, fontSize = 16.sp, color = Color.White)
     }
 }
-
 
 @Composable
 fun WeatherInfoContent(weatherResource: Resource<WeatherResponse>?, match: Match) {
@@ -222,8 +225,8 @@ fun WeatherInfoContent(weatherResource: Resource<WeatherResponse>?, match: Match
 
         is Resource.Success -> {
             val weatherInfo = weatherResource.data
-            if (weatherInfo != null && weatherInfo.forecast.forecastday.isNotEmpty()) {
-                val forecastDay = weatherInfo.forecast.forecastday[0]
+            if (weatherInfo != null && weatherInfo.forecast.forecastDay.isNotEmpty()) {
+                val forecastDay = weatherInfo.forecast.forecastDay[0]
 
                 val inputDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
                 val dateParsed = inputDateFormat.parse(match.matchDate)
@@ -284,13 +287,13 @@ fun WeatherInfoContent(weatherResource: Resource<WeatherResponse>?, match: Match
                                     text = "Sıcaklık: ${currentHourWeather.temp_c} °C",
                                     fontSize = 16.sp,
                                     color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally) // Metin rengi beyaz
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
                                 Text(
                                     text = "Yağmur İhtimali: ${currentHourWeather.precip_mm} mm",
                                     fontSize = 16.sp,
                                     color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally) // Metin rengi beyaz
+                                    modifier = Modifier.align(Alignment.CenterHorizontally)
                                 )
                             }
                         }
@@ -323,7 +326,6 @@ fun WeatherInfoContent(weatherResource: Resource<WeatherResponse>?, match: Match
     }
 }
 
-
 @Composable
 fun TeamNamesWithBackground(
     team1Name: String,
@@ -354,7 +356,7 @@ fun TeamNamesWithBackground(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(horizontal = 40.dp),
+                    .padding(horizontal = 30.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
@@ -441,7 +443,7 @@ fun MatchInfoContentPreview() {
     val match = Match(
         id = "1",
         matchLocationTitle = "Stadyum",
-        matchLocation = "İstanbul, Türkiyedf vTürkiyedf vTürkiyedf TürkiyedfTürkiyedf",
+        matchLocation = "İstanbul, Ülker Fenerbahçe Şükrü Saracoğlu Stadyumu",
         matchDate = "01-01-2024",
         matchTime = "18:00",
         firstTeamName = "Takım A",
@@ -451,8 +453,6 @@ fun MatchInfoContentPreview() {
         isActive = true,
         maxPlayer = 22
     )
-
-    //MatchInfoContent(match = match, viewModel = MatchInfoViewModel())
 }
 
 @Preview(showBackground = true)
@@ -474,7 +474,7 @@ fun WeatherInfoContentPreview() {
 
     val fakeWeatherResponse = WeatherResponse(
         forecast = Forecast(
-            forecastday = listOf(
+            forecastDay = listOf(
                 ForecastDay(
                     date = "2024-01-01",
                     hour = listOf(
@@ -482,7 +482,7 @@ fun WeatherInfoContentPreview() {
                             time = "2024-01-01 18:00",
                             temp_c = 15.0,
                             condition = Condition(
-                                text = "Sunny"
+                                text = "Açık"
                             ),
                             precip_mm = 0.0
                         )
@@ -506,17 +506,10 @@ fun TeamNamesWithBackgroundPreview() {
         team1Players = listOf(
             "Oyuncu 1",
             "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1"
         ),
-        team2Players = listOf("Oyuncu 3", "Oyuncu 4")
+        team2Players = listOf(
+            "Oyuncu 3", "Oyuncu 4"
+        )
     )
 }
 
