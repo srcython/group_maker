@@ -95,7 +95,7 @@ fun PlayerSelectionSection(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName }}",
+                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName.ifBlank { it.userName } }}",
                     fontSize = 16.sp,
                     modifier = Modifier.weight(1f)
                 )
@@ -117,108 +117,67 @@ fun PlayerSelectionSection(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            //Seçilecek kimse kalmadı
-                            Text("Seçilecek kimse yok")
+                            Text("Seçilecek kimse kalmadı")
                         }
                     }
                 } else {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
+                    availableUsers.sortedBy { if (it.firstName.isNotBlank()) it.firstName else it.userName }.forEach { person ->
+                        DropdownMenuItem(
+                            onClick = {
+                                if (selectedUsers.contains(person)) {
+                                    setSelectedPersons(selectedUsers - person)
+                                } else if (selectedUsers.size < maxPlayers) {
+                                    setSelectedPersons(selectedUsers + person)
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        "$teamName en fazla $maxPlayers kişi olabilir",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            },
+                            modifier = Modifier.background(Color.White)
                         ) {
-                            Text(
-                                text = teamName,
-                                fontSize = 16.sp,
-                                fontWeight = FontWeight.Bold,
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically)
-                                    .padding(start = 10.dp)
-                            )
-                            Spacer(modifier = Modifier.weight(1f))
-                            IconButton(
-                                onClick = {
-                                    setExpanded(false)
-                                }
+                                    .fillMaxWidth()
                             ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.ic_close),
-                                    contentDescription = "Close",
-                                    modifier = Modifier.size(15.dp)
+                                Checkbox(
+                                    checked = selectedUsers.contains(person),
+                                    onCheckedChange = null,
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Color.Green
+                                    )
                                 )
-                            }
-                        }
-                    }
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(Color.White)
-                            .heightIn(max = 300.dp)
-                            .verticalScroll(rememberScrollState())
-                    ) {
-                        availableUsers.sortedBy { it.firstName }.forEach { person ->
-                            DropdownMenuItem(
-                                onClick = {
-                                    if (selectedUsers.contains(person)) {
-                                        setSelectedPersons(selectedUsers - person)
-                                    } else if (selectedUsers.size < maxPlayers) {
-                                        setSelectedPersons(selectedUsers + person)
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            "$teamName en fazla $maxPlayers kişi olabilir",
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    }
-                                },
-                                modifier = Modifier.background(Color.White)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
+                                Spacer(modifier = Modifier.width(8.dp))
+                                AsyncImage(
+                                    model = person.photoUrl,
+                                    placeholder = painterResource(id = R.drawable.ic_clock),
+                                    error = painterResource(id = R.drawable.ic_clock),
+                                    contentDescription = null,
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                ) {
-                                    Checkbox(
-                                        checked = selectedUsers.contains(person),
-                                        onCheckedChange = null,
-                                        colors = CheckboxDefaults.colors(
-                                            checkedColor = Color.Green
-                                        )
+                                        .size(40.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop,
+                                    alignment = Alignment.Center
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    val displayName = if (person.firstName.isNotBlank()) "${person.firstName} ${person.surname}" else person.userName
+                                    Text(text = displayName)
+                                    Text(
+                                        text = person.position,
+                                        style = MaterialTheme.typography.body2
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    AsyncImage(
-                                        model = person.photoUrl,
-                                        placeholder = painterResource(id = R.drawable.ic_clock),
-                                        error = painterResource(id = R.drawable.ic_clock),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(CircleShape),
-                                        contentScale = ContentScale.Crop,
-                                        alignment = Alignment.Center
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(text = "${person.firstName} ${person.surname}")
-                                        person.position?.let {
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.body2
-                                            )
-                                        }
-                                    }
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_star),
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text(text = person.point.toString())
                                 }
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_star),
+                                    contentDescription = null,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(text = person.point.toString())
                             }
                         }
                     }

@@ -60,11 +60,19 @@ fun MainNavGraph(
             isShowBottomBar.value = false
             SignUpScreen(navController = navController)
         }
-        composable<MatchScreens.MakeMatchScreen> {
-            val args = it.toRoute<MatchScreens.MakeMatchScreen>()
+        composable(
+            route = "makeMatchScreen/{teamSize}?matchType={matchType}",
+            arguments = listOf(
+                navArgument("teamSize") { type = NavType.IntType },
+                navArgument("matchType") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) { backStackEntry ->
             isShowBottomBar.value = false
-            MakeMatchScreen(args.title,args.size, navController = navController)
+            val teamSize = backStackEntry.arguments?.getInt("teamSize") ?: 0
+            val matchType = backStackEntry.arguments?.getString("matchType") ?: ""
+            MakeMatchScreen(teamSize = teamSize, navController = navController)
         }
+
         composable<SplashScreens.SplashScreen> {
             isShowBottomBar.value = false
             SplashScreen(navController = navController)
@@ -106,11 +114,16 @@ fun MainNavGraph(
             val match = Gson().fromJson(matchJson, Match::class.java)
             MatchInfoScreen(navController = navController, match = match)
         }
-        composable<PlayerScreens.PlayerPage> {
-            isShowBottomBar.value = true
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                PlayerPage()
-            }
+        composable(
+            route = "playerPage?matchType={matchType}",
+            arguments = listOf(
+                navArgument("matchType") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            isShowBottomBar.value = false
+            val matchType = backStackEntry.arguments?.getString("matchType") ?: ""
+            PlayerPage(navController = navController)
         }
+
     }
 }

@@ -1,5 +1,7 @@
 package com.yeceylan.groupmaker.ui.match
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -11,6 +13,7 @@ import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +26,8 @@ import javax.inject.Inject
 class MakeMatchViewModel @Inject constructor(
     private val getActiveMatchUseCase: GetActiveMatchUseCase,
     private val updateMatchUseCase: UpdateMatchUseCase,
-    private val firebaseAuth: FirebaseAuth
+    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
@@ -59,23 +63,32 @@ class MakeMatchViewModel @Inject constructor(
     private val _showChangeTeamNamesDialog = MutableStateFlow(false)
     val showChangeTeamNamesDialog: StateFlow<Boolean> = _showChangeTeamNamesDialog
 
-    private val currentUserId = firebaseAuth.currentUser?.uid
+    private val _matchTypeMismatch = MutableStateFlow(false)
+    val matchTypeMismatch: StateFlow<Boolean> = _matchTypeMismatch
+
+    private val matchType: String = savedStateHandle["matchType"] ?: ""
 
     init {
-        fetchActiveMatch()
+        fetchActiveMatch(matchType)
     }
-
-    private fun fetchActiveMatch() {
+    private fun fetchActiveMatch(navMatchType: String) {
         viewModelScope.launch {
-            val match = currentUserId?.let { getActiveMatchUseCase(it) }
+            val currentUserId = getCurrentUserUidUseCase()
+            val match = getActiveMatchUseCase(currentUserId)
+
             _activeMatch.value = match
-            _users.value = match?.playerList?.let { Resource.Success(it) } ?: Resource.Success(emptyList())
+            _users.value =
+                match?.playerList?.let { Resource.Success(it) } ?: Resource.Success(emptyList())
+
+            _matchTypeMismatch.value = match?.type != navMatchType
+            Log.d("MakeMatchViewModel", "Match Type Mismatch: ${_matchTypeMismatch.value}")
         }
     }
 
-    fun updateMatch(updatedMatchData: Match) {
+    private fun updateMatch(updatedMatchData: Match) {
         viewModelScope.launch {
-            currentUserId?.let { userId ->
+            val currentUserId = getCurrentUserUidUseCase()
+            currentUserId.let { userId ->
                 val currentMatch = activeMatch.value
                 if (currentMatch != null) {
                     val updatedMatch = currentMatch.copy(
@@ -100,7 +113,7 @@ class MakeMatchViewModel @Inject constructor(
     fun updateMatchAndNavigate(
         navController: NavController,
         locationLatLng: LatLng?,
-        selectedAddress: String
+        selectedAddress: String,
     ) {
         val updatedMatch = activeMatch.value?.copy(
             matchLocationTitle = _matchLocation.value,
@@ -112,7 +125,8 @@ class MakeMatchViewModel @Inject constructor(
             firstTeamPlayerList = _selectedPersons1.value,
             secondTeamPlayerList = _selectedPersons2.value,
             latLng = locationLatLng,
-            isActive = true
+            isActive = true,
+            type = matchType
         )
 
         updatedMatch?.let {
