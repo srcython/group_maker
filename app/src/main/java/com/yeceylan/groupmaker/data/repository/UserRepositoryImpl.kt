@@ -99,7 +99,6 @@ class UserRepositoryImpl @Inject constructor(
                 "matchTime", match.matchTime,
                 "latLng", match.latLng,
                 "secondTeamName", match.secondTeamName,
-                "type", match.type,
                 "playerList", match.playerList,
                 "firstTeamPlayerList", match.firstTeamPlayerList,
                 "secondTeamPlayerList", match.secondTeamPlayerList,

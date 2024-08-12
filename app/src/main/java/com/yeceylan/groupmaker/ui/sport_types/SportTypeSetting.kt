@@ -1,5 +1,6 @@
 package com.yeceylan.groupmaker.ui.sport_types
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -83,10 +84,13 @@ fun SportTypeSettingItem(
             .padding(20.dp)
             .clickable {
                 viewModel.addMatch(title,teamSize)
-                if (text !="Players"){
-                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))
-                }else{
-                    navController.navigate(PlayerScreens.PlayerPage)
+                if (text != "Players") {
+                    Log.d("NavigationTest", "Navigating to makeMatchScreen with title: $title and teamSize: $teamSize")
+                    val route = "makeMatchScreen/$teamSize?matchType=$title"
+                    navController.navigate(route)
+                } else {
+                    val route = "playerPage?matchType=$title"
+                    navController.navigate(route)
                 }
             },
         shape = RoundedCornerShape(24.dp),

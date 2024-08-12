@@ -1,5 +1,6 @@
 package com.yeceylan.groupmaker.ui.player
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -50,6 +51,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
@@ -57,6 +59,7 @@ import com.yeceylan.groupmaker.domain.model.User
 
 @Composable
 fun PlayerPage(
+    navController: NavController,
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
     val usersState by playerViewModel.filteredUsers.collectAsState()
@@ -161,7 +164,8 @@ fun PlayerPage(
 
                         is Resource.Error -> {
                             Text(
-                                text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
+                                text = usersState.message
+                                    ?: stringResource(R.string.bir_hata_olu_tu),
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
@@ -229,7 +233,11 @@ fun PlayerPage(
 
 
 @Composable
-fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSelectedPersons: (List<User>) -> Unit) {
+fun SelectedPlayersGrid(
+    modifier: Modifier,
+    selectedPersons: List<User>,
+    setSelectedPersons: (List<User>) -> Unit
+) {
     if (selectedPersons.isNotEmpty()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),

@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 sealed class PlayerScreens {
 
     @Serializable
-    data object PlayerPage : PlayerScreens()
+    data class PlayerPage(val title: String, val size: Int) : PlayerScreens()
 }

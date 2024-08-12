@@ -1,6 +1,7 @@
 package com.yeceylan.groupmaker.ui.player
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -28,6 +29,7 @@ class PlayerViewModel @Inject constructor(
     private val getActiveMatchUseCase: GetActiveMatchUseCase,
     private val addUserUseCase: AddUserUseCase,
     private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _users = MutableStateFlow<Resource<List<User>>>(Resource.Loading())
@@ -39,9 +41,13 @@ class PlayerViewModel @Inject constructor(
     private val _selectedUsers = MutableStateFlow<List<User>>(emptyList())
     val selectedUsers: StateFlow<List<User>> = _selectedUsers
 
+    private val matchType: String =
+        savedStateHandle["matchType"] ?: ""
+
     init {
         fetchUsers()
         fetchActiveMatch()
+        Log.d("PlayerViewModel", "Match Type: $matchType")
     }
 
     private fun fetchUsers() =
@@ -74,7 +80,8 @@ class PlayerViewModel @Inject constructor(
 
     fun searchUsers(query: String) {
         val usersList = _users.value.data ?: return
-        _filteredUsers.value = Resource.Success(usersList.filter { it.userName.contains(query, ignoreCase = true) })
+        _filteredUsers.value =
+            Resource.Success(usersList.filter { it.userName.contains(query, ignoreCase = true) })
     }
 
     fun addUserToFirestore(user: User) {
@@ -106,7 +113,7 @@ class PlayerViewModel @Inject constructor(
         updateCurrentMatch()
     }
 
-    private fun updateCurrentMatch() {
+    fun updateCurrentMatch() {
         val auth = FirebaseAuth.getInstance()
         val currentUserId = auth.currentUser?.uid ?: run {
             Log.d("PlayerViewModel", "No user logged in")
@@ -124,7 +131,10 @@ class PlayerViewModel @Inject constructor(
                     val updatedMatch = activeMatch.copy(playerList = updatedPlayerList)
 
                     updateMatchUseCase(currentUserId, updatedMatch)
-                    Log.d("PlayerViewModel", "Active match updated with new players: ${updatedMatch.id}")
+                    Log.d(
+                        "PlayerViewModel",
+                        "Active match updated with new players: ${updatedMatch.id}"
+                    )
                 } else {
                     val newMatch = Match(
                         id = UUID.randomUUID().toString(),
@@ -134,14 +144,14 @@ class PlayerViewModel @Inject constructor(
                         matchTime = "",
                         firstTeamName = "",
                         secondTeamName = "",
-                        type = "",
+                        type = matchType,
                         maxPlayer = 0,
                         playerList = _selectedUsers.value,
                         firstTeamPlayerList = emptyList(),
                         secondTeamPlayerList = emptyList(),
                         result = null,
                         latLng = null,
-                        isActive = true
+                        isActive = true,
                     )
 
                     addMatchUseCase(currentUserId, newMatch)

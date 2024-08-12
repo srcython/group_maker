@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
@@ -27,10 +28,11 @@ class SportTypeViewModel @Inject constructor(
     private val addMatchUseCase: AddMatchUseCase,
     private val getActiveMatchUseCase: GetActiveMatchUseCase,
     private val updateMatchUseCase: UpdateMatchUseCase,
+    savedStateHandle: SavedStateHandle
     ) : ViewModel() {
 
     private var sportTypesResponse by mutableStateOf<Resource<List<SportTypeData>>>(Resource.Loading())
-
+    private val matchType: String = savedStateHandle["matchType"] ?: ""
     private val _sportTypeList = MutableStateFlow<List<SportTypeData>>(emptyList())
     val sportTypeList: StateFlow<List<SportTypeData>> = _sportTypeList
 

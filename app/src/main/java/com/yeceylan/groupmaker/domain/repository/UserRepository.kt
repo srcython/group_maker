@@ -14,5 +14,5 @@ interface UserRepository {
     suspend fun addMatch(userId: String, match: Match)
     suspend fun updateMatch(userId: String, match: Match) // New method
     suspend fun getActiveMatch(userId: String): Match?
-    suspend fun addStorage(uri: Uri,userId: String): Flow<Resource<String>>
+    suspend fun addStorage(uri: Uri, userId: String): Flow<Resource<String>>
 }
