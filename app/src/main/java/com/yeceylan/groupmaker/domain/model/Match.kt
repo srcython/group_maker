@@ -18,7 +18,7 @@ data class Match(
     val result: String? = null,
     val latLng: LatLng?,
     val isActive: Boolean = true,
-    val maxPlayer : Int = 0
+    val maxPlayer : Int = 0,
 
     ):Serializable {
     constructor() : this(
@@ -36,7 +36,7 @@ data class Match(
         result = null,
         latLng = null,
         isActive = true,
-        maxPlayer = 0
+        maxPlayer = 0,
     )
 
 }

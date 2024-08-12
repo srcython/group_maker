@@ -65,71 +65,72 @@ fun PlayerPage(
     var showAddPlayerDialog by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = stringResource(R.string.se_ili_oyuncular))
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(text = stringResource(R.string.se_ili_oyuncular))
 
-        when (usersState) {
-            is Resource.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
+            when (usersState) {
+                is Resource.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
 
-            is Resource.Error -> {
-                Text(
-                    text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-
-            is Resource.Success -> {
-                if (selectedUsers.isEmpty()) {
+                is Resource.Error -> {
                     Text(
-                        text = stringResource(R.string.no_players_selected),
+                        text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
+                        color = Color.Red,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                } else {
-                    SelectedPlayersGrid(
-                        modifier = Modifier.weight(1f),
-                        selectedPersons = selectedUsers,
-                        setSelectedPersons = { updatedList ->
-                            playerViewModel.updateSelectedUsers(updatedList)
-                        }
+                }
+
+                is Resource.Success -> {
+                    if (selectedUsers.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_players_selected),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    } else {
+                        SelectedPlayersGrid(
+                            modifier = Modifier.weight(1f),
+                            selectedPersons = selectedUsers,
+                            setSelectedPersons = { updatedList ->
+                                playerViewModel.updateSelectedUsers(updatedList)
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { showAddPlayerDialog = true },
+                    colors = ButtonDefaults.buttonColors(Color.Blue),
+                ) {
+                    Text(
+                        text = stringResource(R.string.oyuncu_ekle),
+                        color = Color.White
+                    )
+                }
+                Button(
+                    onClick = { showUserDialog = true },
+                    colors = ButtonDefaults.buttonColors(Color.Blue),
+                ) {
+                    Text(
+                        text = stringResource(R.string.oyuncu_a_r),
+                        color = Color.White,
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { showAddPlayerDialog = true },
-                colors = ButtonDefaults.buttonColors(Color.Blue),
-            ) {
-                Text(
-                    text = stringResource(R.string.oyuncu_ekle),
-                    color = Color.White
-                )
-            }
-            Button(
-                onClick = { showUserDialog = true },
-                colors = ButtonDefaults.buttonColors(Color.Blue),
-            ) {
-                Text(
-                    text = stringResource(R.string.oyuncu_a_r),
-                    color = Color.White,
-                )
-            }
-        }
     }
-
     if (showUserDialog) {
         Dialog(onDismissRequest = { showUserDialog = false }) {
             Surface(
