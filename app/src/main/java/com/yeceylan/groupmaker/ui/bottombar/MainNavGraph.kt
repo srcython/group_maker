@@ -81,7 +81,7 @@ fun MainNavGraph(
         }
         composable(route = BottomBarScreen.History.route) {
             isShowBottomBar.value = true
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+            Box(modifier = Modifier.padding(bottom = 50.dp, top = 10.dp)) {
                 OldMatchesScreen()
             }
         }
