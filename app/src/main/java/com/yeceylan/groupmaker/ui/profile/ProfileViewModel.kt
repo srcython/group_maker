@@ -42,7 +42,12 @@ class ProfileViewModel @Inject constructor(
         }
     }
 
-    fun updateProfile(mUser: User, uri: Uri) = viewModelScope.launch {
+    fun updateProfileInfo(user: User) = viewModelScope.launch {
+        updateUseCase(user)
+
+    }
+
+    fun updatePhoto(mUser: User, uri: Uri) = viewModelScope.launch {
 
         addStorageUseCase(uri, mUser.id).collect {
 

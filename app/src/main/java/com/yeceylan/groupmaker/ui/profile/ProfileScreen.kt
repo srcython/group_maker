@@ -275,10 +275,14 @@ fun ProfileSettingsDialog(
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
 
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl) ) }
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? -> imageUri = uri ?: Uri.parse(user.photoUrl) }
+        onResult = {resultUri ->
+            resultUri?.let {
+                viewModel.updatePhoto(user,resultUri)
+                imageUri=resultUri
+            }}
     )
 
     var surname by remember { mutableStateOf(user.surname) }
@@ -349,10 +353,9 @@ fun ProfileSettingsDialog(
                         user.firstName = firstname
                         user.surname = surname
                         user.position = position
-                        user.photoUrl = imageUri.toString()
                         user.iban = iban
 
-                        imageUri?.let { viewModel.updateProfile(user, it) }
+                        viewModel.updateProfileInfo(user)
                         onDismiss()
                     }) {
                         Text(text = "Ekle")
