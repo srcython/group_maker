@@ -47,6 +47,13 @@ Libraries Docs
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/19.png" alt="Screenshot_1694509493" width="250" height="auto">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/20.png" alt="Screenshot_1694509493" width="250" height="auto">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/21.png" alt="Screenshot_1694509493" width="250" height="auto">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
 
 
 [10]: https://developer.android.com/topic/architecture
