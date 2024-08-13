@@ -1,8 +1,5 @@
 package com.yeceylan.groupmaker.ui.splash
 
-
-import android.app.Activity
-import android.content.Context
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -22,46 +19,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.LottieConstants
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.firebase.auth.FirebaseAuth
-import com.yeceylan.groupmaker.MainActivity
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
-import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_lii
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cccc
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
 import kotlinx.coroutines.delay
-
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
 
-    val context = LocalContext.current
     val viewModel: SplashViewModel = hiltViewModel()
 
     val alpha = remember {
         Animatable(0f)
     }
-    val auth = FirebaseAuth.getInstance()
-    //FirebaseAuth.getInstance().signOut()
 
     LaunchedEffect(key1 = true) {
         alpha.animateTo(
             1f,
             animationSpec = tween(2500)
         )
-        delay(3000)
+        delay(1000)
 
         if (viewModel.uiState.value.isLogin) {
-            // auth.signOut()
             navController.navigate(BottomBarScreen.Home.route) {
                 popUpTo(navController.graph.id) {
                     inclusive = true
@@ -74,8 +64,6 @@ fun SplashScreen(navController: NavHostController) {
                 }
             }
         }
-
-
     }
 
     Column(
@@ -86,13 +74,13 @@ fun SplashScreen(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LoaderAnimation(
-            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie
+            modifier = Modifier.size(spacing_cccc), anim = R.raw.splash_lottie
         )
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(spacing_l))
         Text(
-            text = "Let's Play",
+            text = stringResource(id = R.string.splash_text),
             modifier = Modifier.alpha(alpha.value),
-            fontSize = 52.sp,
+            fontSize = font_size_lii,
             fontWeight = FontWeight.Light
         )
     }
@@ -107,11 +95,3 @@ fun LoaderAnimation(modifier: Modifier, anim: Int) {
         modifier = modifier
     )
 }
-
-/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {
-    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
-    return sharedPreferences.getBoolean("isFinished", false)
-
-}
-
- */

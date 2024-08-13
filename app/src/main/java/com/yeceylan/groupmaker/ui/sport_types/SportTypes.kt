@@ -2,13 +2,14 @@ package com.yeceylan.groupmaker.ui.sport_types
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -22,16 +23,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_m1
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_xl
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_c
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cc
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_m2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxl
 
 @Composable
 fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {
@@ -41,22 +51,26 @@ fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hil
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
     ) {
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .size(spacing_c))
         Text(
-            text = "Select a sport",
-            fontSize = 30.sp,
+            text = stringResource(id = R.string.select_sport),
+            fontSize = font_size_xl,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth()
         )
-        LazyColumn() {
+        Spacer(modifier = Modifier
+            .fillMaxWidth()
+            .size(spacing_xxl))
+        LazyColumn {
 
             items(list) {
-
                 ImageCard(
                     painter = it.image!!,
-                    contentDescription = "",
+                    contentDescription = stringResource(id = R.string.card_image_desc),
                     title = it.title!!,
                     navController = navController,
                     teamSize = it.size!!
@@ -64,7 +78,6 @@ fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hil
             }
         }
     }
-
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -81,15 +94,15 @@ fun ImageCard(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(spacing_m2)
             .clickable {
-                navController.navigate(SportTypeScreens.SportTypeSetting(title,teamSize))
+                navController.navigate(SportTypeScreens.SportTypeSetting(title, teamSize))
             },
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(10.dp),
+        shape = RoundedCornerShape(spacing_l),
+        elevation = CardDefaults.cardElevation(spacing_s1),
 
         ) {
-        Box(modifier = Modifier.height(200.dp)) {
+        Box(modifier = Modifier.height(spacing_cc)) {
 
             GlideImage(
                 model = painter,
@@ -107,7 +120,6 @@ fun ImageCard(
                                 Color.Transparent,
                                 Color.Black,
                             ),
-                            // startY = 100f,
                         ),
                     ),
             ) {
@@ -116,14 +128,14 @@ fun ImageCard(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
+                    .padding(spacing_s2),
                 contentAlignment = Alignment.BottomCenter,
             ) {
                 Text(
                     title,
                     style = TextStyle(
                         color = Color.White,
-                        fontSize = 16.sp,
+                        fontSize = font_size_m1,
                         fontStyle = FontStyle.Italic,
                     )
                 )

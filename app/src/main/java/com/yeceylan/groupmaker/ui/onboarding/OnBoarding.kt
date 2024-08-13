@@ -29,13 +29,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -44,6 +43,12 @@ import com.google.accompanist.pager.rememberPagerState
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.domain.model.OnBoardingData
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_l
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_ccc
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxxvi
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import kotlinx.coroutines.launch
 
@@ -60,17 +65,17 @@ fun getData(): List<OnBoardingData> {
         OnBoardingData(
             titleR = R.string.onBoardingTitle1,
             textR = R.string.onBoardingText1,
-            imageR = R.drawable.onboarding1
+            imageR = R.drawable.onboarding1,
         ),
         OnBoardingData(
             titleR = R.string.onBoardingTitle2,
             textR = R.string.onBoardingText2,
-            imageR = R.drawable.onboarding2
+            imageR = R.drawable.onboarding2,
         ),
         OnBoardingData(
             titleR = R.string.onBoardingTitle3,
             textR = R.string.onBoardingText3,
-            imageR = R.drawable.onboarding3
+            imageR = R.drawable.onboarding3,
         ),
     )
 }
@@ -81,23 +86,22 @@ fun OnBoarding(navController: NavController) {
 
     val scope = rememberCoroutineScope()
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        //Top alanını oluşturan compose çağırıyoruz
+    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
+
         TopSection(navController)
-        //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz
         val item = getData()
         val state = rememberPagerState(pageCount = item.size)
-        //OnBoardingItem'a item resim ve yazıları arayüz elementlerine aktarmasını
-        //sağlıyoruz
+
         HorizontalPager(
             state = state,
             modifier = Modifier
                 .fillMaxSize()
-                .weight(0.8f)
-        ) { page ->
+                .weight(0.8f),
+
+            ) { page ->
             OnBoardingItem(item = item[page])
         }
-        //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi
+
         BottomSection(size = item.size, index = state.currentPage) {
             if (state.currentPage + 1 < item.size) {
                 scope.launch {
@@ -112,16 +116,14 @@ fun OnBoarding(navController: NavController) {
     }
 }
 
-//Top alanını oluşturan compose
 @Composable
 fun TopSection(navController: NavController) {
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
+            .padding(spacing_s2, spacing_xxxvi),
     ) {
-        //Skip adlı text buttonunu oluşturma
         TextButton(
             onClick = {
                 navController.popBackStack()
@@ -130,20 +132,20 @@ fun TopSection(navController: NavController) {
             modifier = Modifier.align(Alignment.CenterEnd)
         ) {
             Text(
-                text = "Skip",
-                color = MaterialTheme.colorScheme.onBackground
+                text = stringResource(id = R.string.skip),
+                color = MaterialTheme.colorScheme.onBackground,
             )
         }
     }
 }
 
-//Pager görselini ekran sayısı kadar çoğaltan compose
 @Composable
 fun BoxScope.Indicators(size: Int, index: Int) {
+
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        modifier = Modifier.align(Alignment.CenterStart)
+        horizontalArrangement = Arrangement.spacedBy(spacing_s2),
+        modifier = Modifier.align(Alignment.CenterStart),
     ) {
         repeat(size) {
             Indicator(isSelected = it == index)
@@ -151,76 +153,76 @@ fun BoxScope.Indicators(size: Int, index: Int) {
     }
 }
 
-//Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma
 @Composable
 fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(12.dp)
-    ) {//Pager bölümünü oluşturan compose çağırıyoruz
+            .padding(spacing_s2),
+    ) {
         Indicators(size = size, index = index)
-        //Sağdaki FloatingActionButton rengini, iconunu tanımalama
         FloatingActionButton(
             onClick = onNextClicked,
             modifier = Modifier.align(Alignment.CenterEnd),
             containerColor = MaterialTheme.colorScheme.primary,
-            contentColor = MaterialTheme.colorScheme.onPrimary
+            contentColor = MaterialTheme.colorScheme.onPrimary,
         ) {
             Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)
         }
     }
 }
 
-//Bir tane Circle şeklinde pager oluşturma
 @Composable
 fun Indicator(isSelected: Boolean) {
-    //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm
+
     val width = animateDpAsState(
-        targetValue = if (isSelected) 25.dp else 10.dp,
-        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy), label = ""
+        targetValue = if (isSelected) spacing_l else spacing_s1,
+        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy),
+        label = "",
     )
-    //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama
+
     Box(
         modifier = Modifier
-            .height(10.dp)
+            .height(spacing_s1)
             .width(width = width.value)
             .clip(shape = CircleShape)
             .background(
-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(
-                    alpha = 0.5f
-                )
-            )
-    ) {}
+                if (isSelected) {
+                    MaterialTheme.colorScheme.primary
+                } else {
+                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
+                }
+            ),
+    ) {
 
+    }
 }
 
-//OnBoardingData sınıfından gelen resim ve yazıların arayüz elementlerine aktarılması
 @Composable
 fun OnBoardingItem(item: OnBoardingData) {
-    //İçereklerin konumu belirleniyorz
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
     ) {
-        //Resim, image özelliğine atanıyor
         Image(
-            painter = painterResource(id = item.imageR), contentDescription = null,
-            Modifier.size(300.dp)
+            painter = painterResource(id = item.imageR),
+            contentDescription = null,
+            Modifier.size(spacing_ccc),
         )
-        //Bold ana başlık Text özelliğine atanıyor
+
         Text(
             text = stringResource(id = item.titleR),
-            fontSize = 24.sp,
+            fontSize = font_size_l,
             color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
         )
-        //Açıklama yazısı Text özelliğine atanıyor
+
         Text(
             text = stringResource(id = item.textR),
             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
