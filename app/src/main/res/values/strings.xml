@@ -105,5 +105,40 @@
     <string name="card_title_players">Oyuncular</string>
     <string name="selected">Seçilenler:</string>
 
+    <!-- MakeMatch Screen-->
+    <string name="title_match_location_and_time">Maç Yeri Ve Zamanı</string>
+    <string name="enter_match_location">Maç konumu giriniz</string>
+    <string name="match_date">"Maç Tarihi: "</string>
+    <string name="match_time">"Maç Saati: "</string>
+    <string name="title_create_team">Takım Oluştur</string>
+    <string name="how_many_players_per_team">Takımlar kaç kişilik?</string>
+    <string name="edit_team_names">Takım Adlarını Değiştir</string>
+    <string name="no_players_added">Herhangi bir oyuncu eklemediniz...</string>
+    <string name="players_could_not_be_loaded">Oyuncular getirilemedi.</string>
+    <string name="please_enter_match_location">Lütfen maç konumunu girin!</string>
+    <string name="please_select_match_date">Lütfen maç tarihini seçin!</string>
+    <string name="please_select_match_time">Lütfen maç saatini seçin!</string>
+    <string name="please_select_first_team_players">Lütfen ilk takımın oyuncularını seçin!</string>
+    <string name="please_select_second_team_players">Lütfen ikinci takımın oyuncularını seçin!</string>
+    <string name="create_match">Maç Oluştur</string>
+    <string name="team_1">Takım 1</string>
+    <string name="team_2">Takım 2</string>
 
+    <!-- MatchInfo Screen -->
+    <string name="iban_not_added_yet">Iban henüz eklenmedi</string>
+    <string name="are_you_sure_you_want_to_end_the_match">Maçı bitirmek istediğinizden emin misiniz?</string>
+    <string name="are_you_sure">Emin misiniz?</string>
+    <string name="no">Hayır</string>
+    <string name="yes">Evet</string>
+    <string name="title_match_information">Maç Bilgileri</string>
+    <string name="weather_for_match_time">Maç Saati İçin Hava Durumu</string>
+    <string name="status">Durum: %1$s</string>
+    <string name="temperature">Sıcaklık: %1$s °C</string>
+    <string name="chance_of_rain">Yağmur İhtimali: %1$s mm</string>
+    <string name="an_error_occurred_please_try_again">Bir hata oluştu. Lütfen tekrar deneyin.</string>
+    <string name="past_time_selected_select_valid_time">Geçmiş bir saat seçtiniz, lütfen geçerli bir saat seçin!</string>
+    <string name="select_person">Kişi seç</string>
+    <string name="selected_people">Seçilen Kişiler: %1$s</string>
+    <string name="no_one_left_to_select">Seçilecek kimse kalmadı</string>
+    <string name="team_max_players">%1$s en fazla %2$d kişi olabilir</string>
 </resources>
