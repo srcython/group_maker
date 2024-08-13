@@ -27,14 +27,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.components.button.BackButton
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
 import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_l11
+import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_m1
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cc
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_m2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxl2
 
 @Composable
 fun SportTypeSetting(
@@ -45,7 +51,7 @@ fun SportTypeSetting(
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
 
-    Row(modifier = Modifier.padding(top = 60.dp, start = 20.dp)) {
+    Row(modifier = Modifier.padding(top = spacing_xxl2, start = spacing_m2)) {
         BackButton {
             navController.popBackStack()
         }
@@ -59,7 +65,7 @@ fun SportTypeSetting(
 
         Text(
             text = title,
-            fontSize = 30.sp,
+            fontSize = font_size_l11,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .fillMaxWidth(),
@@ -98,7 +104,7 @@ fun SportTypeSettingItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(spacing_m2)
             .clickable {
                 viewModel.addMatch(title, teamSize)
                 if (text != "Oyuncular") {
@@ -107,11 +113,11 @@ fun SportTypeSettingItem(
                     navController.navigate(PlayerScreens.PlayerPage)
                 }
             },
-        shape = RoundedCornerShape(24.dp),
-        elevation = CardDefaults.cardElevation(10.dp),
+        shape = RoundedCornerShape(spacing_l),
+        elevation = CardDefaults.cardElevation(spacing_s1),
 
         ) {
-        Box(modifier = Modifier.height(200.dp)) {
+        Box(modifier = Modifier.height(spacing_cc)) {
             Image(
                 modifier = Modifier.fillMaxWidth(),
                 painter = painter,
@@ -137,10 +143,10 @@ fun SportTypeSettingItem(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(12.dp),
+                    .padding(spacing_s2),
                 contentAlignment = Alignment.BottomCenter,
             ) {
-                Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))
+                Text(text, style = TextStyle(color = Color.White, fontSize = font_size_m1))
             }
         }
     }
