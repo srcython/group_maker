@@ -1,0 +1,26 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/domain/model/Match.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.domain.model\r\n\r\ndata class Match(\r\n    val id: String = \"\",\r\n    val team1: String? = null,\r\n    val team2: String? = null,\r\n    val date: String? = null,\r\n    val location: String? = null,\r\n    val result: String? = null,\r\n    val type: String = \"volleyball\",\r\n    val playerList: List<User> = emptyList(),\r\n    val playerList1: List<User> = emptyList(),\r\n    val maxPlayer: String? = null,\r\n) {\r\n    constructor() : this(\r\n        id = \"\",\r\n        team1 = null,\r\n        team2 = null,\r\n        date = null,\r\n        location = null,\r\n        result = null,\r\n        type = \"volleyball\",\r\n        playerList = emptyList(),\r\n        playerList1 = emptyList(),\r\n        maxPlayer = null,\r\n    )\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/model/Match.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/Match.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/domain/model/Match.kt	(revision d6890015b927e0470892f2d5664d22192ee5e8ed)
++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/Match.kt	(date 1723024445301)
+@@ -11,6 +11,7 @@
+     val playerList: List<User> = emptyList(),
+     val playerList1: List<User> = emptyList(),
+     val maxPlayer: String? = null,
++    val isActive:Boolean = true,
+ ) {
+     constructor() : this(
+         id = "",
+@@ -23,6 +24,7 @@
+         playerList = emptyList(),
+         playerList1 = emptyList(),
+         maxPlayer = null,
++        isActive = true,
+     )
+ 
+ }
