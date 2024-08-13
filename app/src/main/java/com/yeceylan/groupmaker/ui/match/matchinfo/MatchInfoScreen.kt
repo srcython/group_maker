@@ -40,6 +40,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import com.yeceylan.groupmaker.ui.profile.ProfileViewModel
 import com.yeceylan.groupmaker.ui.theme.Dimen
 import com.yeceylan.groupmaker.ui.weather.WeatherUiState
@@ -85,15 +86,18 @@ fun MatchInfoScreen(
             Spacer(modifier = Modifier.height(Dimen.spacing_s1))
 
             TeamNamesWithBackground(
-                team1Name = match.firstTeamName ?: "Takım 1",
-                team2Name = match.secondTeamName ?: "Takım 2",
+                team1Name = match.firstTeamName ?: stringResource(R.string.team_1),
+                team2Name = match.secondTeamName ?: stringResource(R.string.team_2),
                 backgroundImage = R.drawable.img_stadium_background,
                 team1Players = match.firstTeamPlayerList.map { it.firstName.ifEmpty { it.userName } },
                 team2Players = match.secondTeamPlayerList.map { it.firstName.ifEmpty { it.userName } }
             )
             Spacer(modifier = Modifier.height(Dimen.spacing_m2))
 
-            IbanRow(viewModel = matchInfoViewModel, user.iban ?: "Iban henüz eklenmedi")
+            IbanRow(
+                viewModel = matchInfoViewModel,
+                user.iban ?: stringResource(R.string.iban_not_added_yet)
+            )
 
             Spacer(modifier = Modifier.height(Dimen.spacing_m2))
         }
@@ -102,8 +106,8 @@ fun MatchInfoScreen(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = { showDialog = false },
-            title = { Text(text = "Emin misiniz?") },
-            text = { Text(text = "Maçı bitirmek istediğinizden emin misiniz?") },
+            title = { Text(text = stringResource(R.string.are_you_sure)) },
+            text = { Text(text = stringResource(R.string.are_you_sure_you_want_to_end_the_match)) },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -112,14 +116,14 @@ fun MatchInfoScreen(
                         showDialog = false
                     }
                 ) {
-                    Text("Evet")
+                    Text(stringResource(R.string.yes))
                 }
             },
             dismissButton = {
                 TextButton(
                     onClick = { showDialog = false }
                 ) {
-                    Text("Hayır")
+                    Text(stringResource(R.string.no))
                 }
             }
         )
@@ -147,7 +151,7 @@ fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
         ) {
             Column {
                 Text(
-                    text = "Maç Bilgileri",
+                    text = stringResource(R.string.title_match_information),
                     fontSize = Dimen.font_size_m2,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -241,7 +245,7 @@ fun WeatherInfoContent(weatherViewModel: WeatherViewModel, match: Match) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Maç Saati İçin Hava Durumu",
+                            text = stringResource(R.string.weather_for_match_time),
                             fontSize = Dimen.font_size_m2,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
@@ -258,19 +262,22 @@ fun WeatherInfoContent(weatherViewModel: WeatherViewModel, match: Match) {
                         )
                         Spacer(modifier = Modifier.height(Dimen.spacing_s2))
                         Text(
-                            text = "Durum: ${weatherUiState.conditionText}",
+                            text = stringResource(R.string.status, weatherUiState.conditionText),
                             fontSize = Dimen.font_size_m1,
                             color = Color.White,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         Text(
-                            text = "Sıcaklık: ${weatherUiState.temperature} °C",
+                            text = stringResource(R.string.temperature, weatherUiState.temperature),
                             fontSize = Dimen.font_size_m1,
                             color = Color.White,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
                         Text(
-                            text = "Yağmur İhtimali: ${weatherUiState.precipitation} mm",
+                            text = stringResource(
+                                R.string.chance_of_rain,
+                                weatherUiState.precipitation
+                            ),
                             fontSize = Dimen.font_size_m1,
                             color = Color.White,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -282,14 +289,14 @@ fun WeatherInfoContent(weatherViewModel: WeatherViewModel, match: Match) {
 
         is WeatherUiState.Error -> {
             Text(
-                text = "Bir hata oluştu. Lütfen tekrar deneyin.",
+                text = stringResource(R.string.an_error_occurred_please_try_again),
                 modifier = Modifier.padding(Dimen.spacing_m1)
             )
         }
 
         is WeatherUiState.NoData -> {
             Text(
-                text = "Hava durumu mevcut değil. Lütfen daha yakın bir tarih seçiniz",
+                text = "weather_not_available_select_closer_date",
                 modifier = Modifier.padding(Dimen.spacing_m1)
             )
         }

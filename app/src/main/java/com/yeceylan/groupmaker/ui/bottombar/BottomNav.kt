@@ -31,7 +31,10 @@ import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(
+    modifier: Modifier,
+    navController: NavHostController,
+) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.History,
@@ -43,7 +46,7 @@ fun BottomBar(navController: NavHostController) {
 
     Row(
         modifier = Modifier
-            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 8.dp)
+            .padding(start = 10.dp, end = 10.dp, top = 8.dp, bottom = 20.dp)
             .background(Color.Transparent)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -110,5 +113,5 @@ fun RowScope.AddItem(
 @Composable
 @Preview
 fun BottomNavPreview() {
-    BottomBar(navController = rememberNavController())
+    BottomBar(modifier = Modifier, navController = rememberNavController())
 }

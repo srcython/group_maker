@@ -92,11 +92,9 @@ fun MainNavGraph(
             }
         }
         composable<SportTypeScreens.SportTypeSetting> {
-            isShowBottomBar.value = true
+            isShowBottomBar.value = false
             val args = it.toRoute<SportTypeScreens.SportTypeSetting>()
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                SportTypeSetting(args.title, args.teamSize, navController)
-            }
+            SportTypeSetting(args.title, args.teamSize, navController)
         }
         composable(
             route = "matchInfo/{matchJson}",

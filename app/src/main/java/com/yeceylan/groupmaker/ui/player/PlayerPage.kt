@@ -84,10 +84,12 @@ fun PlayerPage(
             Column(modifier = Modifier.fillMaxSize()) {
                 Text(text = stringResource(R.string.selected_players))
 
-                when (usersState) {
-                    is Resource.Loading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                    }
+            Divider()
+
+            when (usersState) {
+                is Resource.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
 
                     is Resource.Error -> {
                         Text(
@@ -97,25 +99,27 @@ fun PlayerPage(
                         )
                     }
 
-                    is Resource.Success -> {
-                        if (selectedUsers.isEmpty()) {
-                            Text(
-                                text = stringResource(R.string.no_players_selected),
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            )
-                        } else {
-                            SelectedPlayersGrid(
-                                modifier = Modifier.weight(20f),
-                                selectedPersons = selectedUsers,
-                                setSelectedPersons = { updatedList ->
-                                    playerViewModel.updateSelectedUsers(updatedList)
-                                }
-                            )
-                        }
+                is Resource.Success -> {
+                    if (selectedUsers.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_players_selected),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    } else {
+                        SelectedPlayersGrid(
+                            modifier = Modifier.weight(10f),
+                            selectedPersons = selectedUsers,
+                            setSelectedPersons = { updatedList ->
+                                playerViewModel.updateSelectedUsers(updatedList)
+                            }
+                        )
                     }
                 }
+            }
 
-                Spacer(modifier = Modifier.weight(1f))
+            Divider()
+
+            Spacer(modifier = Modifier.weight(1f))
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -143,7 +147,6 @@ fun PlayerPage(
             }
         }
     }
-
     if (showUserDialog) {
         Dialog(onDismissRequest = { showUserDialog = false }) {
             Surface(
