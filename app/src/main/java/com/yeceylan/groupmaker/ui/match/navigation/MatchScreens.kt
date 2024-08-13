@@ -7,5 +7,5 @@ sealed class MatchScreens(
 ) {
 
     @Serializable
-    data class MakeMatchScreen(val title:String,val size: Int) : MatchScreens()
+    data class MakeMatchScreen(val size: Int) : MatchScreens()
 }

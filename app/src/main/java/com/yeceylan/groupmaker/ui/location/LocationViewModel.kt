@@ -51,14 +51,6 @@ class LocationViewModel @Inject constructor(
                 val placeResponse = placesClient.fetchPlace(request).await()
                 val place = placeResponse.place
 
-//                // Lat ve long dört ondalık basamakta format
-//                val formattedLatLng = place.latLng?.let { latLng ->
-//                    LatLng(
-//                        String.format("%.4f", latLng.latitude).toDouble(),
-//                        String.format("%.4f", latLng.longitude).toDouble()
-//                    )
-//                }
-
                 _selectedLocation.value = place.latLng
                 _selectedAddress.value = place.address
 
