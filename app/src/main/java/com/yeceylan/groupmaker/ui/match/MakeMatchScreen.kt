@@ -24,6 +24,7 @@ import com.yeceylan.groupmaker.ui.components.*
 import com.yeceylan.groupmaker.ui.components.text.MatchDateInputField
 import com.yeceylan.groupmaker.ui.components.text.MatchLocationInputField
 import com.yeceylan.groupmaker.ui.components.text.MatchTimeInputField
+import com.yeceylan.groupmaker.ui.components.text.PlayerSelectionSection
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
 import com.yeceylan.groupmaker.ui.theme.Dimen
 
