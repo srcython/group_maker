@@ -42,17 +42,16 @@
 
     <!-- OnBoarding -->
 
-    <string name="onBoardingTitle1">Welcome to GroupMaker</string>
-    <string name="onBoardingText1">Create an account so you can get started.</string>
-
-    <string name="onBoardingTitle2">Prepare for the match</string>
-    <string name="onBoardingText2">Choose your sport and create your team</string>
-
-    <string name="onBoardingTitle3">Have fun</string>
-    <string name="onBoardingText3">Play with your team and have fun</string>
+    <string name="onBoardingTitle1">GroupMaker\'a Hoşgeldin</string>
+    <string name="onBoardingText1">Başlayabilmek için bir hesap oluşturun.</string>
+    <string name="onBoardingTitle2">Maç için hazırlanın</string>
+    <string name="onBoardingText2">Sporunuzu seçin ve takımınızı oluşturun</string>
+    <string name="onBoardingTitle3">İyi eğlenceler</string>
+    <string name="onBoardingText3">Takımınızla oynayın ve eğlenmeye bakın</string>
     <string name="title_activity_on_boarding">OnBoardingActivity</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="title_activity_splash">SplashActivity</string>
+    <string name="skip">Burayı Atla</string>
 
     <!-- Player Screen-->
     <string name="selected_players">Seçili Oyuncular</string>
@@ -76,6 +75,34 @@
     <string name="enter_result">Sonucu Girin</string>
     <string name="confirm">Onayla</string>
     <string name="player">Player: %1$s</string>
+
+    <!-- Profile Screen-->
+    <string name="profile_iban">Iban</string>
+    <string name="profile_photo_button">Profil Fotoğrafı Değiştir</string>
+    <string name="profile_update_button">Profili Güncelle</string>
+    <string name="exit_button">Çıkış Yap</string>
+    <string name="exit_button_logo_desc">Çıkış yapma ikonu</string>
+    <string name="profile_settings">Profil Ayarları</string>
+    <string name="settings_button_logo_desc">Profil Ayarlama ikonu</string>
+    <string name="profile_info_title">Bilgiler</string>
+    <string name="profile_photo_desc">Profil Fotoğrafı</string>
+    <string name="top_background_desc">Üst Arkaplan Görseli</string>
+    <string name="error">Hata!</string>
+    <string name="exit_yes">Evet</string>
+    <string name="exit_no">Hayır</string>
+    <string name="exit">Çıkış</string>
+    <string name="exit_detail">Çıkış yapmak istiyor musunuz?</string>
+
+    <!-- SportTypes Screen-->
+    <string name="select_sport">Bir spor seç</string>
+    <string name="card_image_desc">Bir spor seç</string>
+
+    <!-- Splash Screen-->
+    <string name="splash_text">Oynayalım!</string>
+
+    <!-- SportTypesSetting Screen-->
+    <string name="card_title_create">Maç Oluştur</string>
+    <string name="card_title_players">Oyuncular</string>
 
 
 </resources>

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -39,14 +40,13 @@ fun SportTypeSetting(
     teamSize: Int,
     navController: NavController,
 ) {
-
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
 
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceEvenly
+        verticalArrangement = Arrangement.SpaceEvenly,
     ) {
 
         Text(
@@ -54,14 +54,24 @@ fun SportTypeSetting(
             fontSize = 30.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
         )
         LazyColumn {
             item {
-                SportTypeSettingItem(painter = create, "Create a Match", navController,teamSize,title)
+                SportTypeSettingItem(
+                    painter = create,
+                    stringResource(id = R.string.card_title_create),
+                    navController,
+                    teamSize,title,
+                )
             }
             item {
-                SportTypeSettingItem(painter = players, "Players", navController,teamSize,title)
+                SportTypeSettingItem(
+                    painter = players,
+                    stringResource(id = R.string.card_title_players),
+                    navController,
+                    teamSize,title,
+                )
             }
         }
     }
@@ -82,10 +92,10 @@ fun SportTypeSettingItem(
             .fillMaxWidth()
             .padding(20.dp)
             .clickable {
-                viewModel.addMatch(title,teamSize)
-                if (text !="Players"){
-                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))
-                }else{
+                viewModel.addMatch(title, teamSize)
+                if (text != "Oyuncular") {
+                    navController.navigate(MatchScreens.MakeMatchScreen(title, teamSize))
+                } else {
                     navController.navigate(PlayerScreens.PlayerPage)
                 }
             },
@@ -98,7 +108,7 @@ fun SportTypeSettingItem(
                 modifier = Modifier.fillMaxWidth(),
                 painter = painter,
                 contentDescription = "",
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             )
 
             Box(
@@ -108,9 +118,8 @@ fun SportTypeSettingItem(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black
+                                Color.Black,
                             ),
-                            // startY = 00f,
                         )
                     )
             ) {
@@ -121,7 +130,7 @@ fun SportTypeSettingItem(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(12.dp),
-                contentAlignment = Alignment.BottomCenter
+                contentAlignment = Alignment.BottomCenter,
             ) {
                 Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))
             }

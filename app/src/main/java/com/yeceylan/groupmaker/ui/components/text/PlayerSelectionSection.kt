@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.components.text
+package com.yeceylan.groupmaker.ui.components
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -19,12 +19,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun PlayerSelectionSection(
@@ -38,17 +37,17 @@ fun PlayerSelectionSection(
 ) {
     val context = LocalContext.current
 
-    Text(text = "$teamName:", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    Text(text = "$teamName:", fontSize = Dimen.font_size_18, fontWeight = FontWeight.Bold)
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
+            .padding(vertical = Dimen.spacing_xxs),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = "Seçilen Kişiler (${selectedUsers.size}/$maxPlayers)",
-            modifier = Modifier.padding(bottom = 5.dp)
+            modifier = Modifier.padding(bottom = Dimen.spacing_xxs)
         )
         Row {
             IconButton(
@@ -61,7 +60,7 @@ fun PlayerSelectionSection(
                 Image(
                     painter = painterResource(id = R.drawable.ic_random),
                     contentDescription = "İlk 11 Seç",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(Dimen.spacing_m2)
                 )
             }
             IconButton(
@@ -72,7 +71,7 @@ fun PlayerSelectionSection(
                 Image(
                     painter = painterResource(id = R.drawable.ic_bin),
                     contentDescription = "Seçimleri Kaldır",
-                    modifier = Modifier.size(20.dp)
+                    modifier = Modifier.size(Dimen.spacing_m2)
                 )
             }
         }
@@ -81,28 +80,28 @@ fun PlayerSelectionSection(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(Dimen.spacing_m1))
             .background(Color.White)
-            .border(2.dp, Color.Gray, RoundedCornerShape(16.dp))
+            .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_m1))
     ) {
         Column {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { setExpanded(true) }
-                    .padding(16.dp),
+                    .padding(Dimen.spacing_m1),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName }}",
-                    fontSize = 16.sp,
+                    text = if (selectedUsers.isEmpty()) "Kişi seç" else "Seçilen Kişiler: ${selectedUsers.joinToString { it.firstName.ifEmpty { it.userName } }}",
+                    fontSize = Dimen.font_size_m1,
                     modifier = Modifier.weight(1f)
                 )
                 Icon(
                     painter = painterResource(id = if (expanded) R.drawable.ic_arrow_drop_up else R.drawable.ic_arrow_drop_down),
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(Dimen.spacing_l)
                 )
             }
             DropdownMenu(
@@ -117,8 +116,7 @@ fun PlayerSelectionSection(
                             modifier = Modifier.fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
-                            //Seçilecek kimse kalmadı
-                            Text("Seçilecek kimse yok")
+                            Text("Seçilecek kimse kalmadı")
                         }
                     }
                 } else {
@@ -133,11 +131,11 @@ fun PlayerSelectionSection(
                         ) {
                             Text(
                                 text = teamName,
-                                fontSize = 16.sp,
+                                fontSize = Dimen.font_size_m1,
                                 fontWeight = FontWeight.Bold,
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically)
-                                    .padding(start = 10.dp)
+                                    .padding(start = Dimen.spacing_s1)
                             )
                             Spacer(modifier = Modifier.weight(1f))
                             IconButton(
@@ -148,7 +146,7 @@ fun PlayerSelectionSection(
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_close),
                                     contentDescription = "Close",
-                                    modifier = Modifier.size(15.dp)
+                                    modifier = Modifier.size(Dimen.spacing_m1)
                                 )
                             }
                         }
@@ -157,10 +155,10 @@ fun PlayerSelectionSection(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.White)
-                            .heightIn(max = 300.dp)
+                            .heightIn(max = Dimen.spacing_xxxxl2)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        availableUsers.sortedBy { it.firstName }.forEach { person ->
+                        availableUsers.sortedBy { it.firstName.ifEmpty { it.userName } }.forEach { person ->
                             DropdownMenuItem(
                                 onClick = {
                                     if (selectedUsers.contains(person)) {
@@ -189,34 +187,34 @@ fun PlayerSelectionSection(
                                             checkedColor = Color.Green
                                         )
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(Dimen.spacing_xs))
                                     AsyncImage(
                                         model = person.photoUrl,
                                         placeholder = painterResource(id = R.drawable.ic_clock),
                                         error = painterResource(id = R.drawable.ic_clock),
                                         contentDescription = null,
                                         modifier = Modifier
-                                            .size(40.dp)
+                                            .size(Dimen.spacing_xl1)
                                             .clip(CircleShape),
                                         contentScale = ContentScale.Crop,
                                         alignment = Alignment.Center
                                     )
-                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Spacer(modifier = Modifier.width(Dimen.spacing_xs))
                                     Column(modifier = Modifier.weight(1f)) {
-                                        Text(text = "${person.firstName} ${person.surname}")
-                                        person.position?.let {
-                                            Text(
-                                                text = it,
-                                                style = MaterialTheme.typography.body2
-                                            )
-                                        }
+                                        Text(
+                                            text = "${person.firstName.ifEmpty { person.userName }} ${person.surname}"
+                                        )
+                                        Text(
+                                            text = person.position,
+                                            style = MaterialTheme.typography.body2
+                                        )
                                     }
                                     Image(
                                         painter = painterResource(id = R.drawable.ic_star),
                                         contentDescription = null,
-                                        modifier = Modifier.size(16.dp)
+                                        modifier = Modifier.size(Dimen.spacing_m1)
                                     )
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Spacer(modifier = Modifier.width(Dimen.spacing_xxs))
                                     Text(text = person.point.toString())
                                 }
                             }

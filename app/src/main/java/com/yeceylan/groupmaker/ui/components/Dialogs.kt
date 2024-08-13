@@ -6,12 +6,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun ChangeTeamNamesDialog(
@@ -34,7 +35,7 @@ fun ChangeTeamNamesDialog(
                     label = { Text("Takım 1 Adı") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = Dimen.spacing_xxs),
                     singleLine = true
                 )
                 OutlinedTextField(
@@ -43,7 +44,7 @@ fun ChangeTeamNamesDialog(
                     label = { Text("Takım 2 Adı") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
+                        .padding(vertical = Dimen.spacing_xxs),
                     singleLine = true
                 )
             }
@@ -58,7 +59,7 @@ fun ChangeTeamNamesDialog(
 
 @Composable
 fun PlayerCountDialog(maxPlayers: Int, onMaxPlayersSelected: (Int) -> Unit) {
-    var tempMaxPlayers by remember { mutableStateOf(maxPlayers) }
+    var tempMaxPlayers by remember { mutableIntStateOf(maxPlayers) }
 
     AlertDialog(
         backgroundColor = Color.White,

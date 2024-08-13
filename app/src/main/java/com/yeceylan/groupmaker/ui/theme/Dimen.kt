@@ -38,11 +38,35 @@ object Dimen {
     /*** 32.dp*/
     val spacing_xl = 32.dp
 
+    /*** 36.dp*/
+    val spacing_xxxvi = 36.dp
+
+    /*** 40.dp*/
+    val spacing_xl1 = 40.dp
+
     /*** 48.dp*/
     val spacing_xxl = 48.dp
 
-    /*** 64.dp*/
+    /*** 60.dp*/
+    val spacing_xxl2 = 60.dp
+
+    /*** 64.dp */
     val spacing_xxxl = 64.dp
+
+    /*** 80.dp */
+    val spacing_xxxl1 = 80.dp
+
+    /*** 90.dp */
+    val spacing_xxxl2 = 90.dp
+
+    /*** 100.dp */
+    val spacing_xxxxl1 = 100.dp
+
+    /*** 300.dp */
+    val spacing_xxxxl2 = 300.dp
+
+    /*** 400.dp */
+    val spacing_xxxxxl = 400.dp
 
     // Font Size
     /*** 2.sp*/
@@ -95,4 +119,32 @@ object Dimen {
 
     /*** 48.sp*/
     val font_size_xxl = 48.sp
+
+    /*** 52.sp*/
+    val font_size_lii = 52.sp
+
+    /*** Roman numeral*/
+    /*** 150.dp*/
+    val spacing_cl = 150.dp
+
+    /*** 55.dp*/
+    val spacing_cv = 55.dp
+
+    /*** 280.dp*/
+    val spacing_cclxxx=280.dp
+
+    /*** 200.dp*/
+    val spacing_cc=200.dp
+
+    /*** 300.dp*/
+    val spacing_ccc=300.dp
+
+    /*** 400.dp*/
+    val spacing_cccc=400.dp
+
+    /*** 100.dp*/
+    val spacing_c=100.dp
+
+    /*** 70.dp*/
+    val spacing_lxx=70.dp
 }
