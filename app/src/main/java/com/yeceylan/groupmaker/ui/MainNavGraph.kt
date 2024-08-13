@@ -106,7 +106,7 @@ fun MainNavGraph(
         }
         composable<PlayerScreens.PlayerPage> {
             isShowBottomBar.value = false
-            PlayerPage()
+            PlayerPage(navController = navController)
         }
     }
 }
