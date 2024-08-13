@@ -1,0 +1,143 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.match\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.gestures.detectTapGestures\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.input.pointer.pointerInput\r\nimport androidx.compose.ui.platform.LocalFocusManager\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.ui.components.*\r\nimport com.yeceylan.groupmaker.ui.location.LocationViewModel\r\n\r\n@Composable\r\nfun MakeMatchScreen(\r\n    sportTitle:String,\r\n    teamSize: Int,\r\n    navController: NavController,\r\n    makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),\r\n    locationViewModel: LocationViewModel = hiltViewModel(),\r\n) {\r\n    val focusManager = LocalFocusManager.current\r\n    val team1Name by makeMatchViewModel.team1Name.collectAsState()\r\n    val team2Name by makeMatchViewModel.team2Name.collectAsState()\r\n    val userList by makeMatchViewModel.users.collectAsState()\r\n    val activeMatch by makeMatchViewModel.activeMatch.collectAsState(initial = null)\r\n    var expanded1 by remember { mutableStateOf(false) }\r\n    var expanded2 by remember { mutableStateOf(false) }\r\n    val selectedPersons1 by makeMatchViewModel.selectedPersons1.collectAsState()\r\n    val selectedPersons2 by makeMatchViewModel.selectedPersons2.collectAsState()\r\n    var maxPlayers by remember { mutableIntStateOf(teamSize) }\r\n    val showPlayerCountDialog by makeMatchViewModel.showPlayerCountDialog.collectAsState()\r\n    val showChangeTeamNamesDialog by makeMatchViewModel.showChangeTeamNamesDialog.collectAsState()\r\n    val matchLocation by makeMatchViewModel.matchLocation.collectAsState()\r\n    val locationLatLng by locationViewModel.selectedLocation.collectAsState(initial = null)\r\n    val selectedAddress by locationViewModel.selectedAddress.collectAsState(initial = \"\")\r\n    val matchDate by makeMatchViewModel.matchDate.collectAsState()\r\n    val matchTime by makeMatchViewModel.matchTime.collectAsState()\r\n\r\n    if (showPlayerCountDialog) {\r\n        PlayerCountDialog(maxPlayers) {\r\n            maxPlayers = it; makeMatchViewModel.togglePlayerCountDialog(\r\n            false\r\n        )\r\n        }\r\n    }\r\n\r\n    if (showChangeTeamNamesDialog) {\r\n        ChangeTeamNamesDialog(\r\n            team1Name = team1Name,\r\n            team2Name = team2Name,\r\n            onTeamNamesChanged = { newTeam1Name, newTeam2Name ->\r\n                makeMatchViewModel.setTeam1Name(newTeam1Name)\r\n                makeMatchViewModel.setTeam2Name(newTeam2Name)\r\n                makeMatchViewModel.toggleChangeTeamNamesDialog(false)\r\n            }\r\n        )\r\n    }\r\n\r\n    Scaffold(\r\n        modifier = Modifier\r\n            .background(Color.White)\r\n            .fillMaxSize(),\r\n        content = { paddingValues ->\r\n            Column(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(paddingValues)\r\n                    .padding(16.dp)\r\n                    .pointerInput(Unit) {\r\n                        detectTapGestures(onTap = {\r\n                            focusManager.clearFocus()\r\n                        })\r\n                    }\r\n            ) {\r\n                Text(\r\n                    modifier = Modifier.padding(top = 30.dp),\r\n                    text = \"Maç Yeri Ve Zamanı\",\r\n                    color = Color.Black,\r\n                    fontWeight = FontWeight.Bold,\r\n                    fontSize = 20.sp\r\n                )\r\n                Spacer(modifier = Modifier.height(5.dp))\r\n\r\n                MatchLocationInputField(\r\n                    label = \"Maç konumu giriniz\",\r\n                    value = matchLocation,\r\n                    onValueChange = { makeMatchViewModel.setMatchLocation(it) },\r\n                    viewModel = locationViewModel\r\n                )\r\n\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n                Row(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalArrangement = Arrangement.SpaceBetween\r\n                ) {\r\n                    MatchDateInputField(\r\n                        label = \"Maç Tarihi: \",\r\n                        value = matchDate,\r\n                        onValueChange = { makeMatchViewModel.setMatchDate(it) },\r\n                        modifier = Modifier.weight(1f)\r\n                    )\r\n                    Spacer(modifier = Modifier.width(8.dp))\r\n                    MatchTimeInputField(\r\n                        label = \"Maç Saati: \",\r\n                        value = matchTime,\r\n                        onValueChange = { makeMatchViewModel.setMatchTime(it) },\r\n                        matchDate = matchDate, // Yeni eklenen parametreyi geçiyoruz\r\n                        modifier = Modifier.weight(1f)\r\n                    )\r\n                }\r\n                Spacer(modifier = Modifier.height(16.dp))\r\n\r\n                Column(\r\n                    modifier = Modifier\r\n                        .fillMaxWidth(),\r\n                    horizontalAlignment = Alignment.CenterHorizontally\r\n                ) {\r\n                    Text(\r\n                        text = \"Takım Oluştur\",\r\n                        color = Color.Black,\r\n                        fontWeight = FontWeight.Bold,\r\n                        fontSize = 20.sp\r\n                    )\r\n                    Row(\r\n                        horizontalArrangement = Arrangement.Center,\r\n                        modifier = Modifier.fillMaxWidth()\r\n                    ) {\r\n                        Button(\r\n                            onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },\r\n                            modifier = Modifier.padding(8.dp)\r\n                        ) {\r\n                            Text(text = \"Takımlar kaç kişilik?\", fontSize = 14.sp)\r\n                        }\r\n                        Spacer(modifier = Modifier.width(16.dp))\r\n                        Button(\r\n                            onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },\r\n                            modifier = Modifier.padding(8.dp)\r\n                        ) {\r\n                            Text(text = \"Takım Adlarını Değiştir\", fontSize = 14.sp)\r\n                        }\r\n                    }\r\n                }\r\n\r\n                Spacer(modifier = Modifier.height(16.dp))\r\n\r\n                Box(\r\n                    modifier = Modifier\r\n                        .fillMaxSize()\r\n                        .background(Color.White)\r\n                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))\r\n                ) {\r\n                    when (userList) {\r\n                        is Resource.Loading -> {\r\n                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))\r\n                        }\r\n\r\n                        is Resource.Success -> {\r\n                            val users = userList.data ?: emptyList()\r\n                            if (users.isEmpty()) {\r\n                                Text(\r\n                                    text = \"Herhangi bir oyuncu eklemediniz...\",\r\n                                    modifier = Modifier.align(Alignment.Center)\r\n                                )\r\n                                return@Scaffold\r\n                            }\r\n\r\n                            LazyColumn(\r\n                                modifier = Modifier\r\n                                    .fillMaxSize()\r\n                                    .padding(\r\n                                        top = 10.dp,\r\n                                        start = 10.dp,\r\n                                        end = 10.dp,\r\n                                        bottom = 50.dp\r\n                                    )\r\n                            ) {\r\n                                item {\r\n                                    PlayerSelectionSection(\r\n                                        teamName = team1Name,\r\n                                        selectedUsers = selectedPersons1,\r\n                                        availableUsers = users.filter { it !in selectedPersons2 },\r\n                                        maxPlayers = maxPlayers,\r\n                                        expanded = expanded1,\r\n                                        setExpanded = { expanded1 = it },\r\n                                        setSelectedPersons = {\r\n                                            makeMatchViewModel.setSelectedPersons1(\r\n                                                it\r\n                                            )\r\n                                        }\r\n                                    )\r\n                                    SelectedPlayersGrid(selectedPersons1) {\r\n                                        makeMatchViewModel.setSelectedPersons1(\r\n                                            it\r\n                                        )\r\n                                    }\r\n                                    Spacer(modifier = Modifier.height(16.dp))\r\n                                    PlayerSelectionSection(\r\n                                        teamName = team2Name,\r\n                                        selectedUsers = selectedPersons2,\r\n                                        availableUsers = users.filter { it !in selectedPersons1 },\r\n                                        maxPlayers = maxPlayers,\r\n                                        expanded = expanded2,\r\n                                        setExpanded = { expanded2 = it },\r\n                                        setSelectedPersons = {\r\n                                            makeMatchViewModel.setSelectedPersons2(\r\n                                                it\r\n                                            )\r\n                                        }\r\n                                    )\r\n                                    SelectedPlayersGrid(selectedPersons2) {\r\n                                        makeMatchViewModel.setSelectedPersons2(\r\n                                            it\r\n                                        )\r\n                                    }\r\n                                }\r\n                            }\r\n                        }\r\n\r\n                        is Resource.Error -> {\r\n                            Text(\r\n                                text = \"Hata: ${userList.message}\",\r\n                                color = Color.Red,\r\n                                modifier = Modifier.align(Alignment.Center)\r\n                            )\r\n                        }\r\n                    }\r\n\r\n                    Button(\r\n                        onClick = {\r\n                            val context = navController.context\r\n\r\n                            if (matchLocation.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç konumunu girin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (matchDate.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç tarihini seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (matchTime.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç saatini seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (selectedPersons1.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen ilk takımın oyuncularını seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (selectedPersons2.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen ikinci takımın oyuncularını seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else {\r\n                                selectedAddress?.let {\r\n                                    makeMatchViewModel.updateMatchAndNavigate(\r\n                                        navController, locationLatLng,\r\n                                        it\r\n                                    )\r\n                                }\r\n                            }\r\n                        },\r\n                        modifier = Modifier\r\n                            .align(Alignment.BottomCenter)\r\n                            .padding(5.dp)\r\n                    ) {\r\n                        Text(text = \"Maç Oluştur\")\r\n                    }\r\n\r\n                }\r\n            }\r\n        }\r\n\r\n    )\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt	(date 1723514830841)
+@@ -23,10 +23,11 @@
+ import com.yeceylan.groupmaker.domain.model.User
+ import com.yeceylan.groupmaker.ui.components.*
+ import com.yeceylan.groupmaker.ui.location.LocationViewModel
++import com.yeceylan.groupmaker.ui.theme.Dimen
+ 
+ @Composable
+ fun MakeMatchScreen(
+-    sportTitle:String,
++    sportTitle: String,
+     teamSize: Int,
+     navController: NavController,
+     makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),
+@@ -79,7 +80,7 @@
+                 modifier = Modifier
+                     .fillMaxSize()
+                     .padding(paddingValues)
+-                    .padding(16.dp)
++                    .padding(Dimen.spacing_m1)
+                     .pointerInput(Unit) {
+                         detectTapGestures(onTap = {
+                             focusManager.clearFocus()
+@@ -91,9 +92,9 @@
+                     text = "Maç Yeri Ve Zamanı",
+                     color = Color.Black,
+                     fontWeight = FontWeight.Bold,
+-                    fontSize = 20.sp
++                    fontSize = Dimen.font_size_m2
+                 )
+-                Spacer(modifier = Modifier.height(5.dp))
++                Spacer(modifier = Modifier.height(Dimen.spacing_xxs))
+ 
+                 MatchLocationInputField(
+                     label = "Maç konumu giriniz",
+@@ -102,7 +103,7 @@
+                     viewModel = locationViewModel
+                 )
+ 
+-                Spacer(modifier = Modifier.height(8.dp))
++                Spacer(modifier = Modifier.height(Dimen.spacing_xs))
+                 Row(
+                     modifier = Modifier.fillMaxWidth(),
+                     horizontalArrangement = Arrangement.SpaceBetween
+@@ -113,7 +114,7 @@
+                         onValueChange = { makeMatchViewModel.setMatchDate(it) },
+                         modifier = Modifier.weight(1f)
+                     )
+-                    Spacer(modifier = Modifier.width(8.dp))
++                    Spacer(modifier = Modifier.width(Dimen.spacing_xs))
+                     MatchTimeInputField(
+                         label = "Maç Saati: ",
+                         value = matchTime,
+@@ -122,7 +123,7 @@
+                         modifier = Modifier.weight(1f)
+                     )
+                 }
+-                Spacer(modifier = Modifier.height(16.dp))
++                Spacer(modifier = Modifier.height(Dimen.spacing_m1))
+ 
+                 Column(
+                     modifier = Modifier
+@@ -133,7 +134,7 @@
+                         text = "Takım Oluştur",
+                         color = Color.Black,
+                         fontWeight = FontWeight.Bold,
+-                        fontSize = 20.sp
++                        fontSize = Dimen.font_size_m2
+                     )
+                     Row(
+                         horizontalArrangement = Arrangement.Center,
+@@ -141,16 +142,16 @@
+                     ) {
+                         Button(
+                             onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },
+-                            modifier = Modifier.padding(8.dp)
++                            modifier = Modifier.padding(Dimen.spacing_xs)
+                         ) {
+-                            Text(text = "Takımlar kaç kişilik?", fontSize = 14.sp)
++                            Text(text = "Takımlar kaç kişilik?", fontSize = Dimen.font_size_s1)
+                         }
+-                        Spacer(modifier = Modifier.width(16.dp))
++                        Spacer(modifier = Modifier.width(Dimen.spacing_m1))
+                         Button(
+                             onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },
+                             modifier = Modifier.padding(8.dp)
+                         ) {
+-                            Text(text = "Takım Adlarını Değiştir", fontSize = 14.sp)
++                            Text(text = "Takım Adlarını Değiştir", fontSize = Dimen.font_size_s1)
+                         }
+                     }
+                 }
+@@ -161,7 +162,7 @@
+                     modifier = Modifier
+                         .fillMaxSize()
+                         .background(Color.White)
+-                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
++                        .border(1.dp, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
+                 ) {
+                     when (userList) {
+                         is Resource.Loading -> {
+@@ -182,10 +183,10 @@
+                                 modifier = Modifier
+                                     .fillMaxSize()
+                                     .padding(
+-                                        top = 10.dp,
+-                                        start = 10.dp,
+-                                        end = 10.dp,
+-                                        bottom = 50.dp
++                                        top = Dimen.spacing_s1,
++                                        start = Dimen.spacing_s1,
++                                        end = Dimen.spacing_s1,
++                                        bottom = Dimen.spacing_xxl
+                                     )
+                             ) {
+                                 item {
+@@ -207,7 +208,7 @@
+                                             it
+                                         )
+                                     }
+-                                    Spacer(modifier = Modifier.height(16.dp))
++                                    Spacer(modifier = Modifier.height(Dimen.spacing_m1))
+                                     PlayerSelectionSection(
+                                         teamName = team2Name,
+                                         selectedUsers = selectedPersons2,
+@@ -284,7 +285,7 @@
+                         },
+                         modifier = Modifier
+                             .align(Alignment.BottomCenter)
+-                            .padding(5.dp)
++                            .padding(Dimen.spacing_xxs)
+                     ) {
+                         Text(text = "Maç Oluştur")
+                     }
