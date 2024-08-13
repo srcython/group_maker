@@ -112,7 +112,7 @@ fun MatchTimeInputField(
             if (selectedCalendar.timeInMillis < System.currentTimeMillis()) {
                 Toast.makeText(
                     context,
-                    "Geçmiş bir saat seçtiniz, lütfen geçerli bir saat seçin!",
+                    context.getString(R.string.past_time_selected_select_valid_time),
                     Toast.LENGTH_SHORT
                 ).show()
             } else {

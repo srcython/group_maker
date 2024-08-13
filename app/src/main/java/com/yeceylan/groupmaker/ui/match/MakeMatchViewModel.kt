@@ -73,7 +73,7 @@ class MakeMatchViewModel @Inject constructor(
         }
     }
 
-    fun updateMatch(updatedMatchData: Match) {
+    private fun updateMatch(updatedMatchData: Match) {
         viewModelScope.launch {
             currentUserId?.let { userId ->
                 val currentMatch = activeMatch.value

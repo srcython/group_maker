@@ -92,7 +92,6 @@ fun MatchLocationInputField(
                         onValueChange(selectedLocationName)
                         isDropdownOpen = false
                         focusManager.clearFocus()
-                        Log.d("MatchLocationInputField", "Selected location: $selectedLocationName")
                     }
                 }
             }
