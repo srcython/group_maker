@@ -19,6 +19,7 @@ class WeatherRepositoryImpl @Inject constructor(
         language: String
     ): Flow<Resource<WeatherResponse>> = flow {
         emit(Resource.Loading())
+
         try {
             val response = apiService.getWeatherForecast(
                 apiKey = "88ccbf311c5e4e32bb0135032240408",
@@ -31,6 +32,7 @@ class WeatherRepositoryImpl @Inject constructor(
 
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Bilinmeyen bir hata oluştu"))
+
         }
     }
 }

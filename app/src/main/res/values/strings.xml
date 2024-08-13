@@ -26,6 +26,7 @@
     <string name="don_t_have_an_account">Bir hesabın yok mu?</string>
     <string name="sign_up_here">Buradan kayıt ol</string>
     <string name="password_not_match">Şifre uyuşmuyor.</string>
+    <string name="default_web_client_id">241759219208-3it8nibnps2467vj4nr8bjju22q97glf.apps.googleusercontent.com</string>
 
     <!-- Content Descriptions -->
     <string name="content_description_app_image">App Image</string>
@@ -53,25 +54,27 @@
     <string name="skip">Burayı Atla</string>
 
     <!-- Player Screen-->
-
-    <string name="se_ili_oyuncular">Seçili Oyuncular</string>
-    <string name="bir_hata_olu_tu">Bir hata oluştu</string>
+    <string name="selected_players">Seçili Oyuncular</string>
+    <string name="an_error_occured">Bir hata oluştu</string>
     <string name="no_players_selected">Oyuncu Seçilmedi.</string>
-    <string name="oyuncu_ekle">Oyuncu Ekle</string>
-    <string name="oyuncu_a_r">Oyuncu Çağır</string>
-    <string name="kullan_c_lar_se_in">Kullanıcıları Seçin</string>
-    <string name="ara">Ara</string>
-    <string name="tamam">Tamam</string>
+    <string name="add_player">Oyuncu Ekle</string>
+    <string name="call_player">Oyuncu Çağır</string>
+    <string name="choose_players">Kullanıcıları Seçin</string>
+    <string name="search">Ara</string>
+    <string name="okey">Tamam</string>
     <string name="remove">Remove</string>
     <string name="star">Star</string>
-    <string name="yeni_oyuncu_ekle">Yeni Oyuncu Ekle</string>
-    <string name="kullan_c_ad">Kullanıcı adı</string>
-    <string name="isim">İsim</string>
-    <string name="soyisim">Soyisim</string>
-    <string name="pozisyon">Pozisyon</string>
-    <string name="puan">Puan</string>
-    <string name="iptal">İptal</string>
-    <string name="ekle">Ekle</string>
+    <string name="add_new_player">Yeni Oyuncu Ekle</string>
+    <string name="name">isim</string>
+    <string name="lastname">Soyisim</string>
+    <string name="position">Pozisyon</string>
+    <string name="point">Puan</string>
+    <string name="cancel">İptal</string>
+    <string name="add">Ekle</string>
+    <string name="add_result">Sonuç Ekle</string>
+    <string name="enter_result">Sonucu Girin</string>
+    <string name="confirm">Onayla</string>
+    <string name="player">Player: %1$s</string>
 
     <!-- Profile Screen-->
     <string name="profile_iban">Iban</string>
@@ -100,6 +103,7 @@
     <!-- SportTypesSetting Screen-->
     <string name="card_title_create">Maç Oluştur</string>
     <string name="card_title_players">Oyuncular</string>
+    <string name="selected">Seçilenler:</string>
 
 
 </resources>

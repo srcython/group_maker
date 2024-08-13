@@ -5,13 +5,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.DeadObjectException
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.match.AddOldMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -52,11 +53,7 @@ class MatchInfoViewModel @Inject constructor(
 
                 if (activeMatch != null) {
                     val updatedMatch = activeMatch.copy(isActive = false)
-                    updateMatchUseCase(
-                        userId,
-                        updatedMatch
-                    ) // This should now correctly update the match
-                    addOldMatchUseCase(updatedMatch)
+                    updateMatchUseCase(userId, updatedMatch)
                 }
             } catch (e: Exception) {
                 Log.e("ViewModel", "Exception occurred", e)
@@ -65,3 +62,4 @@ class MatchInfoViewModel @Inject constructor(
     }
 
 }
+

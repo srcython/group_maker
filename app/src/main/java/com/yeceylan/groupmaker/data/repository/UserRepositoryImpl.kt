@@ -8,8 +8,8 @@ import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.Match
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.match.Match
+import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.domain.repository.UserRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -118,24 +118,18 @@ class UserRepositoryImpl @Inject constructor(
 
     override suspend fun getActiveMatch(userId: String): Match? {
         val userDocument = firestore.collection("users").document(userId)
-        Log.d("UserRepositoryImpl", "Fetching active match for user: $userId")
         return try {
-            // Log all matches for debugging
-            logMatches(userId)
 
             val matchesSnapshot = userDocument.collection("matches")
                 .whereEqualTo("active", true)
                 .get()
                 .await()
 
-            Log.d("UserRepositoryImpl", "Matches snapshot size: ${matchesSnapshot.size()}")
 
             if (matchesSnapshot.documents.isNotEmpty()) {
                 val match = matchesSnapshot.documents.firstOrNull()?.toObject(Match::class.java)
-                Log.d("UserRepositoryImpl", "Active match found: $match")
                 match
             } else {
-                Log.d("UserRepositoryImpl", "No active match found for user $userId")
                 null
             }
         } catch (e: Exception) {
@@ -145,17 +139,6 @@ class UserRepositoryImpl @Inject constructor(
                 e
             )
             null
-        }
-    }
-
-    private suspend fun logMatches(userId: String) {
-        val userDocument = firestore.collection("users").document(userId)
-        val matchesSnapshot = userDocument.collection("matches")
-            .get()
-            .await()
-
-        for (document in matchesSnapshot.documents) {
-            Log.d("UserRepositoryImpl", "Match Document: ${document.id}, Data: ${document.data}")
         }
     }
 }

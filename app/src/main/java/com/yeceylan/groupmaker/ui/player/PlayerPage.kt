@@ -47,13 +47,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun PlayerPage(
@@ -65,85 +65,86 @@ fun PlayerPage(
     var showAddPlayerDialog by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(Dimen.spacing_m1)
     ) {
-        Text(text = stringResource(R.string.se_ili_oyuncular))
+        Column(modifier = Modifier.fillMaxSize()) {
+            Text(text = stringResource(R.string.selected_players))
 
-        when (usersState) {
-            is Resource.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-            }
+            when (usersState) {
+                is Resource.Loading -> {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                }
 
-            is Resource.Error -> {
-                Text(
-                    text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
-                    color = Color.Red,
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                )
-            }
-
-            is Resource.Success -> {
-                if (selectedUsers.isEmpty()) {
+                is Resource.Error -> {
                     Text(
-                        text = stringResource(R.string.no_players_selected),
+                        text = usersState.message ?: stringResource(R.string.an_error_occured),
+                        color = Color.Red,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                } else {
-                    SelectedPlayersGrid(
-                        modifier = Modifier.weight(1f),
-                        selectedPersons = selectedUsers,
-                        setSelectedPersons = { updatedList ->
-                            playerViewModel.updateSelectedUsers(updatedList)
-                        }
+                }
+
+                is Resource.Success -> {
+                    if (selectedUsers.isEmpty()) {
+                        Text(
+                            text = stringResource(R.string.no_players_selected),
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                    } else {
+                        SelectedPlayersGrid(
+                            modifier = Modifier.weight(1f),
+                            selectedPersons = selectedUsers,
+                            setSelectedPersons = { updatedList ->
+                                playerViewModel.updateSelectedUsers(updatedList)
+                            }
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Button(
+                    onClick = { showAddPlayerDialog = true },
+                    colors = ButtonDefaults.buttonColors(Color.Blue),
+                ) {
+                    Text(
+                        text = stringResource(R.string.add_player),
+                        color = Color.White
+                    )
+                }
+                Button(
+                    onClick = { showUserDialog = true },
+                    colors = ButtonDefaults.buttonColors(Color.Blue),
+                ) {
+                    Text(
+                        text = stringResource(R.string.call_player),
+                        color = Color.White,
                     )
                 }
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Button(
-                onClick = { showAddPlayerDialog = true },
-                colors = ButtonDefaults.buttonColors(Color.Blue),
-            ) {
-                Text(
-                    text = stringResource(R.string.oyuncu_ekle),
-                    color = Color.White
-                )
-            }
-            Button(
-                onClick = { showUserDialog = true },
-                colors = ButtonDefaults.buttonColors(Color.Blue),
-            ) {
-                Text(
-                    text = stringResource(R.string.oyuncu_a_r),
-                    color = Color.White,
-                )
-            }
-        }
     }
-
     if (showUserDialog) {
         Dialog(onDismissRequest = { showUserDialog = false }) {
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = Color.White,
-                border = BorderStroke(1.dp, Color.Black),
+                border = BorderStroke(Dimen.spacing_xxxs, Color.Black),
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(Dimen.spacing_m1)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.kullan_c_lar_se_in))
+                    Text(text = stringResource(R.string.choose_players))
 
                     OutlinedTextField(
                         value = searchQuery,
@@ -151,7 +152,7 @@ fun PlayerPage(
                             searchQuery = query
                             playerViewModel.searchUsers(query)
                         },
-                        label = { Text(text = stringResource(R.string.ara)) }
+                        label = { Text(text = stringResource(R.string.search)) }
                     )
 
                     when (usersState) {
@@ -161,14 +162,14 @@ fun PlayerPage(
 
                         is Resource.Error -> {
                             Text(
-                                text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
+                                text = usersState.message ?: stringResource(R.string.an_error_occured),
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         }
 
                         is Resource.Success -> {
-                            LazyColumn(modifier = Modifier.height(300.dp)) {
+                            LazyColumn(modifier = Modifier.height(Dimen.spacing_xxxl * 5)) {
                                 items(usersState.data!!) { user ->
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -201,13 +202,13 @@ fun PlayerPage(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                     Button(
                         onClick = { showUserDialog = false },
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.tamam),
+                            text = stringResource(R.string.okey),
                             color = Color.White,
                         )
                     }
@@ -233,9 +234,9 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
     if (selectedPersons.isNotEmpty()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(Dimen.spacing_xs),
             modifier = modifier
-                .heightIn(max = 400.dp)
+                .heightIn(Dimen.spacing_xxxl * 6)
         ) {
             items(selectedPersons) { person ->
 
@@ -250,14 +251,14 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                             error = painterResource(id = R.drawable.ic_clock),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(Dimen.spacing_xxxl)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
                             alignment = Alignment.Center
                         )
                         Box(
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(Dimen.spacing_m1)
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     setSelectedPersons(selectedPersons - person)
@@ -266,7 +267,7 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                             Image(
                                 painter = painterResource(id = R.drawable.ic_remove),
                                 contentDescription = stringResource(R.string.remove),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(Dimen.spacing_m1)
                             )
                         }
                     }
@@ -274,7 +275,7 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                         text = person.userName,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(top = 4.dp)
+                            .padding(top = Dimen.spacing_xxs)
                     )
 
                 }
@@ -299,15 +300,15 @@ fun AddPlayerDialog(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = Color.White,
-            border = BorderStroke(1.dp, Color.Black),
+            border = BorderStroke(Dimen.spacing_xxxs, Color.Black),
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(Dimen.spacing_m1)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.yeni_oyuncu_ekle))
+                Text(text = stringResource(R.string.add_new_player))
 
                 CustomTextField(
                     value = email,
@@ -318,34 +319,34 @@ fun AddPlayerDialog(
                 CustomTextField(
                     value = userName,
                     onValueChange = { userName = it },
-                    label = stringResource(R.string.kullan_c_ad)
+                    label = stringResource(R.string.username)
                 )
 
                 CustomTextField(
                     value = firstname,
                     onValueChange = { firstname = it },
-                    label = stringResource(R.string.isim)
+                    label = stringResource(R.string.name)
                 )
 
                 CustomTextField(
                     value = surname,
                     onValueChange = { surname = it },
-                    label = stringResource(R.string.soyisim)
+                    label = stringResource(R.string.lastname)
                 )
 
                 CustomTextField(
                     value = position,
                     onValueChange = { position = it },
-                    label = stringResource(R.string.pozisyon)
+                    label = stringResource(R.string.position)
                 )
 
                 CustomTextField(
                     value = point.toString(),
                     onValueChange = { point = it.toIntOrNull() ?: 0 },
-                    label = stringResource(R.string.puan)
+                    label = stringResource(R.string.point)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -355,7 +356,7 @@ fun AddPlayerDialog(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.iptal),
+                            text = stringResource(R.string.cancel),
                             color = Color.White,
                         )
                     }
@@ -374,7 +375,7 @@ fun AddPlayerDialog(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.ekle),
+                            text = stringResource(R.string.add),
                             color = Color.White,
                         )
                     }

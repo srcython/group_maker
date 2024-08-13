@@ -19,6 +19,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.ui.components.*
+import com.yeceylan.groupmaker.ui.components.text.MatchDateInputField
+import com.yeceylan.groupmaker.ui.components.text.MatchLocationInputField
+import com.yeceylan.groupmaker.ui.components.text.MatchTimeInputField
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
 import com.yeceylan.groupmaker.ui.theme.Dimen
 

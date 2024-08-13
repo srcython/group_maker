@@ -1,6 +1,9 @@
 package com.yeceylan.groupmaker.ui.auth.signup
 
+import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -39,13 +42,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
-import com.yeceylan.groupmaker.ui.components.BackButton
-import com.yeceylan.groupmaker.ui.components.DButton
-import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
-import com.yeceylan.groupmaker.ui.components.DOutlinedTextField
+import com.yeceylan.groupmaker.ui.components.button.BackButton
+import com.yeceylan.groupmaker.ui.components.button.DButton
+import com.yeceylan.groupmaker.ui.components.button.DGoogleLoginButton
+import com.yeceylan.groupmaker.ui.components.text.DOutlinedTextField
 import com.yeceylan.groupmaker.ui.theme.Dimen
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 
@@ -56,6 +63,29 @@ fun SignUpScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if (account != null) {
+                    viewModel.signUpWithGoogle(account)
+                }
+            } catch (e: ApiException) {
+                // sonar - comment
+            }
+        }
+    }
 
     with(uiState) {
         if (isLoading) {
@@ -68,7 +98,8 @@ fun SignUpScreen(
         }
 
         if (isSuccessGoogleSignup) {
-            /* sonar - comment */
+            viewModel.resetUIState()
+            navController.navigate(BottomBarScreen.Home.route)
         }
 
         if (isSuccessSignUpWithEmailAndPassword) {
@@ -79,10 +110,14 @@ fun SignUpScreen(
         SignUpScreenUI(
             viewModel = viewModel,
             navController = navController,
-            signUpWithGoogle = { viewModel.signUpWithGoogle() },
+            signUpWithGoogle = {
+                val signInIntent = googleSignInClient.signInIntent
+                launcher.launch(signInIntent)
+            },
         )
     }
 }
+
 
 @Composable
 private fun SignUpScreenUI(

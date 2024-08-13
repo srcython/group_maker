@@ -7,10 +7,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
-import com.yeceylan.groupmaker.domain.use_cases.AddStorageUseCase
-import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetUserUseCase
+import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.domain.use_cases.match.AddStorageUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddUserUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetUserUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.LogoutUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

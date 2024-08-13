@@ -56,7 +56,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.components.ProgressBar
 import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_18
@@ -174,22 +174,22 @@ fun ProfileSuccess(user: User, navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(spacing_xs))
                 Text(
-                    text = "${stringResource(id = R.string.isim)}: ${user.firstName}",
+                    text = "${stringResource(id = R.string.name)}: ${user.firstName}",
                     fontSize = font_size_m2,
                     modifier = Modifier.padding(spacing_xs),
                 )
                 Text(
-                    text = "${stringResource(id = R.string.soyisim)}: ${user.surname}",
+                    text = "${stringResource(id = R.string.lastname)}: ${user.surname}",
                     fontSize = font_size_m2,
                     modifier = Modifier.padding(spacing_xs),
                 )
                 Text(
-                    text = "${stringResource(id = R.string.pozisyon)}: ${user.position}",
+                    text = "${stringResource(id = R.string.position)}: ${user.position}",
                     fontSize = font_size_m2,
                     modifier = Modifier.padding(spacing_xs),
                 )
                 Text(
-                    text = "${stringResource(id = R.string.puan)}: ${user.point}",
+                    text = "${stringResource(id = R.string.point)}: ${user.point}",
                     fontSize = font_size_m2,
                     modifier = Modifier.padding(spacing_xs),
                 )
@@ -336,7 +336,7 @@ fun ProfileSettingsDialog(
                 OutlinedTextField(
                     value = firstname,
                     onValueChange = { firstname = it },
-                    label = { Text(text = stringResource(id = R.string.isim)) },
+                    label = { Text(text = stringResource(id = R.string.name)) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Blue,
@@ -348,7 +348,7 @@ fun ProfileSettingsDialog(
                 OutlinedTextField(
                     value = surname,
                     onValueChange = { surname = it },
-                    label = { Text(text = stringResource(id = R.string.soyisim)) },
+                    label = { Text(text = stringResource(id = R.string.lastname)) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Blue,
@@ -360,7 +360,7 @@ fun ProfileSettingsDialog(
                 OutlinedTextField(
                     value = position,
                     onValueChange = { position = it },
-                    label = { Text(text = stringResource(id = R.string.pozisyon)) },
+                    label = { Text(text = stringResource(id = R.string.position)) },
                     singleLine = true,
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Blue,
@@ -390,7 +390,7 @@ fun ProfileSettingsDialog(
                         onClick = onDismiss,
                         colors = ButtonDefaults.buttonColors(Blue),
                     ) {
-                        Text(text = stringResource(id = R.string.iptal), color = White)
+                        Text(text = stringResource(id = R.string.cancel), color = White)
                     }
                     Button(
                         onClick = {
@@ -404,7 +404,7 @@ fun ProfileSettingsDialog(
                         },
                         colors = ButtonDefaults.buttonColors(Blue),
                     ) {
-                        Text(stringResource(id = R.string.ekle), color = White)
+                        Text(stringResource(id = R.string.add), color = White)
                     }
                 }
             }
