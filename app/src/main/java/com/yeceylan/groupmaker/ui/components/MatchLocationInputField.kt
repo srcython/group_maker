@@ -18,11 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun MatchLocationInputField(
@@ -53,7 +53,7 @@ fun MatchLocationInputField(
             label = { Text(label) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 4.dp),
+                .padding(vertical = Dimen.spacing_xxs),
             singleLine = true,
             trailingIcon = {
                 if (searchQuery.isNotEmpty()) {
@@ -65,14 +65,14 @@ fun MatchLocationInputField(
                         Image(
                             painter = painterResource(id = R.drawable.ic_close),
                             contentDescription = "Clear",
-                            modifier = Modifier.size(20.dp)
+                            modifier = Modifier.size(Dimen.spacing_m2)
                         )
                     }
                 } else {
                     Image(
                         painter = painterResource(id = R.drawable.ic_location),
                         contentDescription = "Search",
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(Dimen.spacing_m2)
                     )
                 }
             }
@@ -83,7 +83,7 @@ fun MatchLocationInputField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.White)
-                    .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                    .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
             ) {
                 items(predictions) { prediction ->
                     PredictionItem(prediction) { selectedLocationName ->
@@ -112,7 +112,7 @@ fun PredictionItem(prediction: AutocompletePrediction, onClick: (String) -> Unit
                         .toString()
                 )
             }
-            .padding(8.dp)
+            .padding(Dimen.spacing_xs)
     ) {
         Text(
             text = prediction.getPrimaryText(null).toString(),

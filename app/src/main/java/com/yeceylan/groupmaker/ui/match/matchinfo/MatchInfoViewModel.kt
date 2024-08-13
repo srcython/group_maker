@@ -9,20 +9,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.weather.Hour
-import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
-import com.yeceylan.groupmaker.domain.model.weather.WeatherType
 import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,34 +44,6 @@ class MatchInfoViewModel @Inject constructor(
         }
     }
 
-    fun processWeatherData(
-        weatherResource: Resource<WeatherResponse>?,
-        matchDate: String
-    ): Pair<Hour?, Int?>? {
-        if (weatherResource is Resource.Success) {
-            val weatherInfo = weatherResource.data
-            if (weatherInfo != null && weatherInfo.forecast.forecastDay.isNotEmpty()) {
-                val forecastDay = weatherInfo.forecast.forecastDay[0]
-
-                val inputDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                val dateParsed = inputDateFormat.parse(matchDate)
-                val currentDate = Calendar.getInstance().time
-                val diff = dateParsed.time - currentDate.time
-                val diffDays = diff / (1000 * 60 * 60 * 24)
-
-                if (forecastDay.hour.isNotEmpty() && diffDays <= 14) {
-                    val currentHourWeather = forecastDay.hour[0]
-                    val conditionText = currentHourWeather.condition.text
-                    val weatherIconResId =
-                        WeatherType.weatherIconMap[conditionText] ?: R.drawable.ic_star
-                    return Pair(currentHourWeather, weatherIconResId)
-                }
-            }
-        }
-        return null
-    }
-
-
     fun finishMatch() {
         viewModelScope.launch {
             try {
@@ -101,4 +65,3 @@ class MatchInfoViewModel @Inject constructor(
     }
 
 }
-

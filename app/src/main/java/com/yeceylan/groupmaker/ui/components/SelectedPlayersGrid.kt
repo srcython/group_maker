@@ -20,27 +20,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<User>) -> Unit) {
     if (selectedUsers.isNotEmpty()) {
-        Text(text = "Seçilenler:", modifier = Modifier.padding(top = 5.dp))
+        Text(text = "Seçilenler:", modifier = Modifier.padding(top = Dimen.spacing_xxs))
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(Dimen.spacing_xs),
             modifier = Modifier
-                .heightIn(max = 400.dp)
+                .heightIn(max = Dimen.spacing_xxxxxl)
         ) {
             items(selectedUsers) { person ->
                 Box(
                     contentAlignment = Alignment.TopEnd,
                     modifier = Modifier
-                        .padding(8.dp)
-                        .size(80.dp)
+                        .padding(Dimen.spacing_xs)
+                        .size(Dimen.spacing_xxxl1)
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -53,7 +53,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                                 error = painterResource(id = R.drawable.ic_clock),
                                 contentDescription = null,
                                 modifier = Modifier
-                                    .size(60.dp)
+                                    .size(Dimen.spacing_xxl2)
                                     .clip(CircleShape),
                                 contentScale = ContentScale.Crop,
                                 alignment = Alignment.Center
@@ -61,7 +61,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
 
                             Box(
                                 modifier = Modifier
-                                    .size(16.dp)
+                                    .size(Dimen.spacing_m1)
                                     .align(Alignment.TopEnd)
                                     .clickable {
                                         setSelectedPersons(selectedUsers - person)
@@ -70,7 +70,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_remove),
                                     contentDescription = "Remove",
-                                    modifier = Modifier.size(16.dp)
+                                    modifier = Modifier.size(Dimen.spacing_m1)
                                 )
                             }
                         }
@@ -78,7 +78,7 @@ fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<Use
                             text = person.firstName.ifEmpty { person.userName },
                             modifier = Modifier
                                 .align(Alignment.CenterHorizontally)
-                                .padding(top = 4.dp)
+                                .padding(top = Dimen.spacing_xxs)
                         )
                     }
                 }

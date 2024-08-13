@@ -20,9 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.platform.LocalContext
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.ui.theme.Dimen
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
@@ -54,19 +54,19 @@ fun MatchDateInputField(
 
     Box(
         modifier = modifier
-            .padding(vertical = 4.dp)
+            .padding(vertical = Dimen.spacing_xxs)
             .clickable { datePickerDialog.show() }
-            .background(Color.LightGray, RoundedCornerShape(8.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-            .padding(8.dp)
+            .background(Color.LightGray, RoundedCornerShape(Dimen.spacing_xs))
+            .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
+            .padding(Dimen.spacing_xs)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.ic_calendar),
                 contentDescription = null,
-                Modifier.size(20.dp)
+                Modifier.size(Dimen.spacing_m2)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Dimen.spacing_xs))
             Text(
                 text = value.ifEmpty { label },
                 color = if (value.isEmpty()) Color.Gray else Color.Black
@@ -127,19 +127,19 @@ fun MatchTimeInputField(
 
     Box(
         modifier = modifier
-            .padding(vertical = 4.dp)
+            .padding(vertical = Dimen.spacing_xxs)
             .clickable { timePickerDialog.show() }
-            .background(Color.LightGray, RoundedCornerShape(8.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
-            .padding(8.dp)
+            .background(Color.LightGray, RoundedCornerShape(Dimen.spacing_xs))
+            .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
+            .padding(Dimen.spacing_xs)
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = R.drawable.ic_clock),
                 contentDescription = null,
-                Modifier.size(20.dp)
+                Modifier.size(Dimen.spacing_m2)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(Dimen.spacing_xs))
             Text(
                 text = value.ifEmpty { label },
                 color = if (value.isEmpty()) Color.Gray else Color.Black
