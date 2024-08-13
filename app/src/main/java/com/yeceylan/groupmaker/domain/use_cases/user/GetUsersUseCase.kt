@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.domain.use_cases
+package com.yeceylan.groupmaker.domain.use_cases.user
 
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User

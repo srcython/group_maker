@@ -72,6 +72,10 @@
     <string name="point">Puan</string>
     <string name="cancel">İptal</string>
     <string name="add">Ekle</string>
+    <string name="add_result">Sonuç Ekle</string>
+    <string name="enter_result">Sonucu Girin</string>
+    <string name="confirm">Onayla</string>
+    <string name="player">Player: %1$s</string>
 
 
 </resources>

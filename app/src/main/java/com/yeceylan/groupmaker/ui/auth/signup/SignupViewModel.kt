@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User
-import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddUserUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.RegisterUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.SignInWithGoogleUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

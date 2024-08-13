@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.domain.use_cases
+package com.yeceylan.groupmaker.domain.use_cases.match
 
 import android.net.Uri
 import com.yeceylan.groupmaker.core.Resource

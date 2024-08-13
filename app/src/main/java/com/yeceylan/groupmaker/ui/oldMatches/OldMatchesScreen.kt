@@ -42,10 +42,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.model.user.User
@@ -95,7 +97,7 @@ fun OldMatchesScreen(
 
         is Resource.Error -> {
             Text(
-                text = oldMatchesResource.message ?: "Bir hata oluştu.",
+                text = oldMatchesResource.message ?: stringResource(R.string.an_error_occured),
                 color = MaterialTheme.colors.error,
                 modifier = Modifier.padding(16.dp)
             )
@@ -120,12 +122,12 @@ fun AddResultDialog(
     AlertDialog(
         shape = MaterialTheme.shapes.medium,
         onDismissRequest = onDismiss,
-        title = { Text(text = "Sonuç Ekle") },
+        title = { Text(text = stringResource(R.string.add_result)) },
         text = {
             OutlinedTextField(
                 value = result,
                 onValueChange = { result = it },
-                label = { Text("Sonucu Girin") }
+                label = { Text(stringResource(R.string.enter_result)) }
             )
         },
         confirmButton = {
@@ -133,7 +135,7 @@ fun AddResultDialog(
                 onClick = { onSubmit(result) },
                 colors = ButtonDefaults.buttonColors(Color.Blue),
             ) {
-                Text("Onayla")
+                Text(stringResource(R.string.confirm))
             }
         },
         dismissButton = {
@@ -141,7 +143,7 @@ fun AddResultDialog(
                 onClick = { onDismiss() },
                 colors = ButtonDefaults.buttonColors(Color.Blue),
             ) {
-                Text("İptal")
+                Text(stringResource(R.string.cancel))
             }
         }
     )
@@ -161,7 +163,7 @@ fun MatchItem(
             .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),
         elevation = 4.dp,
         backgroundColor = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(16.dp) // Rounded corners
+        shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -227,7 +229,7 @@ fun MatchItem(
                 onClick = { onExpandClick(match.id) },
                 modifier = Modifier
                     .size(40.dp)
-                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(50.dp)) // Oval shape
+                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(50.dp))
             ) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
@@ -248,12 +250,12 @@ fun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewMod
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)), // Border with rounded corners
+            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),
         elevation = 4.dp,
-        backgroundColor = MaterialTheme.colors.background // Change the background color here
+        backgroundColor = MaterialTheme.colors.background
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = "Player: ${player.userName}")
+            Text(text = stringResource(R.string.player, player.userName))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Row {
@@ -277,7 +279,7 @@ fun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewMod
                     },
                     enabled = !isRatingSubmitted,
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
-                    shape = RoundedCornerShape(50.dp) // Oval shape
+                    shape = RoundedCornerShape(50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,

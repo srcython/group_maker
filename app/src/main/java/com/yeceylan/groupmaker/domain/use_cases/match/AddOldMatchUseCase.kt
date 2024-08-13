@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.domain.use_cases
+package com.yeceylan.groupmaker.domain.use_cases.match
 
 import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.repository.MatchRepository

@@ -3,12 +3,12 @@ package com.yeceylan.groupmaker.ui.oldMatches
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeceylan.groupmaker.domain.model.match.Match
-import com.yeceylan.groupmaker.domain.use_cases.GetAllMatchesUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetAllMatchesUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User
-import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
+import com.yeceylan.groupmaker.domain.use_cases.match.AddOldMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -50,8 +50,8 @@ class OldMatchesViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val updatedMatch = match.copy(result = result)
-                addOldMatchUseCase(updatedMatch) // Update match in Firebase
-                fetchOldMatches() // Refresh the list to show updated result
+                addOldMatchUseCase(updatedMatch)
+                fetchOldMatches()
             } catch (e: Exception) {
                 // Handle errors, such as logging or showing a user-friendly message
             }
@@ -61,7 +61,6 @@ class OldMatchesViewModel @Inject constructor(
     fun updatePlayerRating(matchId: String, playerId: String, rating: Int) {
         viewModelScope.launch {
             try {
-                // Find the match and update the player's rating
                 val match = _oldMatches.value.data?.find { it.id == matchId }
                 val updatedPlayers = match?.playerList?.map { player ->
                     if (player.id == playerId) {
@@ -75,21 +74,15 @@ class OldMatchesViewModel @Inject constructor(
                     }
                 } ?: emptyList()
 
-                // Create an updated match with the new player list
                 val updatedMatch = match?.copy(playerList = updatedPlayers)
 
                 updatedMatch?.let {
-                    // Update the match in Firebase
-                    val currentUserUid = getCurrentUserUidUseCase() // Ensure to get the current user UID
-                    //updateMatchInFirebase(currentUserUid, it) // Call a method to update match in Firestore
 
-                    // Update the user information
                     val updatedPlayer = updatedPlayers.find { player -> player.id == playerId }
                     if (updatedPlayer != null) {
-                        addUserUseCase(updatedPlayer) // Update player info
+                        addUserUseCase(updatedPlayer)
                     }
 
-                    // Optionally refresh the old matches to reflect changes
                     fetchOldMatches()
                 }
             } catch (e: Exception) {
@@ -97,11 +90,6 @@ class OldMatchesViewModel @Inject constructor(
             }
         }
     }
-
-    /*private suspend fun updateMatchInFirebase(userId: String, match: Match) {
-        // Make sure to use the correct repository method to update the match
-        userRepository.updateMatch(userId, match)
-    }*/
 
     private fun calculateRating(player: User, rating: Int): Int {
         val currentPoints = player.point
@@ -111,8 +99,6 @@ class OldMatchesViewModel @Inject constructor(
 
         return ((currentPoints * currentCount) + rating) / (currentCount + 1)
     }
-
-
 }
 
 

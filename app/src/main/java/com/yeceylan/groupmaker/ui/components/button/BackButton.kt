@@ -10,6 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.yeceylan.groupmaker.ui.theme.Dimen
 import com.yeceylan.groupmaker.ui.theme.Purple80
@@ -26,7 +27,7 @@ fun BackButton(
             .size(40.dp)
             .padding(Dimen.spacing_xs)
             .background(
-                color = Purple80,
+                color = Color.Blue,
                 shape = CircleShape,
             ),
     ) {

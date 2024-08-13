@@ -9,9 +9,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.match.AddOldMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

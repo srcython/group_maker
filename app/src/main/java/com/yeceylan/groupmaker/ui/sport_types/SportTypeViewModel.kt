@@ -10,9 +10,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.model.SportTypeData
-import com.yeceylan.groupmaker.domain.use_cases.AddMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.sport_type.GetSportTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

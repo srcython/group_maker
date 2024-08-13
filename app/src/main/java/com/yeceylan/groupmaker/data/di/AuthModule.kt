@@ -38,6 +38,5 @@ object AuthenticationModule {
     @Singleton
     fun provideAuthenticationRepository(
         auth: FirebaseAuth,
-        googleSignInClient: GoogleSignInClient
-    ): AuthenticationRepository = AuthenticationRepositoryImpl(auth, googleSignInClient)
+    ): AuthenticationRepository = AuthenticationRepositoryImpl(auth)
 }

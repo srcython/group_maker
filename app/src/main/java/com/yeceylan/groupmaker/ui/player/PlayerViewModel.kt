@@ -7,11 +7,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.model.user.User
-import com.yeceylan.groupmaker.domain.use_cases.AddMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
-import com.yeceylan.groupmaker.domain.use_cases.GetUsersUseCase
-import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.AddUserUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetActiveMatchUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.GetUsersUseCase
+import com.yeceylan.groupmaker.domain.use_cases.user.UpdateMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
