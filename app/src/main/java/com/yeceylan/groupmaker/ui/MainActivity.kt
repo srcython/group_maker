@@ -6,6 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,11 +35,16 @@ class MainActivity : ComponentActivity() {
             GroupMakerTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
-                    bottomBar = { if (isBottomBarShow.value) {
-                        BottomBar(navController = navController)
-                    } }
+                    bottomBar = {
+                        if (isBottomBarShow.value) {
+                            BottomBar(
+                                modifier = Modifier.navigationBarsPadding(),
+                                navController = navController,
+                            )
+                        }
+                    }
                 ) {
-                    MainNavGraph(navController = navController, isShowBottomBar =  isBottomBarShow)
+                    MainNavGraph(navController = navController, isShowBottomBar = isBottomBarShow)
                 }
             }
         }

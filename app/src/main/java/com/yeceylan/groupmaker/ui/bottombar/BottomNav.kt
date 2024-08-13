@@ -31,7 +31,10 @@ import androidx.navigation.compose.rememberNavController
 
 
 @Composable
-fun BottomBar(navController: NavHostController) {
+fun BottomBar(
+    modifier: Modifier,
+    navController: NavHostController,
+) {
     val screens = listOf(
         BottomBarScreen.Home,
         BottomBarScreen.History,
@@ -110,5 +113,5 @@ fun RowScope.AddItem(
 @Composable
 @Preview
 fun BottomNavPreview() {
-    BottomBar(navController = rememberNavController())
+    BottomBar(modifier = Modifier, navController = rememberNavController())
 }
