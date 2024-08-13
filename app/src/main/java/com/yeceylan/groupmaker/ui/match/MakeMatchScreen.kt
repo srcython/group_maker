@@ -15,18 +15,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.components.*
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun MakeMatchScreen(
-    sportTitle:String,
     teamSize: Int,
     navController: NavController,
     makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),
@@ -79,7 +76,7 @@ fun MakeMatchScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(16.dp)
+                    .padding(Dimen.spacing_m1)
                     .pointerInput(Unit) {
                         detectTapGestures(onTap = {
                             focusManager.clearFocus()
@@ -87,13 +84,13 @@ fun MakeMatchScreen(
                     }
             ) {
                 Text(
-                    modifier = Modifier.padding(top = 30.dp),
+                    modifier = Modifier.padding(top = Dimen.spacing_l2),
                     text = "Maç Yeri Ve Zamanı",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp
+                    fontSize = Dimen.font_size_m2
                 )
-                Spacer(modifier = Modifier.height(5.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xxs))
 
                 MatchLocationInputField(
                     label = "Maç konumu giriniz",
@@ -102,7 +99,7 @@ fun MakeMatchScreen(
                     viewModel = locationViewModel
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -113,16 +110,16 @@ fun MakeMatchScreen(
                         onValueChange = { makeMatchViewModel.setMatchDate(it) },
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(Dimen.spacing_xs))
                     MatchTimeInputField(
                         label = "Maç Saati: ",
                         value = matchTime,
                         onValueChange = { makeMatchViewModel.setMatchTime(it) },
-                        matchDate = matchDate, // Yeni eklenen parametreyi geçiyoruz
+                        matchDate = matchDate,
                         modifier = Modifier.weight(1f)
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_m1))
 
                 Column(
                     modifier = Modifier
@@ -133,7 +130,7 @@ fun MakeMatchScreen(
                         text = "Takım Oluştur",
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp
+                        fontSize = Dimen.font_size_m2
                     )
                     Row(
                         horizontalArrangement = Arrangement.Center,
@@ -141,27 +138,27 @@ fun MakeMatchScreen(
                     ) {
                         Button(
                             onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier.padding(Dimen.spacing_xs)
                         ) {
-                            Text(text = "Takımlar kaç kişilik?", fontSize = 14.sp)
+                            Text(text = "Takımlar kaç kişilik?", fontSize = Dimen.font_size_s1)
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
+                        Spacer(modifier = Modifier.width(Dimen.spacing_m1))
                         Button(
                             onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier.padding(Dimen.spacing_xs)
                         ) {
-                            Text(text = "Takım Adlarını Değiştir", fontSize = 14.sp)
+                            Text(text = "Takım Adlarını Değiştir", fontSize = Dimen.font_size_s1)
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_m1))
 
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.White)
-                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))
+                        .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
                 ) {
                     when (userList) {
                         is Resource.Loading -> {
@@ -182,10 +179,10 @@ fun MakeMatchScreen(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(
-                                        top = 10.dp,
-                                        start = 10.dp,
-                                        end = 10.dp,
-                                        bottom = 50.dp
+                                        top = Dimen.spacing_s1,
+                                        start = Dimen.spacing_s1,
+                                        end = Dimen.spacing_s1,
+                                        bottom = Dimen.spacing_xxl
                                     )
                             ) {
                                 item {
@@ -207,7 +204,7 @@ fun MakeMatchScreen(
                                             it
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(16.dp))
+                                    Spacer(modifier = Modifier.height(Dimen.spacing_m1))
                                     PlayerSelectionSection(
                                         teamName = team2Name,
                                         selectedUsers = selectedPersons2,
@@ -284,7 +281,7 @@ fun MakeMatchScreen(
                         },
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(5.dp)
+                            .padding(Dimen.spacing_xxs)
                     ) {
                         Text(text = "Maç Oluştur")
                     }

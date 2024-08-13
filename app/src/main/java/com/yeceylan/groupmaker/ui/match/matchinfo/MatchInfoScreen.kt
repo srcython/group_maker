@@ -22,8 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -36,36 +34,36 @@ import com.yeceylan.groupmaker.domain.model.weather.Forecast
 import com.yeceylan.groupmaker.domain.model.weather.ForecastDay
 import com.yeceylan.groupmaker.domain.model.weather.Hour
 import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
-import com.yeceylan.groupmaker.domain.model.weather.WeatherType
 import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.weather.WeatherViewModel
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
-
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.*
+import com.yeceylan.groupmaker.ui.profile.ProfileViewModel
+import com.yeceylan.groupmaker.ui.theme.Dimen
+import com.yeceylan.groupmaker.ui.weather.WeatherUiState
 
 @Composable
 fun MatchInfoScreen(
     navController: NavController,
     match: Match,
-    viewModel: WeatherViewModel = hiltViewModel(),
-    matchInfoViewModel: MatchInfoViewModel = hiltViewModel()
+    weatherViewModel: WeatherViewModel = hiltViewModel(),
+    matchInfoViewModel: MatchInfoViewModel = hiltViewModel(),
+    profileViewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val weatherResource by viewModel.weatherInfo.collectAsState()
+    val weatherResource by weatherViewModel.weatherInfo.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
+    val user by profileViewModel.user.collectAsState()
 
     LaunchedEffect(Unit) {
-        viewModel.fetchWeatherDataForMatch(match)
+        weatherViewModel.fetchWeatherDataForMatch(match)
     }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 50.dp, start = 16.dp, end = 16.dp)
+            .padding(top = Dimen.spacing_xxl, start = Dimen.spacing_m1, end = Dimen.spacing_m1)
     ) {
         item {
             Button(
@@ -74,24 +72,30 @@ fun MatchInfoScreen(
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Maçı Bitir", fontSize = 18.sp)
+                Text(text = "Maçı Bitir", fontSize = Dimen.font_size_18)
             }
+            Spacer(modifier = Modifier.height(Dimen.spacing_s1))
 
-            Spacer(modifier = Modifier.height(10.dp))
             MatchInfoContent(match, matchInfoViewModel)
-            Spacer(modifier = Modifier.height(10.dp))
-            WeatherInfoContent(weatherResource, match)
-            Spacer(modifier = Modifier.height(10.dp))
+
+            Spacer(modifier = Modifier.height(Dimen.spacing_s1))
+
+            WeatherInfoContent(weatherViewModel, match)
+
+            Spacer(modifier = Modifier.height(Dimen.spacing_s1))
+
             TeamNamesWithBackground(
                 team1Name = match.firstTeamName ?: "Takım 1",
                 team2Name = match.secondTeamName ?: "Takım 2",
                 backgroundImage = R.drawable.img_stadium_background,
-                team1Players = match.firstTeamPlayerList.map { it.firstName },
-                team2Players = match.secondTeamPlayerList.map { it.firstName }
+                team1Players = match.firstTeamPlayerList.map { it.firstName.ifEmpty { it.userName } },
+                team2Players = match.secondTeamPlayerList.map { it.firstName.ifEmpty { it.userName } }
             )
-            Spacer(modifier = Modifier.height(20.dp))
-            IbanRow(viewModel = matchInfoViewModel, iban = "TR33 0006 1005 1978 6457 8413 26")
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(Dimen.spacing_m2))
+
+            IbanRow(viewModel = matchInfoViewModel, user.iban ?: "Iban henüz eklenmedi")
+
+            Spacer(modifier = Modifier.height(Dimen.spacing_m2))
         }
     }
 
@@ -122,17 +126,14 @@ fun MatchInfoScreen(
     }
 }
 
-
-
-
 @Composable
 fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
     val context = LocalContext.current
     Card(
         modifier = Modifier
             .fillMaxWidth(),
-        elevation = 4.dp,
-        shape = RoundedCornerShape(8.dp),
+        elevation = Dimen.spacing_s2,
+        shape = RoundedCornerShape(Dimen.spacing_s2),
         backgroundColor = Color.Transparent,
     ) {
         Box(
@@ -142,33 +143,33 @@ fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
                         colors = listOf(Color(0xFF1E88E5), Color(0xFF42A5F5))
                     )
                 )
-                .padding(16.dp)
+                .padding(Dimen.spacing_m1)
         ) {
             Column {
                 Text(
                     text = "Maç Bilgileri",
-                    fontSize = 20.sp,
+                    fontSize = Dimen.font_size_m2,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xxs))
                 MatchInfoRow(
                     iconPainter = painterResource(id = R.drawable.ic_home),
                     text = "${match.matchLocationTitle}"
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xxxs))
                 MatchInfoRow(
                     iconPainter = painterResource(id = R.drawable.ic_calendar),
                     text = "${match.matchDate}"
                 )
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xxxs))
                 MatchInfoRow(
                     iconPainter = painterResource(id = R.drawable.ic_clock),
                     text = "${match.matchTime}"
                 )
-                Spacer(modifier = Modifier.height(4.dp))
-                MatchInfoRow(
+                Spacer(modifier = Modifier.height(Dimen.spacing_xxxs))
+                MatchInfoRowWithModifier(
                     iconPainter = painterResource(id = R.drawable.ic_maps),
                     text = "${match.matchLocation}",
                     modifier = Modifier.clickable {
@@ -181,18 +182,17 @@ fun MatchInfoContent(match: Match, viewModel: MatchInfoViewModel) {
 }
 
 @Composable
-fun MatchInfoRow(iconPainter: Painter, text: String, modifier: Modifier = Modifier) {
+fun MatchInfoRowWithModifier(modifier: Modifier, iconPainter: Painter, text: String) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = modifier) {
         Image(
             painter = iconPainter,
             contentDescription = null,
-            modifier = Modifier.size(25.dp)
+            modifier = Modifier.size(Dimen.spacing_xl)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, fontSize = 16.sp, color = Color.White)
+        Spacer(modifier = Modifier.width(Dimen.spacing_xs))
+        Text(text = text, fontSize = Dimen.font_size_m1, color = Color.White)
     }
 }
-
 
 @Composable
 fun MatchInfoRow(iconPainter: Painter, text: String) {
@@ -200,129 +200,101 @@ fun MatchInfoRow(iconPainter: Painter, text: String) {
         Image(
             painter = iconPainter,
             contentDescription = null,
-            modifier = Modifier.size(25.dp)
+            modifier = Modifier.size(Dimen.spacing_xl)
         )
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, fontSize = 16.sp, color = Color.White)
+        Spacer(modifier = Modifier.width(Dimen.spacing_xs))
+        Text(text = text, fontSize = Dimen.font_size_m1, color = Color.White)
     }
 }
 
-
 @Composable
-fun WeatherInfoContent(weatherResource: Resource<WeatherResponse>?, match: Match) {
-    when (weatherResource) {
-        is Resource.Loading -> {
+fun WeatherInfoContent(weatherViewModel: WeatherViewModel, match: Match) {
+    when (val weatherUiState = weatherViewModel.getWeatherInfoForMatch(match)) {
+        is WeatherUiState.Loading -> {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .size(48.dp)
-                    .padding(16.dp),
+                    .size(Dimen.spacing_xxl)
+                    .padding(Dimen.spacing_m1),
                 color = Color(0xFF388E3C)
             )
         }
 
-        is Resource.Success -> {
-            val weatherInfo = weatherResource.data
-            if (weatherInfo != null && weatherInfo.forecast.forecastday.isNotEmpty()) {
-                val forecastDay = weatherInfo.forecast.forecastday[0]
-
-                val inputDateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
-                val dateParsed = inputDateFormat.parse(match.matchDate)
-                val currentDate = Calendar.getInstance().time
-                val diff = dateParsed.time - currentDate.time
-                val diffDays = diff / (1000 * 60 * 60 * 24)
-
-                if (forecastDay.hour.isNotEmpty() && diffDays <= 14) {
-                    val currentHourWeather = forecastDay.hour[0]
-                    val conditionText = currentHourWeather.condition.text
-                    val weatherIconResId =
-                        WeatherType.weatherIconMap[conditionText] ?: R.drawable.ic_moon
-
-                    Card(
-                        modifier = Modifier.fillMaxWidth(),
-                        elevation = 4.dp,
-                        shape = RoundedCornerShape(8.dp),
+        is WeatherUiState.Success -> {
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = Dimen.spacing_s2,
+                shape = RoundedCornerShape(Dimen.spacing_s2),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color(0xFF102840), Color(0xFF1B3B5A))
+                            )
+                        )
+                        .padding(Dimen.spacing_m1)
+                ) {
+                    Column(
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Box(
+                        Text(
+                            text = "Maç Saati İçin Hava Durumu",
+                            fontSize = Dimen.font_size_m2,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Spacer(modifier = Modifier.height(Dimen.spacing_m1))
+                        Image(
+                            painter = painterResource(id = weatherUiState.weatherIconResId),
+                            contentDescription = null,
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .background(
-                                    brush = Brush.horizontalGradient(
-                                        colors = listOf(Color(0xFF102840), Color(0xFF1B3B5A))
-                                    )
-                                )
-                                .padding(16.dp)
-                        ) {
-                            Column(
-                                verticalArrangement = Arrangement.Center,
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "Maç Saati İçin Hava Durumu",
-                                    fontSize = 20.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Image(
-                                    painter = painterResource(id = weatherIconResId),
-                                    contentDescription = null,
-                                    contentScale = ContentScale.Fit,
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Durum: $conditionText",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally)
-                                )
-                                Text(
-                                    text = "Sıcaklık: ${currentHourWeather.temp_c} °C",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally) // Metin rengi beyaz
-                                )
-                                Text(
-                                    text = "Yağmur İhtimali: ${currentHourWeather.precip_mm} mm",
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally) // Metin rengi beyaz
-                                )
-                            }
-                        }
+                                .size(Dimen.spacing_xxxxl1)
+                                .align(Alignment.CenterHorizontally)
+                        )
+                        Spacer(modifier = Modifier.height(Dimen.spacing_s2))
+                        Text(
+                            text = "Durum: ${weatherUiState.conditionText}",
+                            fontSize = Dimen.font_size_m1,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Text(
+                            text = "Sıcaklık: ${weatherUiState.temperature} °C",
+                            fontSize = Dimen.font_size_m1,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
+                        Text(
+                            text = "Yağmur İhtimali: ${weatherUiState.precipitation} mm",
+                            fontSize = Dimen.font_size_m1,
+                            color = Color.White,
+                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                        )
                     }
-                } else {
-                    Text(
-                        text = "Hava durumu saati mevcut değil. Lütfen daha sonra tekrar deneyin.",
-                        color = Color.Red,
-                        modifier = Modifier.padding(16.dp)
-                    )
                 }
             }
         }
 
-        is Resource.Error -> {
+        is WeatherUiState.Error -> {
             Text(
-                text = "Hata: ${weatherResource.message}",
-                color = Color.Red,
-                modifier = Modifier.padding(16.dp)
+                text = "Bir hata oluştu. Lütfen tekrar deneyin.",
+                modifier = Modifier.padding(Dimen.spacing_m1)
             )
         }
 
-        else -> {
+        is WeatherUiState.NoData -> {
             Text(
-                text = "Hava durumu bilgisi mevcut değil. Lütfen daha sonra tekrar deneyin.",
-                color = Color.Red,
-                modifier = Modifier.padding(16.dp)
+                text = "Hava durumu mevcut değil. Lütfen daha yakın bir tarih seçiniz",
+                modifier = Modifier.padding(Dimen.spacing_m1)
             )
         }
     }
 }
-
 
 @Composable
 fun TeamNamesWithBackground(
@@ -334,10 +306,10 @@ fun TeamNamesWithBackground(
 ) {
     Card(
         modifier = Modifier
-            .fillMaxWidth()
-            .height(300.dp),
-        elevation = 4.dp,
-        shape = RoundedCornerShape(8.dp),
+            .height(Dimen.spacing_xxxxl2)
+            .fillMaxWidth(),
+        elevation = Dimen.spacing_xxs,
+        shape = RoundedCornerShape(Dimen.spacing_xs),
         backgroundColor = Color.Transparent
     ) {
         Box(
@@ -354,23 +326,23 @@ fun TeamNamesWithBackground(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .padding(horizontal = 40.dp),
+                    .padding(horizontal = Dimen.spacing_l2),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     horizontalAlignment = Alignment.Start,
-                    modifier = Modifier.padding(end = 16.dp)
+                    modifier = Modifier.padding(end = Dimen.spacing_m1)
                 ) {
                     Text(
                         text = team1Name,
-                        fontSize = 24.sp,
+                        fontSize = Dimen.font_size_l,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     team1Players.forEach { player ->
                         Text(
                             text = player,
-                            fontSize = 16.sp,
+                            fontSize = Dimen.font_size_m1,
                             color = Color.White
                         )
                     }
@@ -382,23 +354,23 @@ fun TeamNamesWithBackground(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .size(90.dp)
+                        .size(Dimen.spacing_xxxl2)
                 )
 
                 Column(
                     horizontalAlignment = Alignment.End,
-                    modifier = Modifier.padding(start = 16.dp)
+                    modifier = Modifier.padding(start = Dimen.spacing_m1)
                 ) {
                     Text(
                         text = team2Name,
-                        fontSize = 24.sp,
+                        fontSize = Dimen.font_size_l,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
                     )
                     team2Players.forEach { player ->
                         Text(
                             text = player,
-                            fontSize = 16.sp,
+                            fontSize = Dimen.font_size_m1,
                             color = Color.White
                         )
                     }
@@ -423,15 +395,24 @@ fun IbanRow(viewModel: MatchInfoViewModel, iban: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(text = "IBAN: ", fontSize = 16.sp, color = Color.Black, fontWeight = FontWeight.Bold)
+        Text(
+            text = "IBAN: ",
+            fontSize = Dimen.font_size_m1,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold
+        )
 
         Icon(
             painter = painterResource(id = R.drawable.ic_copy),
             contentDescription = null,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(Dimen.spacing_l)
         )
-        Spacer(modifier = Modifier.width(2.dp))
-        Text(text = iban, fontSize = 16.sp, color = Color.Black)
+        Spacer(modifier = Modifier.width(Dimen.spacing_xxxs))
+        Text(
+            text = iban,
+            fontSize = Dimen.font_size_m1,
+            color = Color.Black
+        )
     }
 }
 
@@ -441,7 +422,7 @@ fun MatchInfoContentPreview() {
     val match = Match(
         id = "1",
         matchLocationTitle = "Stadyum",
-        matchLocation = "İstanbul, Türkiyedf vTürkiyedf vTürkiyedf TürkiyedfTürkiyedf",
+        matchLocation = "İstanbul, Ülker Fenerbahçe Şükrü Saracoğlu Stadyumu",
         matchDate = "01-01-2024",
         matchTime = "18:00",
         firstTeamName = "Takım A",
@@ -451,8 +432,6 @@ fun MatchInfoContentPreview() {
         isActive = true,
         maxPlayer = 22
     )
-
-    //MatchInfoContent(match = match, viewModel = MatchInfoViewModel())
 }
 
 @Preview(showBackground = true)
@@ -482,7 +461,7 @@ fun WeatherInfoContentPreview() {
                             time = "2024-01-01 18:00",
                             temp_c = 15.0,
                             condition = Condition(
-                                text = "Sunny"
+                                text = "Açık"
                             ),
                             precip_mm = 0.0
                         )
@@ -492,8 +471,6 @@ fun WeatherInfoContentPreview() {
         )
     )
     val weatherResource = Resource.Success(fakeWeatherResponse)
-
-    WeatherInfoContent(weatherResource = weatherResource, match = match)
 }
 
 @Preview(showBackground = true)
@@ -506,17 +483,13 @@ fun TeamNamesWithBackgroundPreview() {
         team1Players = listOf(
             "Oyuncu 1",
             "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1",
-            "Oyuncu 2",
-            "Oyuncu 1"
+            "Oyuncu 3"
         ),
-        team2Players = listOf("Oyuncu 3", "Oyuncu 4")
+        team2Players = listOf(
+            "Oyuncu 1",
+            "Oyuncu 2",
+            "Oyuncu 3"
+        )
     )
 }
 
