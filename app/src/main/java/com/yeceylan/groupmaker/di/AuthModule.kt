@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.data.di
+package com.yeceylan.groupmaker.di
 
 import android.content.Context
 import com.google.android.gms.auth.api.signin.GoogleSignIn

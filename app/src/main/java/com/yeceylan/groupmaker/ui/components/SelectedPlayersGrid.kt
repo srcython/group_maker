@@ -20,17 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.domain.model.user.User
-import com.yeceylan.groupmaker.domain.model.User
 import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun SelectedPlayersGrid(selectedUsers: List<User>, setSelectedPersons: (List<User>) -> Unit) {
     if (selectedUsers.isNotEmpty()) {
-        Text(text = "Seçilenler:", modifier = Modifier.padding(top = Dimen.spacing_xxs))
+        Text(text = stringResource(R.string.selected), modifier = Modifier.padding(top = Dimen.spacing_xxs))
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
             contentPadding = PaddingValues(Dimen.spacing_xs),

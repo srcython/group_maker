@@ -7,6 +7,7 @@ import com.yeceylan.groupmaker.domain.use_cases.weather.GetWeatherForecastUseCas
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.weather.WeatherResponse
 import com.yeceylan.groupmaker.domain.model.match.Match
+import com.yeceylan.groupmaker.domain.model.weather.WeatherType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.data.di
+package com.yeceylan.groupmaker.di
 
 import com.google.firebase.firestore.FirebaseFirestore
 import com.yeceylan.groupmaker.data.repository.MatchRepositoryImpl

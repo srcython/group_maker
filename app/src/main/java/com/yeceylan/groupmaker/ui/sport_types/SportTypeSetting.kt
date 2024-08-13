@@ -94,7 +94,7 @@ fun SportTypeSettingItem(
             .clickable {
                 viewModel.addMatch(title, teamSize)
                 if (text != "Oyuncular") {
-                    navController.navigate(MatchScreens.MakeMatchScreen(title, teamSize))
+                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
                 } else {
                     navController.navigate(PlayerScreens.PlayerPage)
                 }

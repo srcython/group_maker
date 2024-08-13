@@ -103,6 +103,7 @@
     <!-- SportTypesSetting Screen-->
     <string name="card_title_create">Maç Oluştur</string>
     <string name="card_title_players">Oyuncular</string>
+    <string name="selected">Seçilenler:</string>
 
 
 </resources>

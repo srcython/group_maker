@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.data.di
+package com.yeceylan.groupmaker.di
 
 import com.yeceylan.groupmaker.data.repository.WeatherRepositoryImpl
 import com.yeceylan.groupmaker.domain.model.WeatherApiService

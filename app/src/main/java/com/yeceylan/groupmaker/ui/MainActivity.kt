@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker
+package com.yeceylan.groupmaker.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -16,7 +16,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import com.yeceylan.groupmaker.ui.bottombar.BottomBar
-import com.yeceylan.groupmaker.ui.MainNavGraph
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
