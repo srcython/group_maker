@@ -109,7 +109,7 @@ fun MainNavGraph(
         composable<PlayerScreens.PlayerPage> {
             isShowBottomBar.value = true
             Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                PlayerPage()
+                PlayerPage(navController = navController)
             }
         }
     }

@@ -47,17 +47,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.ui.components.button.BackButton
 import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun PlayerPage(
-    playerViewModel: PlayerViewModel = hiltViewModel()
+    playerViewModel: PlayerViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val usersState by playerViewModel.filteredUsers.collectAsState()
     val selectedUsers by playerViewModel.selectedUsers.collectAsState()
@@ -65,72 +69,81 @@ fun PlayerPage(
     var showAddPlayerDialog by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(Dimen.spacing_m1)
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = stringResource(R.string.selected_players))
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(modifier = Modifier.padding(top = 60.dp, start = 20.dp)) {
+            BackButton {
+                navController.popBackStack()
+            }
+        }
 
-            when (usersState) {
-                is Resource.Loading -> {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
-                }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(Dimen.spacing_m1)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Text(text = stringResource(R.string.selected_players))
 
-                is Resource.Error -> {
-                    Text(
-                        text = usersState.message ?: stringResource(R.string.an_error_occured),
-                        color = Color.Red,
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
+                when (usersState) {
+                    is Resource.Loading -> {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                    }
 
-                is Resource.Success -> {
-                    if (selectedUsers.isEmpty()) {
+                    is Resource.Error -> {
                         Text(
-                            text = stringResource(R.string.no_players_selected),
+                            text = usersState.message ?: stringResource(R.string.an_error_occured),
+                            color = Color.Red,
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                    } else {
-                        SelectedPlayersGrid(
-                            modifier = Modifier.weight(1f),
-                            selectedPersons = selectedUsers,
-                            setSelectedPersons = { updatedList ->
-                                playerViewModel.updateSelectedUsers(updatedList)
-                            }
+                    }
+
+                    is Resource.Success -> {
+                        if (selectedUsers.isEmpty()) {
+                            Text(
+                                text = stringResource(R.string.no_players_selected),
+                                modifier = Modifier.align(Alignment.CenterHorizontally)
+                            )
+                        } else {
+                            SelectedPlayersGrid(
+                                modifier = Modifier.weight(20f),
+                                selectedPersons = selectedUsers,
+                                setSelectedPersons = { updatedList ->
+                                    playerViewModel.updateSelectedUsers(updatedList)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = { showAddPlayerDialog = true },
+                        colors = ButtonDefaults.buttonColors(Color.Blue),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.add_player),
+                            color = Color.White
+                        )
+                    }
+                    Button(
+                        onClick = { showUserDialog = true },
+                        colors = ButtonDefaults.buttonColors(Color.Blue),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.call_player),
+                            color = Color.White,
                         )
                     }
                 }
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Button(
-                    onClick = { showAddPlayerDialog = true },
-                    colors = ButtonDefaults.buttonColors(Color.Blue),
-                ) {
-                    Text(
-                        text = stringResource(R.string.add_player),
-                        color = Color.White
-                    )
-                }
-                Button(
-                    onClick = { showUserDialog = true },
-                    colors = ButtonDefaults.buttonColors(Color.Blue),
-                ) {
-                    Text(
-                        text = stringResource(R.string.call_player),
-                        color = Color.White,
-                    )
-                }
-            }
         }
     }
+
     if (showUserDialog) {
         Dialog(onDismissRequest = { showUserDialog = false }) {
             Surface(

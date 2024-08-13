@@ -1,0 +1,356 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.data.repository\r\n\r\nimport android.net.Uri\r\nimport android.util.Log\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.google.firebase.firestore.FirebaseFirestore\r\nimport com.google.firebase.firestore.ListenerRegistration\r\nimport com.google.firebase.firestore.toObject\r\nimport com.google.firebase.storage.FirebaseStorage\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.domain.repository.UserRepository\r\nimport kotlinx.coroutines.channels.awaitClose\r\nimport kotlinx.coroutines.flow.Flow\r\nimport kotlinx.coroutines.flow.callbackFlow\r\nimport kotlinx.coroutines.tasks.await\r\nimport javax.inject.Inject\r\n\r\nclass UserRepositoryImpl @Inject constructor(\r\n    private val firestore: FirebaseFirestore,\r\n    private val storage: FirebaseStorage\r\n) : UserRepository {\r\n\r\n    override suspend fun addStorage(uri: Uri, userId: String) = callbackFlow {\r\n\r\n        val profileImageRef = storage.reference.child(\"users/${userId}.jpg\")\r\n        val listener = profileImageRef.putFile(uri).addOnSuccessListener {\r\n\r\n            profileImageRef.downloadUrl.addOnSuccessListener {\r\n\r\n                val response = if (it != null){\r\n                    Resource.Success(it.toString())\r\n                }else{\r\n                    Resource.Error(\"user repo imp addStorage resource failed\")\r\n                }\r\n\r\n                trySend(response)\r\n                Log.e(\"repo-it\",it.toString())\r\n            }\r\n        }\r\n        awaitClose {\r\n            listener.cancel()\r\n        }\r\n    }\r\n\r\n\r\n    override suspend fun addUser(user: User) {\r\n        firestore.collection(\"users\")\r\n            .document(user.id)\r\n            .set(user)\r\n            .await()\r\n    }\r\n\r\n    override suspend fun getUser() = callbackFlow {\r\n        val snapshotListener = firestore.collection(\"users\")\r\n            .document(FirebaseAuth.getInstance().currentUser!!.uid)\r\n            .addSnapshotListener { snapshot, e ->\r\n\r\n                val userResponse = if (snapshot != null) {\r\n                    val user = snapshot.toObject<User>()!!\r\n                    Resource.Success(user)\r\n                } else {\r\n                    Resource.Error(e.toString())\r\n                }\r\n                trySend(userResponse)\r\n            }\r\n        awaitClose {\r\n            snapshotListener.remove()\r\n        }\r\n    }\r\n\r\n    override suspend fun getUsers(): Flow<Resource<List<User>>> = callbackFlow {\r\n        trySend(Resource.Loading())\r\n        val snapshotListener: ListenerRegistration = firestore.collection(\"users\")\r\n            .addSnapshotListener { snapshot, error ->\r\n\r\n                val usersResponse = if (snapshot != null) {\r\n                    val users = snapshot.toObjects(User::class.java)\r\n                    Resource.Success(users)\r\n                } else {\r\n                    Resource.Error(error?.message ?: \"Veri alınamadı\")\r\n                }\r\n                trySend(usersResponse)\r\n            }\r\n\r\n        awaitClose {\r\n            snapshotListener.remove()\r\n        }\r\n    }\r\n\r\n    override suspend fun updateMatch(userId: String, match: Match) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesCollection = userDocument.collection(\"matches\")\r\n\r\n        matchesCollection.document(match.id)\r\n            .update(\r\n                \"matchLocationTitle\", match.matchLocationTitle,\r\n                \"matchLocation\", match.matchLocation,\r\n                \"matchDate\", match.matchDate,\r\n                \"firstTeamName\", match.firstTeamName,\r\n                \"matchTime\", match.matchTime,\r\n                \"latLng\", match.latLng,\r\n                \"secondTeamName\", match.secondTeamName,\r\n                \"type\", match.type,\r\n                \"playerList\", match.playerList,\r\n                \"firstTeamPlayerList\", match.firstTeamPlayerList,\r\n                \"secondTeamPlayerList\", match.secondTeamPlayerList\r\n            )\r\n            .await()\r\n    }\r\n\r\n\r\n    override suspend fun addMatch(userId: String, match: Match) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesCollection = userDocument.collection(\"matches\")\r\n        matchesCollection.document(match.id)\r\n            .set(match)\r\n            .await()\r\n    }\r\n\r\n    override suspend fun getActiveMatch(userId: String): Match? {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        Log.d(\"UserRepositoryImpl\", \"Fetching active match for user: $userId\")\r\n        return try {\r\n            // Log all matches for debugging\r\n            logMatches(userId)\r\n\r\n            val matchesSnapshot = userDocument.collection(\"matches\")\r\n                .whereEqualTo(\"active\", true)\r\n                .get()\r\n                .await()\r\n\r\n            Log.d(\"UserRepositoryImpl\", \"Matches snapshot size: ${matchesSnapshot.size()}\")\r\n\r\n            if (matchesSnapshot.documents.isNotEmpty()) {\r\n                val match = matchesSnapshot.documents.firstOrNull()?.toObject(Match::class.java)\r\n                Log.d(\"UserRepositoryImpl\", \"Active match found: $match\")\r\n                match\r\n            } else {\r\n                Log.d(\"UserRepositoryImpl\", \"No active match found for user $userId\")\r\n                null\r\n            }\r\n        } catch (e: Exception) {\r\n            Log.e(\r\n                \"UserRepositoryImpl\",\r\n                \"Error getting active match for user $userId: ${e.message}\",\r\n                e\r\n            )\r\n            null\r\n        }\r\n    }\r\n\r\n    private suspend fun logMatches(userId: String) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesSnapshot = userDocument.collection(\"matches\")\r\n            .get()\r\n            .await()\r\n\r\n        for (document in matchesSnapshot.documents) {\r\n            Log.d(\"UserRepositoryImpl\", \"Match Document: ${document.id}, Data: ${document.data}\")\r\n        }\r\n    }\r\n\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt b/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt	(date 1723398966572)
+@@ -34,9 +34,7 @@
+                 }else{
+                     Resource.Error("user repo imp addStorage resource failed")
+                 }
+-
+                 trySend(response)
+-                Log.e("repo-it",it.toString())
+             }
+         }
+         awaitClose {
+@@ -44,7 +42,6 @@
+         }
+     }
+ 
+-
+     override suspend fun addUser(user: User) {
+         firestore.collection("users")
+             .document(user.id)
+@@ -110,7 +107,6 @@
+             .await()
+     }
+ 
+-
+     override suspend fun addMatch(userId: String, match: Match) {
+         val userDocument = firestore.collection("users").document(userId)
+         val matchesCollection = userDocument.collection("matches")
+@@ -161,5 +157,4 @@
+             Log.d("UserRepositoryImpl", "Match Document: ${document.id}, Data: ${document.data}")
+         }
+     }
+-
+ }
+Index: app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.domain.model\r\n\r\ndata class User(\r\n    val id: String = \"\",\r\n    val email: String = \"\",\r\n    var firstName: String = \"\",\r\n    var userName: String = \"\",\r\n    var surname: String = \"\",\r\n    var photoUrl: String? = \"\",\r\n    var position: String = \"\",\r\n    val point: Int = 0,\r\n) {\r\n    constructor() : this(\r\n        id = \"\",\r\n        firstName = \"\",\r\n        email = \"\",\r\n        userName = \"\",\r\n        surname = \"\",\r\n        photoUrl = \"\",\r\n        position = \"\",\r\n        point = 0,\r\n    )\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt	(date 1723395167095)
+@@ -9,6 +9,7 @@
+     var photoUrl: String? = "",
+     var position: String = "",
+     val point: Int = 0,
++    var iban: String = "",
+ ) {
+     constructor() : this(
+         id = "",
+@@ -19,6 +20,7 @@
+         photoUrl = "",
+         position = "",
+         point = 0,
++        iban = "",
+     )
+ }
+ 
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.profile\r\n\r\nimport android.net.Uri\r\nimport android.util.Log\r\nimport androidx.activity.compose.rememberLauncherForActivityResult\r\nimport androidx.activity.result.contract.ActivityResultContracts\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxHeight\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.Button\r\nimport androidx.compose.material.ButtonDefaults\r\nimport androidx.compose.material.Card\r\nimport androidx.compose.material.MaterialTheme\r\nimport androidx.compose.material.OutlinedTextField\r\nimport androidx.compose.material.Surface\r\nimport androidx.compose.material.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.compose.ui.window.Dialog\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport androidx.navigation.compose.rememberNavController\r\nimport coil.annotation.ExperimentalCoilApi\r\nimport coil.compose.AsyncImage\r\nimport coil.request.ImageRequest\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.components.ProgressBar\r\n\r\n@Composable\r\nfun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: NavController) {\r\n\r\n    var showDialog by remember { mutableStateOf(false) }\r\n    val user = viewModel.user.collectAsState().value\r\n\r\n    /*when (viewModel.userResponse) {\r\n        is Resource.Error -> \"TODO()\"\r\n        is Resource.Loading -> ProgressBar()\r\n        is Resource.Success -> user = viewModel.userResponse.data!!\r\n    }*/\r\n\r\n\r\n\r\n    Column(\r\n        Modifier\r\n            .fillMaxHeight()\r\n            .fillMaxWidth()\r\n            .background(\r\n                brush = Brush.verticalGradient(\r\n                colors = listOf(\r\n                    Color(0xFF808080),\r\n                    Color(0xFFFFFFFF)\r\n                ),\r\n            )),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n    ) {\r\n\r\n        Box(modifier = Modifier.height(280.dp)) {\r\n            Image(\r\n                painter = painterResource(id = R.drawable.top_background),\r\n                contentDescription = \"\",\r\n                Modifier.fillMaxWidth(),\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Column(\r\n                horizontalAlignment = Alignment.CenterHorizontally,\r\n                modifier = Modifier.fillMaxSize(),\r\n                verticalArrangement = Arrangement.Bottom,\r\n\r\n                ) {\r\n                AsyncImage(\r\n                    model = user.photoUrl,\r\n                    contentDescription = \"\",\r\n\r\n                    contentScale = ContentScale.Crop,\r\n                    modifier = Modifier\r\n                        .size(200.dp)\r\n                        .clip(CircleShape)\r\n                        .border(4.dp, Color.White, CircleShape)\r\n                        .background(Color.Gray),\r\n                )\r\n            }\r\n        }\r\n\r\n        Text(\r\n            text = user.userName,\r\n            fontSize = 25.sp,\r\n            fontWeight = FontWeight.Bold,\r\n            modifier = Modifier.padding(top = 16.dp),\r\n            color = Color(android.graphics.Color.parseColor(\"#747679\")),\r\n        )\r\n        Text(\r\n            text = user.email,\r\n            fontSize = 20.sp,\r\n            color = Color(android.graphics.Color.parseColor(\"#747679\")),\r\n        )\r\n        Card(\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n                .padding(32.dp, 24.dp),\r\n            elevation = 4.dp,\r\n            shape = RoundedCornerShape(8.dp),\r\n            backgroundColor = Color.White,\r\n        ) {\r\n            Column(modifier = Modifier.padding(12.dp)) {\r\n                Text(\r\n                    text = \"Bilgiler\",\r\n                    fontSize = 24.sp,\r\n                    fontWeight = FontWeight.Bold,\r\n                    color = Color(0xFF1E88E5),\r\n                    modifier = Modifier.padding(5.dp),\r\n                )\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n                Text(\r\n                    text = \"Adı: ${user.firstName}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Soyadı: ${user.surname}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Pozisyon: ${user.position}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Puan: ${user.point}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n            }\r\n        }\r\n\r\n        Button(\r\n            onClick = { showDialog = true },\r\n            Modifier\r\n                .fillMaxWidth()\r\n                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)\r\n                .height(55.dp), colors = ButtonDefaults.buttonColors(\r\n                backgroundColor = Color(android.graphics.Color.parseColor(\"#ffffff\"))\r\n            ), shape = RoundedCornerShape(15)\r\n        ) {\r\n            Column(\r\n                modifier = Modifier.fillMaxHeight(),\r\n                verticalArrangement = Arrangement.Center\r\n            ) {\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.ic_settings),\r\n                    contentDescription = \"\",\r\n                    modifier = Modifier\r\n                        .padding(end = 5.dp)\r\n                )\r\n            }\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(start = 16.dp)\r\n                    .weight(1f),\r\n                verticalArrangement = Arrangement.Center,\r\n                horizontalAlignment = Alignment.Start\r\n            ) {\r\n                Text(\r\n                    text = \"Profil Ayarları\",\r\n                    color = Color.Black,\r\n                    fontSize = 18.sp,\r\n                    fontWeight = FontWeight.Bold\r\n                )\r\n\r\n            }\r\n        }\r\n\r\n\r\n        Button(\r\n            onClick = {\r\n                viewModel.logout()\r\n                // navController.popBackStack()\r\n                navController.navigate(AuthenticationScreens.LoginScreen) {\r\n                    popUpTo(navController.graph.id) {\r\n                        inclusive = false\r\n\r\n                    }\r\n                }\r\n            },\r\n            Modifier\r\n                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)\r\n                .height(55.dp), colors = ButtonDefaults.buttonColors(\r\n                backgroundColor = Color(android.graphics.Color.parseColor(\"#ffffff\"))\r\n            ), shape = RoundedCornerShape(15)\r\n        ) {\r\n            Column(\r\n                modifier = Modifier.fillMaxHeight(),\r\n                verticalArrangement = Arrangement.Center\r\n            ) {\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.logout),\r\n                    contentDescription = \"\",\r\n                    modifier = Modifier\r\n                        .padding(end = 5.dp)\r\n                )\r\n            }\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(start = 16.dp)\r\n                    .weight(1f),\r\n                verticalArrangement = Arrangement.Center,\r\n                horizontalAlignment = Alignment.Start\r\n            ) {\r\n                Text(\r\n                    text = \"Çıkış Yap\",\r\n                    color = Color.Black,\r\n                    fontSize = 18.sp,\r\n                    fontWeight = FontWeight.Bold\r\n                )\r\n\r\n            }\r\n\r\n        }\r\n\r\n\r\n    }\r\n\r\n    if (showDialog) {\r\n        ProfileSettingsDialog(onDismiss = { showDialog = false }, user)\r\n\r\n\r\n    }\r\n\r\n}\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@Composable\r\nfun ProfileSettingsDialog(\r\n    onDismiss: () -> Unit,\r\n    user: User,\r\n    viewModel: ProfileViewModel = hiltViewModel()\r\n) {\r\n\r\n    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl)) }\r\n    val launcher = rememberLauncherForActivityResult(\r\n        contract = ActivityResultContracts.GetContent(),\r\n        onResult = { uri: Uri? -> imageUri = uri ?: Uri.parse(user.photoUrl) }\r\n    )\r\n\r\n    var surname by remember { mutableStateOf(user.surname) }\r\n    var position by remember { mutableStateOf(user.position) }\r\n    var firstname by remember { mutableStateOf(user.firstName) }\r\n\r\n    Dialog(onDismiss) {\r\n        Surface(shape = MaterialTheme.shapes.medium, elevation = 8.dp) {\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(16.dp)\r\n                    .fillMaxWidth(),\r\n                horizontalAlignment = Alignment.CenterHorizontally\r\n            ) {\r\n                Text(text = \"Profili Güncelle\")\r\n\r\n                GlideImage(\r\n                    model = imageUri, contentDescription = \"\", modifier = Modifier\r\n                        .padding(4.dp)\r\n                        .size(150.dp)\r\n                        .clip(RoundedCornerShape(12.dp)),\r\n                    contentScale = ContentScale.Crop\r\n                )\r\n\r\n                Button(\r\n                    onClick = {\r\n                        launcher.launch(\"image/*\")\r\n                    }\r\n                ) {\r\n                    Text(text = \"Profil Fotoğrafı Değiştir\")\r\n                }\r\n\r\n                OutlinedTextField(\r\n                    value = firstname,\r\n                    onValueChange = { firstname = it },\r\n                    label = { Text(text = \"İsim\") }\r\n                )\r\n\r\n                OutlinedTextField(\r\n                    value = surname,\r\n                    onValueChange = { surname = it },\r\n                    label = { Text(text = \"Soyisim\") }\r\n                )\r\n\r\n                OutlinedTextField(\r\n                    value = position,\r\n                    onValueChange = { position = it },\r\n                    label = { Text(text = \"Pozisyon\") }\r\n                )\r\n\r\n                Spacer(modifier = Modifier.height(12.dp))\r\n\r\n                Row(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalArrangement = Arrangement.SpaceBetween\r\n                ) {\r\n                    Button(onClick = onDismiss) {\r\n                        Text(text = \"İptal\")\r\n                    }\r\n                    Button(onClick = {\r\n\r\n                        user.firstName = firstname\r\n                        user.surname = surname\r\n                        user.position = position\r\n                        user.photoUrl = imageUri.toString()\r\n\r\n                        //Log.e(\"user-profile\",user.toString())\r\n                        //Log.e(\"uri-profile\",imageUri.toString())\r\n\r\n                        viewModel.updateProfile(user, imageUri!!)\r\n\r\n\r\n                        onDismiss()\r\n                    }) {\r\n                        Text(text = \"Ekle\")\r\n                    }\r\n                }\r\n                //\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt	(date 1723404105535)
+@@ -2,6 +2,7 @@
+ 
+ import android.net.Uri
+ import android.util.Log
++import android.widget.Toast
+ import androidx.activity.compose.rememberLauncherForActivityResult
+ import androidx.activity.result.contract.ActivityResultContracts
+ import androidx.compose.foundation.Image
+@@ -41,6 +42,7 @@
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.layout.ContentScale
+ import androidx.compose.ui.platform.LocalContext
++import androidx.compose.ui.platform.LocalUriHandler
+ import androidx.compose.ui.res.painterResource
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.unit.dp
+@@ -48,8 +50,6 @@
+ import androidx.compose.ui.window.Dialog
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+-import androidx.navigation.compose.rememberNavController
+-import coil.annotation.ExperimentalCoilApi
+ import coil.compose.AsyncImage
+ import coil.request.ImageRequest
+ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+@@ -58,22 +58,27 @@
+ import com.yeceylan.groupmaker.core.Resource
+ import com.yeceylan.groupmaker.domain.model.User
+ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+-import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+ import com.yeceylan.groupmaker.ui.components.ProgressBar
+ 
+ @Composable
+ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: NavController) {
+ 
+-    var showDialog by remember { mutableStateOf(false) }
+-    val user = viewModel.user.collectAsState().value
++    val context = LocalContext.current
+ 
+-    /*when (viewModel.userResponse) {
+-        is Resource.Error -> "TODO()"
++    when (viewModel.userResponse) {
++        is Resource.Error -> Toast.makeText(context,"Hata",Toast.LENGTH_SHORT).show()
+         is Resource.Loading -> ProgressBar()
+-        is Resource.Success -> user = viewModel.userResponse.data!!
+-    }*/
++        is Resource.Success -> ProfileSucces(
++            user = viewModel.userResponse.data!!,
++            viewModel = viewModel,
++            navController = navController,
++        )
++    }
++}
+ 
+-
++@Composable
++fun ProfileSucces(user: User,viewModel: ProfileViewModel,navController: NavController){
++    var showDialog by remember { mutableStateOf(false) }
+ 
+     Column(
+         Modifier
+@@ -81,11 +86,12 @@
+             .fillMaxWidth()
+             .background(
+                 brush = Brush.verticalGradient(
+-                colors = listOf(
+-                    Color(0xFF808080),
+-                    Color(0xFFFFFFFF)
+-                ),
+-            )),
++                    colors = listOf(
++                        Color(0xFF808080),
++                        Color(0xFFFFFFFF)
++                    ),
++                )
++            ),
+         horizontalAlignment = Alignment.CenterHorizontally,
+     ) {
+ 
+@@ -166,6 +172,11 @@
+                     fontSize = 20.sp,
+                     modifier = Modifier.padding(8.dp),
+                 )
++                Text(
++                    text = "Iban: ${user.iban}",
++                    fontSize = 20.sp,
++                    modifier = Modifier.padding(8.dp),
++                )
+             }
+         }
+ 
+@@ -206,7 +217,6 @@
+             }
+         }
+ 
+-
+         Button(
+             onClick = {
+                 viewModel.logout()
+@@ -248,20 +258,13 @@
+                     fontSize = 18.sp,
+                     fontWeight = FontWeight.Bold
+                 )
+-
+             }
+-
+         }
+-
+-
+     }
+ 
+     if (showDialog) {
+         ProfileSettingsDialog(onDismiss = { showDialog = false }, user)
+-
+-
+     }
+-
+ }
+ 
+ @OptIn(ExperimentalGlideComposeApi::class)
+@@ -281,6 +284,7 @@
+     var surname by remember { mutableStateOf(user.surname) }
+     var position by remember { mutableStateOf(user.position) }
+     var firstname by remember { mutableStateOf(user.firstName) }
++    var iban by remember { mutableStateOf(user.iban) }
+ 
+     Dialog(onDismiss) {
+         Surface(shape = MaterialTheme.shapes.medium, elevation = 8.dp) {
+@@ -325,6 +329,11 @@
+                     onValueChange = { position = it },
+                     label = { Text(text = "Pozisyon") }
+                 )
++                OutlinedTextField(
++                    value = iban,
++                    onValueChange = { iban = it },
++                    label = { Text(text = "Iban") }
++                )
+ 
+                 Spacer(modifier = Modifier.height(12.dp))
+ 
+@@ -341,19 +350,14 @@
+                         user.surname = surname
+                         user.position = position
+                         user.photoUrl = imageUri.toString()
+-
+-                        //Log.e("user-profile",user.toString())
+-                        //Log.e("uri-profile",imageUri.toString())
++                        user.iban = iban
+ 
+-                        viewModel.updateProfile(user, imageUri!!)
+-
+-
++                        imageUri?.let { viewModel.updateProfile(user, it) }
+                         onDismiss()
+                     }) {
+                         Text(text = "Ekle")
+                     }
+                 }
+-                //
+             }
+         }
+     }
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.graphics.painter.Painter\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.match.navigation.MatchScreens\r\nimport com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens\r\n\r\n@Composable\r\nfun SportTypeSetting(\r\n    title: String,\r\n    teamSize: Int,\r\n    navController: NavController,\r\n) {\r\n\r\n    val create = painterResource(id = R.drawable.create_match)\r\n    val players = painterResource(id = R.drawable.players)\r\n\r\n    Column(\r\n        modifier = Modifier.fillMaxSize(),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly\r\n    ) {\r\n\r\n        Text(\r\n            text = title,\r\n            fontSize = 30.sp,\r\n            textAlign = TextAlign.Center,\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n        )\r\n        LazyColumn {\r\n            item {\r\n                SportTypeSettingItem(painter = create, \"Create a Match\", navController,teamSize,title)\r\n            }\r\n            item {\r\n                SportTypeSettingItem(painter = players, \"Players\", navController,teamSize,title)\r\n            }\r\n        }\r\n    }\r\n\r\n}\r\n\r\n@Composable\r\nfun SportTypeSettingItem(\r\n    painter: Painter,\r\n    text: String,\r\n    navController: NavController,\r\n    teamSize: Int,\r\n    title: String,\r\n    viewModel:SportTypeViewModel = hiltViewModel(),\r\n    ) {\r\n\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                viewModel.addMatch(title,teamSize)\r\n                if (text !=\"Players\"){\r\n                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))\r\n                }else{\r\n                    navController.navigate(PlayerScreens.PlayerPage)\r\n                }\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n            Image(\r\n                modifier = Modifier.fillMaxWidth(),\r\n                painter = painter,\r\n                contentDescription = \"\",\r\n                contentScale = ContentScale.Crop\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black\r\n                            ),\r\n                            // startY = 00f,\r\n                        )\r\n                    )\r\n            ) {\r\n\r\n            }\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter\r\n            ) {\r\n                Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1723398966576)
+@@ -65,7 +65,6 @@
+             }
+         }
+     }
+-
+ }
+ 
+ @Composable
+@@ -85,7 +84,7 @@
+             .clickable {
+                 viewModel.addMatch(title,teamSize)
+                 if (text !="Players"){
+-                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
++                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))
+                 }else{
+                     navController.navigate(PlayerScreens.PlayerPage)
+                 }
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.profile\r\n\r\nimport android.net.Uri\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.domain.use_cases.AddStorageUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.GetUserUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.auth.LogoutUseCase\r\nimport dagger.hilt.android.lifecycle.HiltViewModel\r\nimport kotlinx.coroutines.flow.MutableStateFlow\r\nimport kotlinx.coroutines.flow.asStateFlow\r\nimport kotlinx.coroutines.launch\r\nimport javax.inject.Inject\r\n\r\n@HiltViewModel\r\nclass ProfileViewModel @Inject constructor(\r\n    private val useCase: GetUserUseCase,\r\n    private val updateUseCase: AddUserUseCase,\r\n    private val addStorageUseCase: AddStorageUseCase,\r\n    private val logoutUseCase: LogoutUseCase\r\n) : ViewModel() {\r\n    var userResponse by mutableStateOf<Resource<User>>(Resource.Loading())\r\n        private set\r\n\r\n    private var _user = MutableStateFlow(User())\r\n    var user = _user.asStateFlow()\r\n\r\n    init {\r\n        getProfile()\r\n    }\r\n\r\n    private fun getProfile() = viewModelScope.launch {\r\n        useCase().collect {\r\n            userResponse = it\r\n\r\n            when (userResponse) {\r\n                is Resource.Error -> \"TODO()\"\r\n                is Resource.Loading -> \"\"\r\n                is Resource.Success -> _user.value = it.data!!\r\n            }\r\n        }\r\n    }\r\n\r\n    fun updateProfile(mUser: User, uri: Uri) = viewModelScope.launch {\r\n\r\n        addStorageUseCase(uri, mUser.id).collect {\r\n\r\n            _user.value.photoUrl = it.data!!\r\n            updateUseCase(_user.value)\r\n        }\r\n    }\r\n\r\n    fun logout()=viewModelScope.launch{\r\n        logoutUseCase()\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileViewModel.kt	(date 1723398550126)
+@@ -38,12 +38,7 @@
+     private fun getProfile() = viewModelScope.launch {
+         useCase().collect {
+             userResponse = it
+-
+-            when (userResponse) {
+-                is Resource.Error -> "TODO()"
+-                is Resource.Loading -> ""
+-                is Resource.Success -> _user.value = it.data!!
+-            }
++            _user.value = it.data!!
+         }
+     }
+ 
+@@ -56,7 +51,7 @@
+         }
+     }
+ 
+-    fun logout()=viewModelScope.launch{
++    fun logout() = viewModelScope.launch {
+         logoutUseCase()
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.match\r\n\r\nimport android.widget.Toast\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.gestures.detectTapGestures\r\nimport androidx.compose.foundation.layout.*\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.*\r\nimport androidx.compose.runtime.*\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.input.pointer.pointerInput\r\nimport androidx.compose.ui.platform.LocalFocusManager\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.ui.components.*\r\nimport com.yeceylan.groupmaker.ui.location.LocationViewModel\r\n\r\n@Composable\r\nfun MakeMatchScreen(\r\n    teamSize: Int,\r\n    navController: NavController,\r\n    makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),\r\n    locationViewModel: LocationViewModel = hiltViewModel(),\r\n) {\r\n    val focusManager = LocalFocusManager.current\r\n    val team1Name by makeMatchViewModel.team1Name.collectAsState()\r\n    val team2Name by makeMatchViewModel.team2Name.collectAsState()\r\n    val userList by makeMatchViewModel.users.collectAsState()\r\n    val activeMatch by makeMatchViewModel.activeMatch.collectAsState(initial = null)\r\n    var expanded1 by remember { mutableStateOf(false) }\r\n    var expanded2 by remember { mutableStateOf(false) }\r\n    val selectedPersons1 by makeMatchViewModel.selectedPersons1.collectAsState()\r\n    val selectedPersons2 by makeMatchViewModel.selectedPersons2.collectAsState()\r\n    var maxPlayers by remember { mutableIntStateOf(teamSize) }\r\n    val showPlayerCountDialog by makeMatchViewModel.showPlayerCountDialog.collectAsState()\r\n    val showChangeTeamNamesDialog by makeMatchViewModel.showChangeTeamNamesDialog.collectAsState()\r\n    val matchLocation by makeMatchViewModel.matchLocation.collectAsState()\r\n    val locationLatLng by locationViewModel.selectedLocation.collectAsState(initial = null)\r\n    val selectedAddress by locationViewModel.selectedAddress.collectAsState(initial = \"\")\r\n    val matchDate by makeMatchViewModel.matchDate.collectAsState()\r\n    val matchTime by makeMatchViewModel.matchTime.collectAsState()\r\n\r\n    if (showPlayerCountDialog) {\r\n        PlayerCountDialog(maxPlayers) {\r\n            maxPlayers = it; makeMatchViewModel.togglePlayerCountDialog(\r\n            false\r\n        )\r\n        }\r\n    }\r\n\r\n    if (showChangeTeamNamesDialog) {\r\n        ChangeTeamNamesDialog(\r\n            team1Name = team1Name,\r\n            team2Name = team2Name,\r\n            onTeamNamesChanged = { newTeam1Name, newTeam2Name ->\r\n                makeMatchViewModel.setTeam1Name(newTeam1Name)\r\n                makeMatchViewModel.setTeam2Name(newTeam2Name)\r\n                makeMatchViewModel.toggleChangeTeamNamesDialog(false)\r\n            }\r\n        )\r\n    }\r\n\r\n    Scaffold(\r\n        modifier = Modifier\r\n            .background(Color.White)\r\n            .fillMaxSize(),\r\n        content = { paddingValues ->\r\n            Column(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(paddingValues)\r\n                    .padding(16.dp)\r\n                    .pointerInput(Unit) {\r\n                        detectTapGestures(onTap = {\r\n                            focusManager.clearFocus()\r\n                        })\r\n                    }\r\n            ) {\r\n                Text(\r\n                    modifier = Modifier.padding(top = 30.dp),\r\n                    text = \"Maç Yeri Ve Zamanı\",\r\n                    color = Color.Black,\r\n                    fontWeight = FontWeight.Bold,\r\n                    fontSize = 20.sp\r\n                )\r\n                Spacer(modifier = Modifier.height(5.dp))\r\n\r\n                MatchLocationInputField(\r\n                    label = \"Maç konumu giriniz\",\r\n                    value = matchLocation,\r\n                    onValueChange = { makeMatchViewModel.setMatchLocation(it) },\r\n                    viewModel = locationViewModel\r\n                )\r\n\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n                Row(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalArrangement = Arrangement.SpaceBetween\r\n                ) {\r\n                    MatchDateInputField(\r\n                        label = \"Maç Tarihi: \",\r\n                        value = matchDate,\r\n                        onValueChange = { makeMatchViewModel.setMatchDate(it) },\r\n                        modifier = Modifier.weight(1f)\r\n                    )\r\n                    Spacer(modifier = Modifier.width(8.dp))\r\n                    MatchTimeInputField(\r\n                        label = \"Maç Saati: \",\r\n                        value = matchTime,\r\n                        onValueChange = { makeMatchViewModel.setMatchTime(it) },\r\n                        matchDate = matchDate, // Yeni eklenen parametreyi geçiyoruz\r\n                        modifier = Modifier.weight(1f)\r\n                    )\r\n                }\r\n                Spacer(modifier = Modifier.height(16.dp))\r\n\r\n                Column(\r\n                    modifier = Modifier\r\n                        .fillMaxWidth(),\r\n                    horizontalAlignment = Alignment.CenterHorizontally\r\n                ) {\r\n                    Text(\r\n                        text = \"Takım Oluştur\",\r\n                        color = Color.Black,\r\n                        fontWeight = FontWeight.Bold,\r\n                        fontSize = 20.sp\r\n                    )\r\n                    Row(\r\n                        horizontalArrangement = Arrangement.Center,\r\n                        modifier = Modifier.fillMaxWidth()\r\n                    ) {\r\n                        Button(\r\n                            onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },\r\n                            modifier = Modifier.padding(8.dp)\r\n                        ) {\r\n                            Text(text = \"Takımlar kaç kişilik?\", fontSize = 14.sp)\r\n                        }\r\n                        Spacer(modifier = Modifier.width(16.dp))\r\n                        Button(\r\n                            onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },\r\n                            modifier = Modifier.padding(8.dp)\r\n                        ) {\r\n                            Text(text = \"Takım Adlarını Değiştir\", fontSize = 14.sp)\r\n                        }\r\n                    }\r\n                }\r\n\r\n                Spacer(modifier = Modifier.height(16.dp))\r\n\r\n                Box(\r\n                    modifier = Modifier\r\n                        .fillMaxSize()\r\n                        .background(Color.White)\r\n                        .border(1.dp, Color.Gray, RoundedCornerShape(8.dp))\r\n                ) {\r\n                    when (userList) {\r\n                        is Resource.Loading -> {\r\n                            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))\r\n                        }\r\n\r\n                        is Resource.Success -> {\r\n                            val users = userList.data ?: emptyList()\r\n                            if (users.isEmpty()) {\r\n                                Text(\r\n                                    text = \"Herhangi bir oyuncu eklemediniz...\",\r\n                                    modifier = Modifier.align(Alignment.Center)\r\n                                )\r\n                                return@Scaffold\r\n                            }\r\n\r\n                            LazyColumn(\r\n                                modifier = Modifier\r\n                                    .fillMaxSize()\r\n                                    .padding(\r\n                                        top = 10.dp,\r\n                                        start = 10.dp,\r\n                                        end = 10.dp,\r\n                                        bottom = 50.dp\r\n                                    )\r\n                            ) {\r\n                                item {\r\n                                    PlayerSelectionSection(\r\n                                        teamName = team1Name,\r\n                                        selectedUsers = selectedPersons1,\r\n                                        availableUsers = users.filter { it !in selectedPersons2 },\r\n                                        maxPlayers = maxPlayers,\r\n                                        expanded = expanded1,\r\n                                        setExpanded = { expanded1 = it },\r\n                                        setSelectedPersons = {\r\n                                            makeMatchViewModel.setSelectedPersons1(\r\n                                                it\r\n                                            )\r\n                                        }\r\n                                    )\r\n                                    SelectedPlayersGrid(selectedPersons1) {\r\n                                        makeMatchViewModel.setSelectedPersons1(\r\n                                            it\r\n                                        )\r\n                                    }\r\n                                    Spacer(modifier = Modifier.height(16.dp))\r\n                                    PlayerSelectionSection(\r\n                                        teamName = team2Name,\r\n                                        selectedUsers = selectedPersons2,\r\n                                        availableUsers = users.filter { it !in selectedPersons1 },\r\n                                        maxPlayers = maxPlayers,\r\n                                        expanded = expanded2,\r\n                                        setExpanded = { expanded2 = it },\r\n                                        setSelectedPersons = {\r\n                                            makeMatchViewModel.setSelectedPersons2(\r\n                                                it\r\n                                            )\r\n                                        }\r\n                                    )\r\n                                    SelectedPlayersGrid(selectedPersons2) {\r\n                                        makeMatchViewModel.setSelectedPersons2(\r\n                                            it\r\n                                        )\r\n                                    }\r\n                                }\r\n                            }\r\n                        }\r\n\r\n                        is Resource.Error -> {\r\n                            Text(\r\n                                text = \"Hata: ${userList.message}\",\r\n                                color = Color.Red,\r\n                                modifier = Modifier.align(Alignment.Center)\r\n                            )\r\n                        }\r\n                    }\r\n\r\n                    Button(\r\n                        onClick = {\r\n                            val context = navController.context\r\n\r\n                            if (matchLocation.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç konumunu girin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (matchDate.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç tarihini seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (matchTime.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen maç saatini seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (selectedPersons1.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen ilk takımın oyuncularını seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else if (selectedPersons2.isEmpty()) {\r\n                                Toast.makeText(\r\n                                    context,\r\n                                    \"Lütfen ikinci takımın oyuncularını seçin!\",\r\n                                    Toast.LENGTH_SHORT\r\n                                ).show()\r\n                            } else {\r\n                                selectedAddress?.let {\r\n                                    makeMatchViewModel.updateMatchAndNavigate(\r\n                                        navController, locationLatLng,\r\n                                        it\r\n                                    )\r\n                                }\r\n                            }\r\n                        },\r\n                        modifier = Modifier\r\n                            .align(Alignment.BottomCenter)\r\n                            .padding(5.dp)\r\n                    ) {\r\n                        Text(text = \"Maç Oluştur\")\r\n                    }\r\n\r\n                }\r\n            }\r\n        }\r\n\r\n    )\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/match/MakeMatchScreen.kt	(date 1723394225670)
+@@ -26,6 +26,7 @@
+ 
+ @Composable
+ fun MakeMatchScreen(
++    sportTitle:String,
+     teamSize: Int,
+     navController: NavController,
+     makeMatchViewModel: MakeMatchViewModel = hiltViewModel(),
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.bottombar\r\n\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.navigation.NavHostController\r\nimport androidx.navigation.NavType\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.composable\r\nimport androidx.navigation.navArgument\r\nimport androidx.navigation.toRoute\r\nimport com.google.gson.Gson\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginScreen\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen\r\nimport com.yeceylan.groupmaker.ui.match.MakeMatchScreen\r\nimport com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen\r\nimport com.yeceylan.groupmaker.ui.match.navigation.MatchScreens\r\nimport com.yeceylan.groupmaker.ui.onboarding.OnBoarding\r\nimport com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens\r\nimport com.yeceylan.groupmaker.ui.player.PlayerPage\r\nimport com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens\r\nimport com.yeceylan.groupmaker.ui.profile.ProfileScreen\r\nimport com.yeceylan.groupmaker.ui.splash.SplashScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypes\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n\r\n@Composable\r\nfun MainNavGraph(\r\n    navController: NavHostController,\r\n    isShowBottomBar: MutableState<Boolean>,\r\n) {\r\n    NavHost(\r\n        navController = navController,\r\n        startDestination = SplashScreens.SplashScreen,\r\n    ) {\r\n\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<OnBoardingScreens.OnBoardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.LoginScreen> {\r\n            isShowBottomBar.value = false\r\n            LoginScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.SignUpScreen> {\r\n            isShowBottomBar.value = false\r\n            SignUpScreen(navController = navController)\r\n        }\r\n        composable<MatchScreens.MakeMatchScreen> {\r\n            val args = it.toRoute<MatchScreens.MakeMatchScreen>()\r\n            isShowBottomBar.value = false\r\n            MakeMatchScreen(args.size, navController = navController)\r\n        }\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<OnBoardingScreens.OnBoardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.Home.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                SportTypes(navController = navController)\r\n            }\r\n        }\r\n        composable(route = BottomBarScreen.History.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                HistoryScreen()\r\n            }\r\n        }\r\n        composable(route = BottomBarScreen.Profile.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                ProfileScreen(navController = navController)\r\n            }\r\n        }\r\n        composable<SportTypeScreens.SportTypeSetting> {\r\n            isShowBottomBar.value = true\r\n            val args = it.toRoute<SportTypeScreens.SportTypeSetting>()\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                SportTypeSetting(args.title, args.teamSize, navController)\r\n            }\r\n        }\r\n        composable(\r\n            route = \"matchInfo/{matchJson}\",\r\n            arguments = listOf(navArgument(\"matchJson\") { type = NavType.StringType })\r\n        ) { backStackEntry ->\r\n            val matchJson = backStackEntry.arguments?.getString(\"matchJson\") ?: return@composable\r\n            val match = Gson().fromJson(matchJson, Match::class.java)\r\n            MatchInfoScreen(navController = navController, match = match)\r\n        }\r\n        composable<PlayerScreens.PlayerPage> {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                PlayerPage()\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(date 1723394062798)
+@@ -62,7 +62,7 @@
+         composable<MatchScreens.MakeMatchScreen> {
+             val args = it.toRoute<MatchScreens.MakeMatchScreen>()
+             isShowBottomBar.value = false
+-            MakeMatchScreen(args.size, navController = navController)
++            MakeMatchScreen(args.title,args.size, navController = navController)
+         }
+         composable<SplashScreens.SplashScreen> {
+             isShowBottomBar.value = false
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/match/navigation/MatchScreens.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.match.navigation\r\n\r\nimport kotlinx.serialization.Serializable\r\n\r\n@Serializable\r\nsealed class MatchScreens(\r\n) {\r\n\r\n    @Serializable\r\n    data class MakeMatchScreen(val size: Int) : MatchScreens()\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/match/navigation/MatchScreens.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/match/navigation/MatchScreens.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/match/navigation/MatchScreens.kt	(revision ae37ba37c4c5b93be821caf78ca0186550c71294)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/match/navigation/MatchScreens.kt	(date 1723394062793)
+@@ -7,5 +7,5 @@
+ ) {
+ 
+     @Serializable
+-    data class MakeMatchScreen(val size: Int) : MatchScreens()
++    data class MakeMatchScreen(val title:String,val size: Int) : MatchScreens()
+ }
+\ No newline at end of file
