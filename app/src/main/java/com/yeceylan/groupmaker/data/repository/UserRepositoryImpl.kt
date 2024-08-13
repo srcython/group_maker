@@ -102,8 +102,7 @@ class UserRepositoryImpl @Inject constructor(
                 "type", match.type,
                 "playerList", match.playerList,
                 "firstTeamPlayerList", match.firstTeamPlayerList,
-                "secondTeamPlayerList", match.secondTeamPlayerList,
-                "active", match.isActive
+                "secondTeamPlayerList", match.secondTeamPlayerList
             )
             .await()
     }

@@ -355,7 +355,7 @@ fun AddPlayerDialog(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.ptal),
+                            text = stringResource(R.string.iptal),
                             color = Color.White,
                         )
                     }
