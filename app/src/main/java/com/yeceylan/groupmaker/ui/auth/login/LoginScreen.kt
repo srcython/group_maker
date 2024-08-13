@@ -1,6 +1,9 @@
 package com.yeceylan.groupmaker.ui.auth.login
 
+
 import android.app.Activity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,12 +18,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Divider
-import androidx.compose.material3.Text
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,24 +40,64 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.yeceylan.groupmaker.MainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
-import com.yeceylan.groupmaker.ui.components.DButton
-import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
-import com.yeceylan.groupmaker.ui.components.DOutlinedTextField
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.components.button.DButton
+import com.yeceylan.groupmaker.ui.components.button.DGoogleLoginButton
+import com.yeceylan.groupmaker.ui.components.text.DOutlinedTextField
 import com.yeceylan.groupmaker.ui.theme.Dimen
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
-
 
 @Composable
 fun LoginScreen(
     navController: NavController,
     viewModel: LoginViewModel = hiltViewModel(),
-    goToTheActivity: (activity: Activity) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if (account != null) {
+                    viewModel.loginWithGoogle(account)
+                }
+            } catch (e: ApiException) {
+                // sonar - comment
+            }
+        }
+    }
+
+    LaunchedEffect(uiState.isSuccessGoogleLogin) {
+        if (uiState.isSuccessGoogleLogin) {
+            navController.navigate(BottomBarScreen.Home.route)
+            viewModel.resetUIState()
+        }
+    }
+
+    LaunchedEffect(uiState.isSuccessEmailAndPasswordLogin) {
+        if (uiState.isSuccessEmailAndPasswordLogin) {
+            navController.popBackStack()
+            navController.navigate(BottomBarScreen.Home.route)
+            viewModel.resetUIState()
+        }
+    }
 
     with(uiState) {
         if (isLoading) {
@@ -61,17 +105,12 @@ fun LoginScreen(
             return@with
         }
 
-        if (isSuccessGoogleLogin) {
-            /* sonar - comment */
-        }
-
-        if (isSuccessEmailAndPasswordLogin) {
-            goToTheActivity(MainActivity())
-        }
-
         LoginScreenUI(
             navController = navController,
-            loginWithGoogle = { viewModel.loginWithGoogle() },
+            loginWithGoogle = {
+                val signInIntent = googleSignInClient.signInIntent
+                launcher.launch(signInIntent)
+            },
             errorMessage = errorMessage,
             isError = isHaveError,
             onClickToTextField = {
@@ -112,9 +151,10 @@ fun LoginScreenUI(
 
         Spacer(modifier = Modifier.height(Dimen.spacing_xxl))
 
-        DGoogleLoginButton {
-            loginWithGoogle()
-        }
+        DGoogleLoginButton(modifier = Modifier,
+            onClick = {
+                loginWithGoogle()  // This will trigger the Google login process
+            })
 
         DividerSignInWith(modifier = Modifier.padding(vertical = Dimen.spacing_m1))
 
@@ -124,7 +164,7 @@ fun LoginScreenUI(
             modifier = Modifier.clickable {
                 onClickToTextField()
             },
-            value = stringResource(id = R.string.email),
+            value = emailState.value,
             onValueChange = { emailState.value = it },
             isError = isError,
             hint = stringResource(R.string.hint_mail),
@@ -137,7 +177,7 @@ fun LoginScreenUI(
                 .clickable {
                     onClickToTextField()
                 },
-            value = stringResource(id = R.string.password),
+            value = passwordState.value,
             onValueChange = { passwordState.value = it },
             hint = stringResource(R.string.hint_password),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -162,6 +202,7 @@ fun LoginScreenUI(
         }
     }
 }
+
 
 @Composable
 private fun SignInOutlineTextField(
@@ -252,9 +293,6 @@ private fun LoginScreenPreview() {
     GroupMakerTheme {
         LoginScreen(
             navController = rememberNavController(),
-            goToTheActivity = {
-                // sonar - comment
-            },
         )
     }
 }

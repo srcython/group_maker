@@ -2,6 +2,8 @@ package com.yeceylan.groupmaker.ui.auth.signup
 
 import android.app.Activity
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,16 +14,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Text
+import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -40,13 +42,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.yeceylan.groupmaker.MainActivity
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
-import com.yeceylan.groupmaker.ui.components.BackButton
-import com.yeceylan.groupmaker.ui.components.DButton
-import com.yeceylan.groupmaker.ui.components.DGoogleLoginButton
-import com.yeceylan.groupmaker.ui.components.DOutlinedTextField
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+import com.yeceylan.groupmaker.ui.components.button.BackButton
+import com.yeceylan.groupmaker.ui.components.button.DButton
+import com.yeceylan.groupmaker.ui.components.button.DGoogleLoginButton
+import com.yeceylan.groupmaker.ui.components.text.DOutlinedTextField
 import com.yeceylan.groupmaker.ui.theme.Dimen
 import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 
@@ -54,10 +60,32 @@ import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
 fun SignUpScreen(
     navController: NavController,
     viewModel: SignUpViewModel = hiltViewModel(),
-    goToTheActivity: (activity: Activity) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(context.getString(R.string.default_web_client_id))
+        .requestEmail()
+        .build()
+
+    val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(context, gso)
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            try {
+                val account = task.getResult(ApiException::class.java)
+                if (account != null) {
+                    viewModel.signUpWithGoogle(account)
+                }
+            } catch (e: ApiException) {
+                // sonar - comment
+            }
+        }
+    }
 
     with(uiState) {
         if (isLoading) {
@@ -70,20 +98,26 @@ fun SignUpScreen(
         }
 
         if (isSuccessGoogleSignup) {
-            /* sonar - comment */
+            viewModel.resetUIState()
+            navController.navigate(BottomBarScreen.Home.route)
         }
 
         if (isSuccessSignUpWithEmailAndPassword) {
-            goToTheActivity(MainActivity())
+            viewModel.resetUIState()
+            navController.navigate(BottomBarScreen.Home.route)
         }
 
         SignUpScreenUI(
             viewModel = viewModel,
             navController = navController,
-            signUpWithGoogle = { viewModel.signUpWithGoogle() },
+            signUpWithGoogle = {
+                val signInIntent = googleSignInClient.signInIntent
+                launcher.launch(signInIntent)
+            },
         )
     }
 }
+
 
 @Composable
 private fun SignUpScreenUI(
@@ -93,6 +127,7 @@ private fun SignUpScreenUI(
 ) {
     val verticalScroll = rememberScrollState()
     var email by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var confirmPassword by remember { mutableStateOf("") }
     var isPasswordsMatch by remember { mutableStateOf(false) }
@@ -129,7 +164,7 @@ private fun SignUpScreenUI(
             hint = stringResource(R.string.username_hint),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
             onValueChange = {
-                // sonar comment
+                name = it
             },
         )
 
@@ -219,7 +254,7 @@ private fun SignUpScreenUI(
             text = stringResource(R.string.button_sign_up),
             modifier = Modifier.padding(top = Dimen.spacing_m1),
         ) {
-            viewModel.signUpWithEmailAndPassword(email = email, password = password)
+            viewModel.signUpWithEmailAndPassword(email = email, password = password, name = name)
         }
 
         LoginButtonRow(modifier = Modifier.padding(top = Dimen.spacing_xs)) {
@@ -324,8 +359,6 @@ private fun LoginButtonRow(
 @Composable
 private fun SignUpScreenPreview() {
     GroupMakerTheme {
-        SignUpScreen(navController = rememberNavController()) {
-            // sonar - comment
-        }
+        SignUpScreen(navController = rememberNavController())
     }
 }

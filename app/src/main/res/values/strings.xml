@@ -2,35 +2,35 @@
     <string name="app_name">GroupMaker</string>
 
     <!-- Sign Up Screen -->
-    <string name="sign_up">Sign Up</string>
-    <string name="username">Username</string>
-    <string name="username_hint">username</string>
+    <string name="sign_up">Kayıt ol</string>
+    <string name="username">Kullanıcı Adı</string>
+    <string name="username_hint">Kullanıcı Adı</string>
     <string name="email">Email</string>
     <string name="hint_mail">test@testmail.com</string>
-    <string name="password">Password</string>
+    <string name="password">Şİfre</string>
     <string name="hint_password">*********</string>
-    <string name="button_sign_up">Sign Up</string>
-    <string name="verify_password_text">Password</string>
+    <string name="button_sign_up">Giriş Yap</string>
+    <string name="verify_password_text">Şifre</string>
     <string name="verify_password_hint_text">*********</string>
-    <string name="or_sign_up_with_text">or sign up with</string>
-    <string name="by_creating_an_account_i_accept_hiring_hub_terms_of_use_and_privacy_policy">By Creating an account, i accept Hiring Hub terms of Use and Privacy Policy</string>
-    <string name="already_have_an_account">Already have an account?</string>
-    <string name="sign_up_login_text_button_text">Login</string>
+    <string name="or_sign_up_with_text">veya giriş yap</string>
+    <string name="by_creating_an_account_i_accept_hiring_hub_terms_of_use_and_privacy_policy">Kaydolarak sözleşmeyi kabul ediyorum.</string>
+    <string name="already_have_an_account">Zaten bir hesabım var?</string>
+    <string name="sign_up_login_text_button_text">Giriş</string>
 
     <!-- Authentication Screen -->
-    <string name="email_address">Email Address</string>
-    <string name="text_field_value_password">Password</string>
-    <string name="login">Login</string>
-    <string name="keep_me_signed_in">Keep me signed in</string>
-    <string name="or_sign_in_with">or sign in with</string>
-    <string name="don_t_have_an_account">Don\'t have an account?</string>
-    <string name="sign_up_here">Sign up here</string>
-    <string name="password_not_match">Password Not Match</string>
+    <string name="email_address">Email Adrei</string>
+    <string name="text_field_value_password">Şifre</string>
+    <string name="login">Giriş</string>
+    <string name="keep_me_signed_in">Giriş yapılı tut.</string>
+    <string name="or_sign_in_with">veya giriş yap</string>
+    <string name="don_t_have_an_account">Bir hesabın yok mu?</string>
+    <string name="sign_up_here">Buradan kayıt ol</string>
+    <string name="password_not_match">Şifre uyuşmuyor.</string>
+    <string name="default_web_client_id">241759219208-3it8nibnps2467vj4nr8bjju22q97glf.apps.googleusercontent.com</string>
 
     <!-- Content Descriptions -->
     <string name="content_description_app_image">App Image</string>
     <string name="content_description_dictionary_logo">Dictionary Logo</string>
-    <string name="content_description_third_onboarding_image">Third Onboarding Image</string>
     <string name="content_description_visibility_icon">Show Password Icon</string>
     <string name="password_must_be_at_least_6_characters_long">Password must be at least 6 characters long</string>
     <string name="email_and_password_cannot_be_empty">Email and password cannot be empty</string>
@@ -39,4 +39,71 @@
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_favorite">Favorite</string>
     <string name="bottom_bar_item_detail">Detail</string>
+
+    <!-- OnBoarding -->
+
+    <string name="onBoardingTitle1">GroupMaker\'a Hoşgeldin</string>
+    <string name="onBoardingText1">Başlayabilmek için bir hesap oluşturun.</string>
+    <string name="onBoardingTitle2">Maç için hazırlanın</string>
+    <string name="onBoardingText2">Sporunuzu seçin ve takımınızı oluşturun</string>
+    <string name="onBoardingTitle3">İyi eğlenceler</string>
+    <string name="onBoardingText3">Takımınızla oynayın ve eğlenmeye bakın</string>
+    <string name="title_activity_on_boarding">OnBoardingActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_splash">SplashActivity</string>
+    <string name="skip">Burayı Atla</string>
+
+    <!-- Player Screen-->
+    <string name="selected_players">Seçili Oyuncular</string>
+    <string name="an_error_occured">Bir hata oluştu</string>
+    <string name="no_players_selected">Oyuncu Seçilmedi.</string>
+    <string name="add_player">Oyuncu Ekle</string>
+    <string name="call_player">Oyuncu Çağır</string>
+    <string name="choose_players">Kullanıcıları Seçin</string>
+    <string name="search">Ara</string>
+    <string name="okey">Tamam</string>
+    <string name="remove">Remove</string>
+    <string name="star">Star</string>
+    <string name="add_new_player">Yeni Oyuncu Ekle</string>
+    <string name="name">isim</string>
+    <string name="lastname">Soyisim</string>
+    <string name="position">Pozisyon</string>
+    <string name="point">Puan</string>
+    <string name="cancel">İptal</string>
+    <string name="add">Ekle</string>
+    <string name="add_result">Sonuç Ekle</string>
+    <string name="enter_result">Sonucu Girin</string>
+    <string name="confirm">Onayla</string>
+    <string name="player">Player: %1$s</string>
+
+    <!-- Profile Screen-->
+    <string name="profile_iban">Iban</string>
+    <string name="profile_photo_button">Profil Fotoğrafı Değiştir</string>
+    <string name="profile_update_button">Profili Güncelle</string>
+    <string name="exit_button">Çıkış Yap</string>
+    <string name="exit_button_logo_desc">Çıkış yapma ikonu</string>
+    <string name="profile_settings">Profil Ayarları</string>
+    <string name="settings_button_logo_desc">Profil Ayarlama ikonu</string>
+    <string name="profile_info_title">Bilgiler</string>
+    <string name="profile_photo_desc">Profil Fotoğrafı</string>
+    <string name="top_background_desc">Üst Arkaplan Görseli</string>
+    <string name="error">Hata!</string>
+    <string name="exit_yes">Evet</string>
+    <string name="exit_no">Hayır</string>
+    <string name="exit">Çıkış</string>
+    <string name="exit_detail">Çıkış yapmak istiyor musunuz?</string>
+
+    <!-- SportTypes Screen-->
+    <string name="select_sport">Bir spor seç</string>
+    <string name="card_image_desc">Bir spor seç</string>
+
+    <!-- Splash Screen-->
+    <string name="splash_text">Oynayalım!</string>
+
+    <!-- SportTypesSetting Screen-->
+    <string name="card_title_create">Maç Oluştur</string>
+    <string name="card_title_players">Oyuncular</string>
+    <string name="selected">Seçilenler:</string>
+
+
 </resources>
