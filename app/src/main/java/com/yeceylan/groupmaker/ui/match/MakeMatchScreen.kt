@@ -14,14 +14,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.ui.components.*
 import com.yeceylan.groupmaker.ui.components.text.MatchDateInputField
 import com.yeceylan.groupmaker.ui.components.text.MatchLocationInputField
 import com.yeceylan.groupmaker.ui.components.text.MatchTimeInputField
+import com.yeceylan.groupmaker.ui.components.text.PlayerSelectionSection
 import com.yeceylan.groupmaker.ui.location.LocationViewModel
 import com.yeceylan.groupmaker.ui.theme.Dimen
 
@@ -88,7 +91,7 @@ fun MakeMatchScreen(
             ) {
                 Text(
                     modifier = Modifier.padding(top = Dimen.spacing_l2),
-                    text = "Maç Yeri Ve Zamanı",
+                    text = stringResource(R.string.title_match_location_and_time),
                     color = Color.Black,
                     fontWeight = FontWeight.Bold,
                     fontSize = Dimen.font_size_m2
@@ -96,7 +99,7 @@ fun MakeMatchScreen(
                 Spacer(modifier = Modifier.height(Dimen.spacing_xxs))
 
                 MatchLocationInputField(
-                    label = "Maç konumu giriniz",
+                    label = stringResource(R.string.enter_match_location),
                     value = matchLocation,
                     onValueChange = { makeMatchViewModel.setMatchLocation(it) },
                     viewModel = locationViewModel
@@ -108,14 +111,14 @@ fun MakeMatchScreen(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     MatchDateInputField(
-                        label = "Maç Tarihi: ",
+                        label = stringResource(R.string.match_date),
                         value = matchDate,
                         onValueChange = { makeMatchViewModel.setMatchDate(it) },
                         modifier = Modifier.weight(1f)
                     )
                     Spacer(modifier = Modifier.width(Dimen.spacing_xs))
                     MatchTimeInputField(
-                        label = "Maç Saati: ",
+                        label = stringResource(R.string.match_time),
                         value = matchTime,
                         onValueChange = { makeMatchViewModel.setMatchTime(it) },
                         matchDate = matchDate,
@@ -130,7 +133,7 @@ fun MakeMatchScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = "Takım Oluştur",
+                        text = stringResource(R.string.title_create_team),
                         color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontSize = Dimen.font_size_m2
@@ -143,14 +146,14 @@ fun MakeMatchScreen(
                             onClick = { makeMatchViewModel.togglePlayerCountDialog(true) },
                             modifier = Modifier.padding(Dimen.spacing_xs)
                         ) {
-                            Text(text = "Takımlar kaç kişilik?", fontSize = Dimen.font_size_s1)
+                            Text(text = stringResource(R.string.how_many_players_per_team), fontSize = Dimen.font_size_s1)
                         }
                         Spacer(modifier = Modifier.width(Dimen.spacing_m1))
                         Button(
                             onClick = { makeMatchViewModel.toggleChangeTeamNamesDialog(true) },
                             modifier = Modifier.padding(Dimen.spacing_xs)
                         ) {
-                            Text(text = "Takım Adlarını Değiştir", fontSize = Dimen.font_size_s1)
+                            Text(text = stringResource(R.string.edit_team_names), fontSize = Dimen.font_size_s1)
                         }
                     }
                 }
@@ -161,7 +164,11 @@ fun MakeMatchScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.White)
-                        .border(Dimen.spacing_xxxs, Color.Gray, RoundedCornerShape(Dimen.spacing_xs))
+                        .border(
+                            Dimen.spacing_xxxs,
+                            Color.Gray,
+                            RoundedCornerShape(Dimen.spacing_xs)
+                        )
                 ) {
                     when (userList) {
                         is Resource.Loading -> {
@@ -172,7 +179,7 @@ fun MakeMatchScreen(
                             val users = userList.data ?: emptyList()
                             if (users.isEmpty()) {
                                 Text(
-                                    text = "Herhangi bir oyuncu eklemediniz...",
+                                    text = stringResource(R.string.no_players_added),
                                     modifier = Modifier.align(Alignment.Center)
                                 )
                                 return@Scaffold
@@ -232,8 +239,7 @@ fun MakeMatchScreen(
 
                         is Resource.Error -> {
                             Text(
-                                text = "Hata: ${userList.message}",
-                                color = Color.Red,
+                                text = stringResource(R.string.players_could_not_be_loaded),
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         }
@@ -246,31 +252,31 @@ fun MakeMatchScreen(
                             if (matchLocation.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Lütfen maç konumunu girin!",
+                                    context.getString(R.string.please_enter_match_location),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else if (matchDate.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Lütfen maç tarihini seçin!",
+                                    context.getString(R.string.please_select_match_date),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else if (matchTime.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Lütfen maç saatini seçin!",
+                                    context.getString(R.string.please_select_match_time),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else if (selectedPersons1.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Lütfen ilk takımın oyuncularını seçin!",
+                                    context.getString(R.string.please_select_first_team_players),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else if (selectedPersons2.isEmpty()) {
                                 Toast.makeText(
                                     context,
-                                    "Lütfen ikinci takımın oyuncularını seçin!",
+                                    context.getString(R.string.please_select_second_team_players),
                                     Toast.LENGTH_SHORT
                                 ).show()
                             } else {
@@ -286,7 +292,7 @@ fun MakeMatchScreen(
                             .align(Alignment.BottomCenter)
                             .padding(Dimen.spacing_xxs)
                     ) {
-                        Text(text = "Maç Oluştur")
+                        Text(text = stringResource(R.string.create_match))
                     }
 
                 }

@@ -92,11 +92,9 @@ fun MainNavGraph(
             }
         }
         composable<SportTypeScreens.SportTypeSetting> {
-            isShowBottomBar.value = true
+            isShowBottomBar.value = false
             val args = it.toRoute<SportTypeScreens.SportTypeSetting>()
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                SportTypeSetting(args.title, args.teamSize, navController)
-            }
+            SportTypeSetting(args.title, args.teamSize, navController)
         }
         composable(
             route = "matchInfo/{matchJson}",
@@ -107,10 +105,8 @@ fun MainNavGraph(
             MatchInfoScreen(navController = navController, match = match)
         }
         composable<PlayerScreens.PlayerPage> {
-            isShowBottomBar.value = true
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                PlayerPage(navController = navController)
-            }
+            isShowBottomBar.value = false
+            PlayerPage(navController = navController)
         }
     }
 }
