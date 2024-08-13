@@ -73,6 +73,8 @@ fun PlayerPage(
         Column(modifier = Modifier.fillMaxSize()) {
             Text(text = stringResource(R.string.selected_players))
 
+            Divider()
+
             when (usersState) {
                 is Resource.Loading -> {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
@@ -94,7 +96,7 @@ fun PlayerPage(
                         )
                     } else {
                         SelectedPlayersGrid(
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(10f),
                             selectedPersons = selectedUsers,
                             setSelectedPersons = { updatedList ->
                                 playerViewModel.updateSelectedUsers(updatedList)
@@ -103,6 +105,8 @@ fun PlayerPage(
                     }
                 }
             }
+
+            Divider()
 
             Spacer(modifier = Modifier.weight(1f))
 
