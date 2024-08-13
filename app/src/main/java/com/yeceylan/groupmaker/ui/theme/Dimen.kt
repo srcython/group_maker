@@ -114,6 +114,9 @@ object Dimen {
     /*** 28.sp*/
     val font_size_l1 = 28.sp
 
+    /*** 30.sp*/
+    val font_size_l11 = 30.sp
+
     /*** 32.sp*/
     val font_size_xl = 32.sp
 

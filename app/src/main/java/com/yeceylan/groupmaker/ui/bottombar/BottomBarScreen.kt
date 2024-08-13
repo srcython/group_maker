@@ -14,7 +14,7 @@ sealed class BottomBarScreen(
     @Serializable
     data object Home: BottomBarScreen(
         route = "home",
-        title = "Home",
+        title = "Ana Sayfa",
         icon = R.drawable.baseline_home_24,
         icon_focused = R.drawable.baseline_home_24
     )
@@ -22,7 +22,7 @@ sealed class BottomBarScreen(
     @Serializable
     data object History: BottomBarScreen(
         route = "history",
-        title = "History",
+        title = "Maçlar",
         icon = R.drawable.baseline_history_24,
         icon_focused = R.drawable.baseline_history_24
     )
@@ -30,7 +30,7 @@ sealed class BottomBarScreen(
     @Serializable
     data object Profile: BottomBarScreen(
         route = "profile",
-        title = "Profile",
+        title = "Profil",
         icon = R.drawable.baseline_person_24,
         icon_focused = R.drawable.baseline_person_24
     )

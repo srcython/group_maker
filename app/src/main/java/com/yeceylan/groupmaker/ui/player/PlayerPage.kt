@@ -47,7 +47,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -57,6 +56,8 @@ import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.ui.components.button.BackButton
 import com.yeceylan.groupmaker.ui.theme.Dimen
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_m2
+import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxl2
 
 @Composable
 fun PlayerPage(
@@ -70,7 +71,7 @@ fun PlayerPage(
     var searchQuery by remember { mutableStateOf("") }
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Row(modifier = Modifier.padding(top = 60.dp, start = 20.dp)) {
+        Row(modifier = Modifier.padding(top = spacing_xxl2, start = spacing_m2)) {
             BackButton {
                 navController.popBackStack()
             }

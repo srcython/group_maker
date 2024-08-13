@@ -402,24 +402,30 @@ fun IbanRow(viewModel: MatchInfoViewModel, iban: String) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "IBAN: ",
-            fontSize = Dimen.font_size_m1,
-            color = Color.Black,
-            fontWeight = FontWeight.Bold
-        )
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = "IBAN: ",
+                    fontSize = Dimen.font_size_m1,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_copy),
-            contentDescription = null,
-            modifier = Modifier.size(Dimen.spacing_l)
-        )
-        Spacer(modifier = Modifier.width(Dimen.spacing_xxxs))
-        Text(
-            text = iban,
-            fontSize = Dimen.font_size_m1,
-            color = Color.Black
-        )
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_copy),
+                    contentDescription = null,
+                    modifier = Modifier.size(Dimen.spacing_l)
+                )
+            }
+            Spacer(modifier = Modifier.width(Dimen.spacing_xxxs))
+            Text(
+                text = iban,
+                fontSize = Dimen.font_size_m1,
+                color = Color.Black
+            )
+        }
+
+
     }
 }
 

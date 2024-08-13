@@ -105,10 +105,8 @@ fun MainNavGraph(
             MatchInfoScreen(navController = navController, match = match)
         }
         composable<PlayerScreens.PlayerPage> {
-            isShowBottomBar.value = true
-            Box(modifier = Modifier.padding(bottom = 50.dp)) {
-                PlayerPage(navController = navController)
-            }
+            isShowBottomBar.value = false
+            PlayerPage(navController = navController)
         }
     }
 }
