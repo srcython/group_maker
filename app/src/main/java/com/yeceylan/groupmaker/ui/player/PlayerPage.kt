@@ -47,13 +47,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun PlayerPage(
@@ -68,7 +68,7 @@ fun PlayerPage(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(Dimen.spacing_m1)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             Text(text = stringResource(R.string.selected_players))
@@ -136,11 +136,11 @@ fun PlayerPage(
             Surface(
                 shape = MaterialTheme.shapes.medium,
                 color = Color.White,
-                border = BorderStroke(1.dp, Color.Black),
+                border = BorderStroke(Dimen.spacing_xxxs, Color.Black),
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .padding(Dimen.spacing_m1)
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -169,7 +169,7 @@ fun PlayerPage(
                         }
 
                         is Resource.Success -> {
-                            LazyColumn(modifier = Modifier.height(300.dp)) {
+                            LazyColumn(modifier = Modifier.height(Dimen.spacing_xxxl * 5)) {
                                 items(usersState.data!!) { user ->
                                     Row(
                                         modifier = Modifier.fillMaxWidth(),
@@ -202,7 +202,7 @@ fun PlayerPage(
                             }
                         }
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                     Button(
                         onClick = { showUserDialog = false },
                         colors = ButtonDefaults.buttonColors(Color.Blue),
@@ -234,9 +234,9 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
     if (selectedPersons.isNotEmpty()) {
         LazyVerticalGrid(
             columns = GridCells.Fixed(4),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(Dimen.spacing_xs),
             modifier = modifier
-                .heightIn(max = 400.dp)
+                .heightIn(Dimen.spacing_xxxl * 6)
         ) {
             items(selectedPersons) { person ->
 
@@ -251,14 +251,14 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                             error = painterResource(id = R.drawable.ic_clock),
                             contentDescription = null,
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(Dimen.spacing_xxxl)
                                 .clip(CircleShape),
                             contentScale = ContentScale.Crop,
                             alignment = Alignment.Center
                         )
                         Box(
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(Dimen.spacing_m1)
                                 .align(Alignment.TopEnd)
                                 .clickable {
                                     setSelectedPersons(selectedPersons - person)
@@ -267,7 +267,7 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                             Image(
                                 painter = painterResource(id = R.drawable.ic_remove),
                                 contentDescription = stringResource(R.string.remove),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(Dimen.spacing_m1)
                             )
                         }
                     }
@@ -275,7 +275,7 @@ fun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSele
                         text = person.userName,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
-                            .padding(top = 4.dp)
+                            .padding(top = Dimen.spacing_xxs)
                     )
 
                 }
@@ -300,11 +300,11 @@ fun AddPlayerDialog(
         Surface(
             shape = MaterialTheme.shapes.medium,
             color = Color.White,
-            border = BorderStroke(1.dp, Color.Black),
+            border = BorderStroke(Dimen.spacing_xxxs, Color.Black),
         ) {
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(Dimen.spacing_m1)
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -346,7 +346,7 @@ fun AddPlayerDialog(
                     label = stringResource(R.string.point)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween

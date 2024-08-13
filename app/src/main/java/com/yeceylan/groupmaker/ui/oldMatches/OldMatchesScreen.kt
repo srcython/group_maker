@@ -44,13 +44,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.model.user.User
+import com.yeceylan.groupmaker.ui.theme.Dimen
 
 @Composable
 fun OldMatchesScreen(
@@ -65,7 +64,7 @@ fun OldMatchesScreen(
         is Resource.Loading -> {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .padding(16.dp),
+                    .padding(Dimen.spacing_m1),
                 color = MaterialTheme.colors.primary
             )
         }
@@ -75,7 +74,7 @@ fun OldMatchesScreen(
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(Dimen.spacing_m1)
             ) {
                 items(matches) { match ->
                     MatchItem(
@@ -90,7 +89,7 @@ fun OldMatchesScreen(
                             showResultDialog = true
                         }
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(Dimen.spacing_xs))
                 }
             }
         }
@@ -99,7 +98,7 @@ fun OldMatchesScreen(
             Text(
                 text = oldMatchesResource.message ?: stringResource(R.string.an_error_occured),
                 color = MaterialTheme.colors.error,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(Dimen.spacing_m1)
             )
         }
     }
@@ -160,23 +159,23 @@ fun MatchItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),
-        elevation = 4.dp,
+            .border(Dimen.spacing_xxxs, MaterialTheme.colors.primary, shape = RoundedCornerShape(Dimen.spacing_m1)),
+        elevation = Dimen.spacing_xxs,
         backgroundColor = MaterialTheme.colors.surface,
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(Dimen.spacing_m1)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimen.spacing_m1)) {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Column {
                     Text(
                         text = "${match.firstTeamName} vs ${match.secondTeamName}",
-                        fontSize = 20.sp,
+                        fontSize = Dimen.font_size_m2,
                         fontWeight = FontWeight.Bold
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(imageVector = Icons.Default.DateRange, contentDescription = "Date")
                         Text(text = match.matchDate ?: "")
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(Dimen.spacing_xs))
                         Text(text = match.matchTime ?: "")
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -189,10 +188,10 @@ fun MatchItem(
                     Button(
                         onClick = onAddResultClick,
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
-                        shape = RoundedCornerShape(50.dp)
+                        shape = RoundedCornerShape(Dimen.spacing_xxl)
                     ) {
                         Text(
-                            text = "Sonuç Ekle",
+                            text = stringResource(R.string.add_result),
                             color = Color.White,
                         )
                     }
@@ -200,7 +199,7 @@ fun MatchItem(
                     Button(
                         onClick = { /* sonar - comment */ },
                         colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
-                        shape = RoundedCornerShape(50.dp)
+                        shape = RoundedCornerShape(Dimen.spacing_xxl)
                     ) {
                         Text(
                             text = match.result,
@@ -211,7 +210,7 @@ fun MatchItem(
             }
 
             if (isExpanded) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(Dimen.spacing_xs))
 
                 Text(text = match.firstTeamName ?: "", fontWeight = FontWeight.Bold)
                 match.firstTeamPlayerList.forEach { player ->
@@ -224,12 +223,12 @@ fun MatchItem(
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(Dimen.spacing_xs))
             IconButton(
                 onClick = { onExpandClick(match.id) },
                 modifier = Modifier
-                    .size(40.dp)
-                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(50.dp))
+                    .size(Dimen.spacing_xxl)
+                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(Dimen.spacing_xxl))
             ) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
@@ -249,12 +248,12 @@ fun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewMod
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),
-        elevation = 4.dp,
+            .padding(vertical = Dimen.spacing_xs)
+            .border(Dimen.spacing_xxxs, MaterialTheme.colors.primary, shape = RoundedCornerShape(Dimen.spacing_xxl)),
+        elevation = Dimen.spacing_xxs,
         backgroundColor = MaterialTheme.colors.background
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(Dimen.spacing_m1)) {
             Text(text = stringResource(R.string.player, player.userName))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -279,7 +278,7 @@ fun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewMod
                     },
                     enabled = !isRatingSubmitted,
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
-                    shape = RoundedCornerShape(50.dp)
+                    shape = RoundedCornerShape(Dimen.spacing_xxl)
                 ) {
                     Icon(
                         imageVector = Icons.Default.Check,
