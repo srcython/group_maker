@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.components
+package com.yeceylan.groupmaker.ui.components.button
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
@@ -25,11 +25,11 @@ fun DGoogleLoginButton(
     Button(
         modifier = modifier.fillMaxWidth(),
         onClick = onClick,
-        colors = ButtonDefaults.buttonColors(Color.Gray),
+        colors = ButtonDefaults.buttonColors(Color.Black),
         shape = MaterialTheme.shapes.small,
     ) {
         Image(
-            painter = painterResource(R.drawable.ic_launcher_foreground),
+            painter = painterResource(R.drawable.google),
             contentDescription = "Continue with Google",
             modifier = Modifier
                 .padding(end = Dimen.spacing_xs)
@@ -38,7 +38,7 @@ fun DGoogleLoginButton(
 
         Text(
             text = "Continue with Google",
-            color = Color.Black,
+            color = Color.White,
             fontWeight = FontWeight.Bold,
         )
     }

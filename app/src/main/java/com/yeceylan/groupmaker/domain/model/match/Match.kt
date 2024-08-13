@@ -1,6 +1,7 @@
-package com.yeceylan.groupmaker.domain.model
+package com.yeceylan.groupmaker.domain.model.match
 
 import com.google.android.gms.maps.model.LatLng
+import com.yeceylan.groupmaker.domain.model.user.User
 import java.io.Serializable
 
 data class Match(

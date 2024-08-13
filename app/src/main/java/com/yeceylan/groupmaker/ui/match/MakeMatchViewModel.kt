@@ -7,8 +7,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.Gson
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.Match
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.match.Match
+import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

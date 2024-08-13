@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.domain.use_cases.AddStorageUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetUserUseCase

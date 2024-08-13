@@ -1,7 +1,7 @@
 package com.yeceylan.groupmaker.data.repository
 
 import com.google.firebase.firestore.FirebaseFirestore
-import com.yeceylan.groupmaker.domain.model.Match
+import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.repository.MatchRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

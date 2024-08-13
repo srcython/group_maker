@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.firebase.auth.AuthResult
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
 import com.yeceylan.groupmaker.domain.use_cases.auth.LoginUseCase
@@ -25,83 +26,52 @@ class LoginViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LoginScreenUIState())
     val uiState = _uiState.asStateFlow()
 
-
     fun loginWithGoogle(account: GoogleSignInAccount) {
-        signInWithGoogleUseCase(account).onEach {
-            when (it) {
-                is Resource.Loading -> {
-                    _uiState.update { state ->
-                        state.copy(isLoading = true)
-                    }
-                }
-
-                is Resource.Success -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            isLoading = false,
-                            isSuccessGoogleLogin = true,
-                        )
-                    }
-                }
-
-                is Resource.Error -> {
-                    _uiState.update { state ->
-                        state.copy(
-                            isLoading = false,
-                            isHaveError = true,
-                            errorMessage = it.errorMessage ?: "",
-                        )
-                    }
-                }
-            }
+        signInWithGoogleUseCase(account).onEach { result ->
+            handleAuthResult(result, isGoogleLogin = true)
         }.launchIn(viewModelScope)
     }
 
     fun loginWithEmailAndPassword(email: String, password: String, context: Context) {
         if (email.isEmpty() || password.isEmpty()) {
-            _uiState.update {
-                it.copy(
-                    isHaveError = true,
-                    errorMessage = context.getString(R.string.email_and_password_cannot_be_empty),
-                )
-            }
+            updateUIStateWithError(context.getString(R.string.email_and_password_cannot_be_empty))
         } else if (password.length < 6) {
-            _uiState.update {
-                it.copy(
-                    isHaveError = true,
-                    errorMessage = context.getString(R.string.password_must_be_at_least_6_characters_long),
+            updateUIStateWithError(context.getString(R.string.password_must_be_at_least_6_characters_long))
+        } else {
+            loginUseCase(email, password).onEach { result ->
+                handleAuthResult(result, isGoogleLogin = false)
+            }.launchIn(viewModelScope)
+        }
+    }
+
+    private fun handleAuthResult(result: Resource<AuthResult>, isGoogleLogin: Boolean) {
+        when (result) {
+            is Resource.Loading -> _uiState.update { state ->
+                state.copy(isLoading = true)
+            }
+            is Resource.Success -> _uiState.update { state ->
+                state.copy(
+                    isLoading = false,
+                    isSuccessGoogleLogin = isGoogleLogin,
+                    isSuccessEmailAndPasswordLogin = !isGoogleLogin
                 )
             }
-        } else {
+            is Resource.Error -> _uiState.update { state ->
+                state.copy(
+                    isLoading = false,
+                    isHaveError = true,
+                    errorMessage = result.errorMessage ?: ""
+                )
+            }
+        }
+    }
 
-            loginUseCase(email, password).onEach {
-                when (it) {
-                    is Resource.Loading -> {
-                        _uiState.update { state ->
-                            state.copy(isLoading = true)
-                        }
-                    }
-
-                    is Resource.Success -> {
-                        _uiState.update { state ->
-                            state.copy(
-                                isLoading = false,
-                                isSuccessEmailAndPasswordLogin = true,
-                            )
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        _uiState.update { state ->
-                            state.copy(
-                                isLoading = false,
-                                isHaveError = true,
-                                errorMessage = it.errorMessage ?: "",
-                            )
-                        }
-                    }
-                }
-            }.launchIn(viewModelScope)
+    private fun updateUIStateWithError(errorMessage: String) {
+        _uiState.update {
+            it.copy(
+                isHaveError = true,
+                errorMessage = errorMessage
+            )
         }
     }
 
@@ -109,7 +79,7 @@ class LoginViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isHaveError = false,
-                errorMessage = "",
+                errorMessage = ""
             )
         }
     }
@@ -125,7 +95,6 @@ class LoginViewModel @Inject constructor(
         val isHaveError: Boolean = false,
         val errorMessage: String = "",
         val isSuccessGoogleLogin: Boolean = false,
-        val isSuccessEmailAndPasswordLogin: Boolean = false,
-        val isLoggedIn: Boolean = false,
+        val isSuccessEmailAndPasswordLogin: Boolean = false
     )
 }

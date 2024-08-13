@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.bottombar
+package com.yeceylan.groupmaker.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -13,11 +13,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.google.gson.Gson
-import com.yeceylan.groupmaker.domain.model.Match
+import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.ui.auth.login.LoginScreen
 import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
 import com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen
-import com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen
+import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
 import com.yeceylan.groupmaker.ui.match.MakeMatchScreen
 import com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens

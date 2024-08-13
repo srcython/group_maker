@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.components
+package com.yeceylan.groupmaker.ui.components.text
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
 
 @Composable
 fun PlayerSelectionSection(

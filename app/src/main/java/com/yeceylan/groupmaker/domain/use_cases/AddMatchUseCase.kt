@@ -1,6 +1,6 @@
 package com.yeceylan.groupmaker.domain.use_cases
 
-import com.yeceylan.groupmaker.domain.model.Match
+import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.repository.UserRepository
 import javax.inject.Inject
 

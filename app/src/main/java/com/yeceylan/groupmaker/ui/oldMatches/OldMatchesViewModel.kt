@@ -2,11 +2,11 @@ package com.yeceylan.groupmaker.ui.oldMatches
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.domain.model.Match
+import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.use_cases.GetAllMatchesUseCase
 import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
 import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel

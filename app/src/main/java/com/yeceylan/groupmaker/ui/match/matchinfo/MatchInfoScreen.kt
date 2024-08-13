@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import com.google.android.gms.maps.model.LatLng
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.Match
+import com.yeceylan.groupmaker.domain.model.match.Match
 import com.yeceylan.groupmaker.domain.model.weather.Condition
 import com.yeceylan.groupmaker.domain.model.weather.Forecast
 import com.yeceylan.groupmaker.domain.model.weather.ForecastDay

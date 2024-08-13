@@ -28,7 +28,7 @@ object AuthenticationModule {
         @ApplicationContext context: Context
     ): GoogleSignInClient {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("YOUR_WEB_CLIENT_ID")  // Replace with your actual web client ID
+            .requestIdToken("241759219208-3it8nibnps2467vj4nr8bjju22q97glf.apps.googleusercontent.com")  // Replace with your actual web client ID
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(context, gso)

@@ -20,9 +20,6 @@ class WeatherRepositoryImpl @Inject constructor(
     ): Flow<Resource<WeatherResponse>> = flow {
         emit(Resource.Loading())
 
-        // API'ye gönderilen veriler
-        Log.d("WeatherRepository", "API Request - LatLng: $latLng, Date: $date, Hour: $hour, Language: $language")
-
         try {
             val response = apiService.getWeatherForecast(
                 apiKey = "88ccbf311c5e4e32bb0135032240408",
@@ -33,11 +30,9 @@ class WeatherRepositoryImpl @Inject constructor(
             )
             emit(Resource.Success(response))
 
-            Log.d("WeatherRepository", "API Response Success: $response")
         } catch (e: Exception) {
             emit(Resource.Error(e.message ?: "Bilinmeyen bir hata oluştu"))
 
-            Log.e("WeatherRepository", "API Response Error: ${e.message}")
         }
     }
 }

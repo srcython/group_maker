@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.components
+package com.yeceylan.groupmaker.ui.components.button
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding

@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.domain.model
+package com.yeceylan.groupmaker.domain.model.user
 
 data class User(
     val id: String = "",

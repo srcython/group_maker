@@ -53,7 +53,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.yeceylan.groupmaker.R
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.user.User
 
 @Composable
 fun PlayerPage(
@@ -71,7 +71,7 @@ fun PlayerPage(
             .padding(16.dp)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(text = stringResource(R.string.se_ili_oyuncular))
+            Text(text = stringResource(R.string.selected_players))
 
             when (usersState) {
                 is Resource.Loading -> {
@@ -80,7 +80,7 @@ fun PlayerPage(
 
                 is Resource.Error -> {
                     Text(
-                        text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
+                        text = usersState.message ?: stringResource(R.string.an_error_occured),
                         color = Color.Red,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
@@ -115,7 +115,7 @@ fun PlayerPage(
                     colors = ButtonDefaults.buttonColors(Color.Blue),
                 ) {
                     Text(
-                        text = stringResource(R.string.oyuncu_ekle),
+                        text = stringResource(R.string.add_player),
                         color = Color.White
                     )
                 }
@@ -124,7 +124,7 @@ fun PlayerPage(
                     colors = ButtonDefaults.buttonColors(Color.Blue),
                 ) {
                     Text(
-                        text = stringResource(R.string.oyuncu_a_r),
+                        text = stringResource(R.string.call_player),
                         color = Color.White,
                     )
                 }
@@ -144,7 +144,7 @@ fun PlayerPage(
                         .fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = stringResource(R.string.kullan_c_lar_se_in))
+                    Text(text = stringResource(R.string.choose_players))
 
                     OutlinedTextField(
                         value = searchQuery,
@@ -152,7 +152,7 @@ fun PlayerPage(
                             searchQuery = query
                             playerViewModel.searchUsers(query)
                         },
-                        label = { Text(text = stringResource(R.string.ara)) }
+                        label = { Text(text = stringResource(R.string.search)) }
                     )
 
                     when (usersState) {
@@ -162,7 +162,7 @@ fun PlayerPage(
 
                         is Resource.Error -> {
                             Text(
-                                text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),
+                                text = usersState.message ?: stringResource(R.string.an_error_occured),
                                 color = Color.Red,
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
@@ -208,7 +208,7 @@ fun PlayerPage(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.tamam),
+                            text = stringResource(R.string.okey),
                             color = Color.White,
                         )
                     }
@@ -308,7 +308,7 @@ fun AddPlayerDialog(
                     .fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(R.string.yeni_oyuncu_ekle))
+                Text(text = stringResource(R.string.add_new_player))
 
                 CustomTextField(
                     value = email,
@@ -319,31 +319,31 @@ fun AddPlayerDialog(
                 CustomTextField(
                     value = userName,
                     onValueChange = { userName = it },
-                    label = stringResource(R.string.kullan_c_ad)
+                    label = stringResource(R.string.username)
                 )
 
                 CustomTextField(
                     value = firstname,
                     onValueChange = { firstname = it },
-                    label = stringResource(R.string.isim)
+                    label = stringResource(R.string.name)
                 )
 
                 CustomTextField(
                     value = surname,
                     onValueChange = { surname = it },
-                    label = stringResource(R.string.soyisim)
+                    label = stringResource(R.string.lastname)
                 )
 
                 CustomTextField(
                     value = position,
                     onValueChange = { position = it },
-                    label = stringResource(R.string.pozisyon)
+                    label = stringResource(R.string.position)
                 )
 
                 CustomTextField(
                     value = point.toString(),
                     onValueChange = { point = it.toIntOrNull() ?: 0 },
-                    label = stringResource(R.string.puan)
+                    label = stringResource(R.string.point)
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -356,7 +356,7 @@ fun AddPlayerDialog(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.ptal),
+                            text = stringResource(R.string.cancel),
                             color = Color.White,
                         )
                     }
@@ -375,7 +375,7 @@ fun AddPlayerDialog(
                         colors = ButtonDefaults.buttonColors(Color.Blue),
                     ) {
                         Text(
-                            text = stringResource(R.string.ekle),
+                            text = stringResource(R.string.add),
                             color = Color.White,
                         )
                     }

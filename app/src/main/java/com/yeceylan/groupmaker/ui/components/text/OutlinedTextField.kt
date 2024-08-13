@@ -1,4 +1,4 @@
-package com.yeceylan.groupmaker.ui.components
+package com.yeceylan.groupmaker.ui.components.text
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

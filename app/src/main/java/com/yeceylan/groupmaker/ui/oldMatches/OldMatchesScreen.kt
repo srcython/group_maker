@@ -47,8 +47,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.Match
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.match.Match
+import com.yeceylan.groupmaker.domain.model.user.User
 
 @Composable
 fun OldMatchesScreen(

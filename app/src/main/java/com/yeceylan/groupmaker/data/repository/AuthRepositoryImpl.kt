@@ -1,7 +1,6 @@
 package com.yeceylan.groupmaker.data.repository
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 class AuthenticationRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val googleSignInClient: GoogleSignInClient
 ) : AuthenticationRepository {
 
     override suspend fun userUid(): String = auth.currentUser?.uid ?: ""

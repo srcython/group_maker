@@ -1,8 +1,7 @@
-package com.yeceylan.groupmaker.ui.components
+package com.yeceylan.groupmaker.ui.components.text
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

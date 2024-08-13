@@ -5,12 +5,10 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.DeadObjectException
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.yeceylan.groupmaker.domain.model.Match
 import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase
 import com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase

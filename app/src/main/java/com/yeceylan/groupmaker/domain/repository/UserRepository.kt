@@ -2,8 +2,8 @@ package com.yeceylan.groupmaker.domain.repository
 
 import android.net.Uri
 import com.yeceylan.groupmaker.core.Resource
-import com.yeceylan.groupmaker.domain.model.Match
-import com.yeceylan.groupmaker.domain.model.User
+import com.yeceylan.groupmaker.domain.model.match.Match
+import com.yeceylan.groupmaker.domain.model.user.User
 import kotlinx.coroutines.flow.Flow
 
 
