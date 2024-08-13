@@ -41,7 +41,7 @@ Libraries Docs
 
 <p align="center">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/7.png" alt="Screenshot_1694509493" width="250" height="auto">
-<img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/8.png" alt="Screenshot_1694509493" width="250" height="auto">
+<img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/21.png" alt="Screenshot_1694509493" width="250" height="auto">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/9.png" alt="Screenshot_1694509493" width="250" height="auto">
 </p>
 
@@ -66,7 +66,7 @@ Libraries Docs
 <p align="center">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/19.png" alt="Screenshot_1694509493" width="250" height="auto">
 <img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/20.png" alt="Screenshot_1694509493" width="250" height="auto">
-<img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/21.png" alt="Screenshot_1694509493" width="250" height="auto">
+<img src="https://github.com/yeceylan/GroupMaker/blob/develop/ScreenShots/iban2.png" alt="Screenshot_1694509493" width="250" height="auto">
 </p>
 
 [10]: https://developer.android.com/topic/architecture
