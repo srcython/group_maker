@@ -1,0 +1,1897 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/theme/Dimen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.theme\r\n\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\n\r\nobject Dimen {\r\n    // Spacing\r\n    /*** 0.dp*/\r\n    val spacing_xxxxs = 0.dp\r\n\r\n    /*** 2.dp*/\r\n    val spacing_xxxs = 2.dp\r\n\r\n    /*** 4.dp*/\r\n    val spacing_xxs = 4.dp\r\n\r\n    /*** 8.dp*/\r\n    val spacing_xs = 8.dp\r\n\r\n    /*** 10.dp*/\r\n    val spacing_s1 = 10.dp\r\n\r\n    /*** 12.dp*/\r\n    val spacing_s2 = 12.dp\r\n\r\n    /*** 16.dp*/\r\n    val spacing_m1 = 16.dp\r\n\r\n    /*** 20.dp*/\r\n    val spacing_m2 = 20.dp\r\n\r\n    /*** 24.dp*/\r\n    val spacing_l = 24.dp\r\n\r\n    /*** 28.dp*/\r\n    val spacing_l2 = 28.dp\r\n\r\n    /*** 32.dp*/\r\n    val spacing_xl = 32.dp\r\n\r\n    /*** 48.dp*/\r\n    val spacing_xxl = 48.dp\r\n\r\n    /*** 64.dp*/\r\n    val spacing_xxxl = 64.dp\r\n\r\n    // Font Size\r\n    /*** 2.sp*/\r\n    val font_size_xxxs = 2.sp\r\n\r\n    /*** 4.sp*/\r\n    val font_size_xxs = 4.sp\r\n\r\n    /*** 8.sp*/\r\n    val font_size_xs = 8.sp\r\n\r\n    /*** 10.sp*/\r\n    val font_size_10 = 10.sp\r\n\r\n    /*** 11.sp*/\r\n    val font_size_11 = 11.sp\r\n\r\n    /*** 12.sp*/\r\n    val font_size_s = 12.sp\r\n\r\n    /*** 13.sp*/\r\n    val font_size_13 = 13.sp\r\n\r\n    /*** 14.sp*/\r\n    val font_size_s1 = 14.sp\r\n\r\n    /*** 15.sp*/\r\n    val font_size_15 = 15.sp\r\n\r\n    /*** 16.sp*/\r\n    val font_size_m1 = 16.sp\r\n\r\n    /*** 18.sp*/\r\n    val font_size_18 = 18.sp\r\n\r\n    /*** 20.sp*/\r\n    val font_size_m2 = 20.sp\r\n\r\n    /*** 22.sp*/\r\n    val font_size_22 = 22.sp\r\n\r\n    /*** 24.sp*/\r\n    val font_size_l = 24.sp\r\n\r\n    /*** 28.sp*/\r\n    val font_size_l1 = 28.sp\r\n\r\n    /*** 32.sp*/\r\n    val font_size_xl = 32.sp\r\n\r\n    /*** 48.sp*/\r\n    val font_size_xxl = 48.sp\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Dimen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Dimen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Dimen.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Dimen.kt	(date 1723507578046)
+@@ -38,6 +38,9 @@
+     /*** 32.dp*/
+     val spacing_xl = 32.dp
+ 
++    /*** 36.dp*/
++    val spacing_xxxvi = 36.dp
++
+     /*** 48.dp*/
+     val spacing_xxl = 48.dp
+ 
+@@ -95,4 +98,32 @@
+ 
+     /*** 48.sp*/
+     val font_size_xxl = 48.sp
++
++    /*** 52.sp*/
++    val font_size_lii = 52.sp
++
++    /*** Roman numeral*/
++    /*** 150.dp*/
++    val spacing_cl = 150.dp
++
++    /*** 55.dp*/
++    val spacing_cv = 55.dp
++
++    /*** 280.dp*/
++    val spacing_cclxxx=280.dp
++
++    /*** 200.dp*/
++    val spacing_cc=200.dp
++
++    /*** 300.dp*/
++    val spacing_ccc=300.dp
++
++    /*** 400.dp*/
++    val spacing_cccc=400.dp
++
++    /*** 100.dp*/
++    val spacing_c=100.dp
++
++    /*** 70.dp*/
++    val spacing_lxx=70.dp
+ }
+Index: app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.data.repository\r\n\r\nimport android.net.Uri\r\nimport android.util.Log\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.google.firebase.firestore.FirebaseFirestore\r\nimport com.google.firebase.firestore.ListenerRegistration\r\nimport com.google.firebase.firestore.toObject\r\nimport com.google.firebase.storage.FirebaseStorage\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.domain.repository.UserRepository\r\nimport kotlinx.coroutines.channels.awaitClose\r\nimport kotlinx.coroutines.flow.Flow\r\nimport kotlinx.coroutines.flow.callbackFlow\r\nimport kotlinx.coroutines.tasks.await\r\nimport javax.inject.Inject\r\n\r\nclass UserRepositoryImpl @Inject constructor(\r\n    private val firestore: FirebaseFirestore,\r\n    private val storage: FirebaseStorage\r\n) : UserRepository {\r\n\r\n    override suspend fun addStorage(uri: Uri, userId: String) = callbackFlow {\r\n\r\n        val profileImageRef = storage.reference.child(\"users/${userId}.jpg\")\r\n        val listener = profileImageRef.putFile(uri).addOnSuccessListener {\r\n\r\n            profileImageRef.downloadUrl.addOnSuccessListener {\r\n\r\n                val response = if (it != null){\r\n                    Resource.Success(it.toString())\r\n                }else{\r\n                    Resource.Error(\"user repo imp addStorage resource failed\")\r\n                }\r\n                trySend(response)\r\n            }\r\n        }\r\n        awaitClose {\r\n            listener.cancel()\r\n        }\r\n    }\r\n\r\n    override suspend fun addUser(user: User) {\r\n        firestore.collection(\"users\")\r\n            .document(user.id)\r\n            .set(user)\r\n            .await()\r\n    }\r\n\r\n    override suspend fun getUser() = callbackFlow {\r\n        val snapshotListener = firestore.collection(\"users\")\r\n            .document(FirebaseAuth.getInstance().currentUser!!.uid)\r\n            .addSnapshotListener { snapshot, e ->\r\n\r\n                val userResponse = if (snapshot != null) {\r\n                    val user = snapshot.toObject<User>()!!\r\n                    Resource.Success(user)\r\n                } else {\r\n                    Resource.Error(e.toString())\r\n                }\r\n                trySend(userResponse)\r\n            }\r\n        awaitClose {\r\n            snapshotListener.remove()\r\n        }\r\n    }\r\n\r\n    override suspend fun getUsers(): Flow<Resource<List<User>>> = callbackFlow {\r\n        trySend(Resource.Loading())\r\n        val snapshotListener: ListenerRegistration = firestore.collection(\"users\")\r\n            .addSnapshotListener { snapshot, error ->\r\n\r\n                val usersResponse = if (snapshot != null) {\r\n                    val users = snapshot.toObjects(User::class.java)\r\n                    Resource.Success(users)\r\n                } else {\r\n                    Resource.Error(error?.message ?: \"Veri alınamadı\")\r\n                }\r\n                trySend(usersResponse)\r\n            }\r\n\r\n        awaitClose {\r\n            snapshotListener.remove()\r\n        }\r\n    }\r\n\r\n    override suspend fun updateMatch(userId: String, match: Match) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesCollection = userDocument.collection(\"matches\")\r\n\r\n        matchesCollection.document(match.id)\r\n            .update(\r\n                \"matchLocationTitle\", match.matchLocationTitle,\r\n                \"matchLocation\", match.matchLocation,\r\n                \"matchDate\", match.matchDate,\r\n                \"firstTeamName\", match.firstTeamName,\r\n                \"matchTime\", match.matchTime,\r\n                \"latLng\", match.latLng,\r\n                \"secondTeamName\", match.secondTeamName,\r\n                \"type\", match.type,\r\n                \"playerList\", match.playerList,\r\n                \"firstTeamPlayerList\", match.firstTeamPlayerList,\r\n                \"secondTeamPlayerList\", match.secondTeamPlayerList,\r\n                \"active\", match.isActive\r\n            )\r\n            .await()\r\n    }\r\n\r\n    override suspend fun addMatch(userId: String, match: Match) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesCollection = userDocument.collection(\"matches\")\r\n        matchesCollection.document(match.id)\r\n            .set(match)\r\n            .await()\r\n    }\r\n\r\n    override suspend fun getActiveMatch(userId: String): Match? {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        Log.d(\"UserRepositoryImpl\", \"Fetching active match for user: $userId\")\r\n        return try {\r\n            // Log all matches for debugging\r\n            logMatches(userId)\r\n\r\n            val matchesSnapshot = userDocument.collection(\"matches\")\r\n                .whereEqualTo(\"active\", true)\r\n                .get()\r\n                .await()\r\n\r\n            Log.d(\"UserRepositoryImpl\", \"Matches snapshot size: ${matchesSnapshot.size()}\")\r\n\r\n            if (matchesSnapshot.documents.isNotEmpty()) {\r\n                val match = matchesSnapshot.documents.firstOrNull()?.toObject(Match::class.java)\r\n                Log.d(\"UserRepositoryImpl\", \"Active match found: $match\")\r\n                match\r\n            } else {\r\n                Log.d(\"UserRepositoryImpl\", \"No active match found for user $userId\")\r\n                null\r\n            }\r\n        } catch (e: Exception) {\r\n            Log.e(\r\n                \"UserRepositoryImpl\",\r\n                \"Error getting active match for user $userId: ${e.message}\",\r\n                e\r\n            )\r\n            null\r\n        }\r\n    }\r\n\r\n    private suspend fun logMatches(userId: String) {\r\n        val userDocument = firestore.collection(\"users\").document(userId)\r\n        val matchesSnapshot = userDocument.collection(\"matches\")\r\n            .get()\r\n            .await()\r\n\r\n        for (document in matchesSnapshot.documents) {\r\n            Log.d(\"UserRepositoryImpl\", \"Match Document: ${document.id}, Data: ${document.data}\")\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt b/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/data/repository/UserRepositoryImpl.kt	(date 1723507578041)
+@@ -102,8 +102,7 @@
+                 "type", match.type,
+                 "playerList", match.playerList,
+                 "firstTeamPlayerList", match.firstTeamPlayerList,
+-                "secondTeamPlayerList", match.secondTeamPlayerList,
+-                "active", match.isActive
++                "secondTeamPlayerList", match.secondTeamPlayerList
+             )
+             .await()
+     }
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/theme/Color.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.theme\r\n\r\nimport androidx.compose.ui.graphics.Color\r\n\r\nval Purple80 = Color(0xFFD0BCFF)\r\nval PurpleGrey80 = Color(0xFFCCC2DC)\r\nval Pink80 = Color(0xFFEFB8C8)\r\n\r\nval Purple40 = Color(0xFF6650a4)\r\nval PurpleGrey40 = Color(0xFF625b71)\r\nval Pink40 = Color(0xFF7D5260)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Color.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Color.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Color.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/theme/Color.kt	(date 1723507578045)
+@@ -8,4 +8,6 @@
+ 
+ val Purple40 = Color(0xFF6650a4)
+ val PurpleGrey40 = Color(0xFF625b71)
+-val Pink40 = Color(0xFF7D5260)
+\ No newline at end of file
++val Pink40 = Color(0xFF7D5260)
++
++val LightBlue = Color(0xFF1E88E5)
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.profile\r\n\r\nimport android.net.Uri\r\nimport android.util.Log\r\nimport android.widget.Toast\r\nimport androidx.activity.compose.rememberLauncherForActivityResult\r\nimport androidx.activity.result.contract.ActivityResultContracts\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxHeight\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.Button\r\nimport androidx.compose.material.ButtonDefaults\r\nimport androidx.compose.material.Card\r\nimport androidx.compose.material.MaterialTheme\r\nimport androidx.compose.material.OutlinedTextField\r\nimport androidx.compose.material.Surface\r\nimport androidx.compose.material.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.platform.LocalUriHandler\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.compose.ui.window.Dialog\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport coil.compose.AsyncImage\r\nimport coil.request.ImageRequest\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.components.ProgressBar\r\n\r\n@Composable\r\nfun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: NavController) {\r\n\r\n    val context = LocalContext.current\r\n\r\n    when (viewModel.userResponse) {\r\n        is Resource.Error -> Toast.makeText(context,\"Hata\",Toast.LENGTH_SHORT).show()\r\n        is Resource.Loading -> ProgressBar()\r\n        is Resource.Success -> ProfileSucces(\r\n            user = viewModel.userResponse.data!!,\r\n            viewModel = viewModel,\r\n            navController = navController,\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun ProfileSucces(user: User,viewModel: ProfileViewModel,navController: NavController){\r\n    var showDialog by remember { mutableStateOf(false) }\r\n\r\n    Column(\r\n        Modifier\r\n            .fillMaxHeight()\r\n            .fillMaxWidth()\r\n            .background(\r\n                brush = Brush.verticalGradient(\r\n                    colors = listOf(\r\n                        Color(0xFF808080),\r\n                        Color(0xFFFFFFFF)\r\n                    ),\r\n                )\r\n            ),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n    ) {\r\n\r\n        Box(modifier = Modifier.height(280.dp)) {\r\n            Image(\r\n                painter = painterResource(id = R.drawable.top_background),\r\n                contentDescription = \"\",\r\n                Modifier.fillMaxWidth(),\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Column(\r\n                horizontalAlignment = Alignment.CenterHorizontally,\r\n                modifier = Modifier.fillMaxSize(),\r\n                verticalArrangement = Arrangement.Bottom,\r\n\r\n                ) {\r\n                AsyncImage(\r\n                    model = user.photoUrl,\r\n                    contentDescription = \"\",\r\n\r\n                    contentScale = ContentScale.Crop,\r\n                    modifier = Modifier\r\n                        .size(200.dp)\r\n                        .clip(CircleShape)\r\n                        .border(4.dp, Color.White, CircleShape)\r\n                        .background(Color.Gray),\r\n                )\r\n            }\r\n        }\r\n\r\n        Text(\r\n            text = user.userName,\r\n            fontSize = 25.sp,\r\n            fontWeight = FontWeight.Bold,\r\n            modifier = Modifier.padding(top = 16.dp),\r\n            color = Color(android.graphics.Color.parseColor(\"#747679\")),\r\n        )\r\n        Text(\r\n            text = user.email,\r\n            fontSize = 20.sp,\r\n            color = Color(android.graphics.Color.parseColor(\"#747679\")),\r\n        )\r\n        Card(\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n                .padding(32.dp, 24.dp),\r\n            elevation = 4.dp,\r\n            shape = RoundedCornerShape(8.dp),\r\n            backgroundColor = Color.White,\r\n        ) {\r\n            Column(modifier = Modifier.padding(12.dp)) {\r\n                Text(\r\n                    text = \"Bilgiler\",\r\n                    fontSize = 24.sp,\r\n                    fontWeight = FontWeight.Bold,\r\n                    color = Color(0xFF1E88E5),\r\n                    modifier = Modifier.padding(5.dp),\r\n                )\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n                Text(\r\n                    text = \"Adı: ${user.firstName}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Soyadı: ${user.surname}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Pozisyon: ${user.position}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Puan: ${user.point}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n                Text(\r\n                    text = \"Iban: ${user.iban}\",\r\n                    fontSize = 20.sp,\r\n                    modifier = Modifier.padding(8.dp),\r\n                )\r\n            }\r\n        }\r\n\r\n        Button(\r\n            onClick = { showDialog = true },\r\n            Modifier\r\n                .fillMaxWidth()\r\n                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)\r\n                .height(55.dp), colors = ButtonDefaults.buttonColors(\r\n                backgroundColor = Color(android.graphics.Color.parseColor(\"#ffffff\"))\r\n            ), shape = RoundedCornerShape(15)\r\n        ) {\r\n            Column(\r\n                modifier = Modifier.fillMaxHeight(),\r\n                verticalArrangement = Arrangement.Center\r\n            ) {\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.ic_settings),\r\n                    contentDescription = \"\",\r\n                    modifier = Modifier\r\n                        .padding(end = 5.dp)\r\n                )\r\n            }\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(start = 16.dp)\r\n                    .weight(1f),\r\n                verticalArrangement = Arrangement.Center,\r\n                horizontalAlignment = Alignment.Start\r\n            ) {\r\n                Text(\r\n                    text = \"Profil Ayarları\",\r\n                    color = Color.Black,\r\n                    fontSize = 18.sp,\r\n                    fontWeight = FontWeight.Bold\r\n                )\r\n\r\n            }\r\n        }\r\n\r\n        Button(\r\n            onClick = {\r\n                viewModel.logout()\r\n                // navController.popBackStack()\r\n                navController.navigate(AuthenticationScreens.LoginScreen) {\r\n                    popUpTo(navController.graph.id) {\r\n                        inclusive = false\r\n\r\n                    }\r\n                }\r\n            },\r\n            Modifier\r\n                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)\r\n                .height(55.dp), colors = ButtonDefaults.buttonColors(\r\n                backgroundColor = Color(android.graphics.Color.parseColor(\"#ffffff\"))\r\n            ), shape = RoundedCornerShape(15)\r\n        ) {\r\n            Column(\r\n                modifier = Modifier.fillMaxHeight(),\r\n                verticalArrangement = Arrangement.Center\r\n            ) {\r\n                Image(\r\n                    painter = painterResource(id = R.drawable.logout),\r\n                    contentDescription = \"\",\r\n                    modifier = Modifier\r\n                        .padding(end = 5.dp)\r\n                )\r\n            }\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(start = 16.dp)\r\n                    .weight(1f),\r\n                verticalArrangement = Arrangement.Center,\r\n                horizontalAlignment = Alignment.Start\r\n            ) {\r\n                Text(\r\n                    text = \"Çıkış Yap\",\r\n                    color = Color.Black,\r\n                    fontSize = 18.sp,\r\n                    fontWeight = FontWeight.Bold\r\n                )\r\n            }\r\n        }\r\n    }\r\n\r\n    if (showDialog) {\r\n        ProfileSettingsDialog(onDismiss = { showDialog = false }, user)\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@Composable\r\nfun ProfileSettingsDialog(\r\n    onDismiss: () -> Unit,\r\n    user: User,\r\n    viewModel: ProfileViewModel = hiltViewModel(),\r\n) {\r\n\r\n    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl) ) }\r\n    val launcher = rememberLauncherForActivityResult(\r\n        contract = ActivityResultContracts.GetContent(),\r\n        onResult = {resultUri ->\r\n            resultUri?.let {\r\n                viewModel.updatePhoto(user,resultUri)\r\n                imageUri=resultUri\r\n            }}\r\n    )\r\n\r\n    var surname by remember { mutableStateOf(user.surname) }\r\n    var position by remember { mutableStateOf(user.position) }\r\n    var firstname by remember { mutableStateOf(user.firstName) }\r\n    var iban by remember { mutableStateOf(user.iban) }\r\n\r\n    Dialog(onDismiss) {\r\n        Surface(shape = MaterialTheme.shapes.medium, elevation = 8.dp) {\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(16.dp)\r\n                    .fillMaxWidth(),\r\n                horizontalAlignment = Alignment.CenterHorizontally\r\n            ) {\r\n                Text(text = \"Profili Güncelle\")\r\n\r\n                GlideImage(\r\n                    model = imageUri, contentDescription = \"\", modifier = Modifier\r\n                        .padding(4.dp)\r\n                        .size(150.dp)\r\n                        .clip(RoundedCornerShape(12.dp)),\r\n                    contentScale = ContentScale.Crop\r\n                )\r\n\r\n                Button(\r\n                    onClick = {\r\n                        launcher.launch(\"image/*\")\r\n                    }\r\n                ) {\r\n                    Text(text = \"Profil Fotoğrafı Değiştir\")\r\n                }\r\n\r\n                OutlinedTextField(\r\n                    value = firstname,\r\n                    onValueChange = { firstname = it },\r\n                    label = { Text(text = \"İsim\") }\r\n                )\r\n\r\n                OutlinedTextField(\r\n                    value = surname,\r\n                    onValueChange = { surname = it },\r\n                    label = { Text(text = \"Soyisim\") }\r\n                )\r\n\r\n                OutlinedTextField(\r\n                    value = position,\r\n                    onValueChange = { position = it },\r\n                    label = { Text(text = \"Pozisyon\") }\r\n                )\r\n                OutlinedTextField(\r\n                    value = iban,\r\n                    onValueChange = { iban = it },\r\n                    label = { Text(text = \"Iban\") }\r\n                )\r\n\r\n                Spacer(modifier = Modifier.height(12.dp))\r\n\r\n                Row(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalArrangement = Arrangement.SpaceBetween\r\n                ) {\r\n                    Button(onClick = onDismiss) {\r\n                        Text(text = \"İptal\")\r\n                    }\r\n                    Button(onClick = {\r\n\r\n                        user.firstName = firstname\r\n                        user.surname = surname\r\n                        user.position = position\r\n                        user.iban = iban\r\n\r\n                        viewModel.updateProfileInfo(user)\r\n                        onDismiss()\r\n                    }) {\r\n                        Text(text = \"Ekle\")\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/profile/ProfileScreen.kt	(date 1723507578044)
+@@ -1,14 +1,12 @@
+ package com.yeceylan.groupmaker.ui.profile
+ 
+ import android.net.Uri
+-import android.util.Log
+ import android.widget.Toast
+ import androidx.activity.compose.rememberLauncherForActivityResult
+ import androidx.activity.result.contract.ActivityResultContracts
+ import androidx.compose.foundation.Image
+ import androidx.compose.foundation.background
+ import androidx.compose.foundation.border
+-import androidx.compose.foundation.clickable
+ import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.layout.Box
+ import androidx.compose.foundation.layout.Column
+@@ -20,8 +18,10 @@
+ import androidx.compose.foundation.layout.height
+ import androidx.compose.foundation.layout.padding
+ import androidx.compose.foundation.layout.size
++import androidx.compose.foundation.rememberScrollState
+ import androidx.compose.foundation.shape.CircleShape
+ import androidx.compose.foundation.shape.RoundedCornerShape
++import androidx.compose.foundation.verticalScroll
+ import androidx.compose.material.Button
+ import androidx.compose.material.ButtonDefaults
+ import androidx.compose.material.Card
+@@ -29,8 +29,8 @@
+ import androidx.compose.material.OutlinedTextField
+ import androidx.compose.material.Surface
+ import androidx.compose.material.Text
++import androidx.compose.material.TextFieldDefaults
+ import androidx.compose.runtime.Composable
+-import androidx.compose.runtime.collectAsState
+ import androidx.compose.runtime.getValue
+ import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.runtime.remember
+@@ -40,18 +40,18 @@
+ import androidx.compose.ui.draw.clip
+ import androidx.compose.ui.graphics.Brush
+ import androidx.compose.ui.graphics.Color
++import androidx.compose.ui.graphics.Color.Companion.Blue
++import androidx.compose.ui.graphics.Color.Companion.Gray
++import androidx.compose.ui.graphics.Color.Companion.White
+ import androidx.compose.ui.layout.ContentScale
+ import androidx.compose.ui.platform.LocalContext
+-import androidx.compose.ui.platform.LocalUriHandler
+ import androidx.compose.ui.res.painterResource
++import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+ import androidx.compose.ui.window.Dialog
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+ import coil.compose.AsyncImage
+-import coil.request.ImageRequest
+ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+ import com.bumptech.glide.integration.compose.GlideImage
+ import com.yeceylan.groupmaker.R
+@@ -59,6 +59,22 @@
+ import com.yeceylan.groupmaker.domain.model.User
+ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
+ import com.yeceylan.groupmaker.ui.components.ProgressBar
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_18
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_l
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_l1
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_m2
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cc
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cclxxx
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cl
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cv
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_m1
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xl
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xs
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxs
++import com.yeceylan.groupmaker.ui.theme.LightBlue
+ 
+ @Composable
+ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel(), navController: NavController) {
+@@ -66,40 +82,46 @@
+     val context = LocalContext.current
+ 
+     when (viewModel.userResponse) {
+-        is Resource.Error -> Toast.makeText(context,"Hata",Toast.LENGTH_SHORT).show()
++        is Resource.Error -> Toast.makeText(
++            context,
++            stringResource(id = R.string.error),
++            Toast.LENGTH_SHORT
++        ).show()
++
+         is Resource.Loading -> ProgressBar()
+-        is Resource.Success -> ProfileSucces(
++        is Resource.Success -> ProfileSuccess(
+             user = viewModel.userResponse.data!!,
+-            viewModel = viewModel,
+             navController = navController,
+         )
+     }
+ }
+ 
+ @Composable
+-fun ProfileSucces(user: User,viewModel: ProfileViewModel,navController: NavController){
+-    var showDialog by remember { mutableStateOf(false) }
++fun ProfileSuccess(user: User, navController: NavController) {
++    var showSettingDialog by remember { mutableStateOf(false) }
++    val openExitDialog = remember { mutableStateOf(false) }
+ 
+     Column(
+-        Modifier
++        modifier = Modifier
+             .fillMaxHeight()
+             .fillMaxWidth()
++            .verticalScroll(rememberScrollState())
+             .background(
+                 brush = Brush.verticalGradient(
+                     colors = listOf(
+-                        Color(0xFF808080),
+-                        Color(0xFFFFFFFF)
++                        Gray,
++                        White,
+                     ),
+-                )
++                ),
+             ),
+         horizontalAlignment = Alignment.CenterHorizontally,
+     ) {
+ 
+-        Box(modifier = Modifier.height(280.dp)) {
++        Box(modifier = Modifier.height(spacing_cclxxx)) {
+             Image(
+                 painter = painterResource(id = R.drawable.top_background),
+-                contentDescription = "",
+-                Modifier.fillMaxWidth(),
++                contentDescription = stringResource(id = R.string.top_background_desc),
++                modifier = Modifier.fillMaxWidth(),
+                 contentScale = ContentScale.Crop,
+             )
+ 
+@@ -111,159 +133,152 @@
+                 ) {
+                 AsyncImage(
+                     model = user.photoUrl,
+-                    contentDescription = "",
+-
++                    contentDescription = stringResource(id = R.string.profile_photo_desc),
+                     contentScale = ContentScale.Crop,
+                     modifier = Modifier
+-                        .size(200.dp)
++                        .size(spacing_cc)
+                         .clip(CircleShape)
+-                        .border(4.dp, Color.White, CircleShape)
+-                        .background(Color.Gray),
++                        .border(spacing_xxs, White, CircleShape)
++                        .background(Gray),
+                 )
+             }
+         }
+ 
+         Text(
+             text = user.userName,
+-            fontSize = 25.sp,
++            fontSize = font_size_l,
+             fontWeight = FontWeight.Bold,
+-            modifier = Modifier.padding(top = 16.dp),
+-            color = Color(android.graphics.Color.parseColor("#747679")),
++            modifier = Modifier.padding(top = spacing_m1),
++            color = Color.Black,
+         )
+         Text(
+             text = user.email,
+-            fontSize = 20.sp,
+-            color = Color(android.graphics.Color.parseColor("#747679")),
++            fontSize = font_size_m2,
++            color = Color.Black,
+         )
+         Card(
+             modifier = Modifier
+                 .fillMaxWidth()
+-                .padding(32.dp, 24.dp),
+-            elevation = 4.dp,
+-            shape = RoundedCornerShape(8.dp),
+-            backgroundColor = Color.White,
++                .padding(spacing_xl, spacing_l),
++            elevation = spacing_xxs,
++            shape = RoundedCornerShape(spacing_xs),
++            backgroundColor = White,
+         ) {
+-            Column(modifier = Modifier.padding(12.dp)) {
++            Column(modifier = Modifier.padding(spacing_s2)) {
+                 Text(
+-                    text = "Bilgiler",
+-                    fontSize = 24.sp,
++                    text = stringResource(id = R.string.profile_info_title),
++                    fontSize = font_size_l,
+                     fontWeight = FontWeight.Bold,
+-                    color = Color(0xFF1E88E5),
+-                    modifier = Modifier.padding(5.dp),
++                    color = LightBlue,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+-                Spacer(modifier = Modifier.height(8.dp))
++                Spacer(modifier = Modifier.height(spacing_xs))
+                 Text(
+-                    text = "Adı: ${user.firstName}",
+-                    fontSize = 20.sp,
+-                    modifier = Modifier.padding(8.dp),
++                    text = "${stringResource(id = R.string.isim)}: ${user.firstName}",
++                    fontSize = font_size_m2,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+                 Text(
+-                    text = "Soyadı: ${user.surname}",
+-                    fontSize = 20.sp,
+-                    modifier = Modifier.padding(8.dp),
++                    text = "${stringResource(id = R.string.soyisim)}: ${user.surname}",
++                    fontSize = font_size_m2,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+                 Text(
+-                    text = "Pozisyon: ${user.position}",
+-                    fontSize = 20.sp,
+-                    modifier = Modifier.padding(8.dp),
++                    text = "${stringResource(id = R.string.pozisyon)}: ${user.position}",
++                    fontSize = font_size_m2,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+                 Text(
+-                    text = "Puan: ${user.point}",
+-                    fontSize = 20.sp,
+-                    modifier = Modifier.padding(8.dp),
++                    text = "${stringResource(id = R.string.puan)}: ${user.point}",
++                    fontSize = font_size_m2,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+                 Text(
+-                    text = "Iban: ${user.iban}",
+-                    fontSize = 20.sp,
+-                    modifier = Modifier.padding(8.dp),
++                    text = "${stringResource(id = R.string.profile_iban)}: ${user.iban}",
++                    fontSize = font_size_m2,
++                    modifier = Modifier.padding(spacing_xs),
+                 )
+             }
+         }
+ 
+         Button(
+-            onClick = { showDialog = true },
+-            Modifier
++            onClick = { showSettingDialog = true },
++            modifier = Modifier
+                 .fillMaxWidth()
+-                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)
+-                .height(55.dp), colors = ButtonDefaults.buttonColors(
+-                backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
+-            ), shape = RoundedCornerShape(15)
++                .padding(start = spacing_xl, end = spacing_xl, bottom = spacing_s1)
++                .height(spacing_cv),
++            colors = ButtonDefaults.buttonColors(backgroundColor = White),
++            shape = RoundedCornerShape(15),
+         ) {
+             Column(
+                 modifier = Modifier.fillMaxHeight(),
+-                verticalArrangement = Arrangement.Center
++                verticalArrangement = Arrangement.Center,
+             ) {
+                 Image(
+                     painter = painterResource(id = R.drawable.ic_settings),
+-                    contentDescription = "",
++                    contentDescription = stringResource(id = R.string.settings_button_logo_desc),
+                     modifier = Modifier
+-                        .padding(end = 5.dp)
++                        .padding(end = spacing_xxs),
+                 )
+             }
+             Column(
+                 modifier = Modifier
+-                    .padding(start = 16.dp)
++                    .padding(start = spacing_m1)
+                     .weight(1f),
+                 verticalArrangement = Arrangement.Center,
+-                horizontalAlignment = Alignment.Start
++                horizontalAlignment = Alignment.Start,
+             ) {
+                 Text(
+-                    text = "Profil Ayarları",
++                    text = stringResource(id = R.string.profile_settings),
+                     color = Color.Black,
+-                    fontSize = 18.sp,
+-                    fontWeight = FontWeight.Bold
++                    fontSize = font_size_18,
++                    fontWeight = FontWeight.Bold,
+                 )
+-
+             }
+         }
+ 
+         Button(
+             onClick = {
+-                viewModel.logout()
+-                // navController.popBackStack()
+-                navController.navigate(AuthenticationScreens.LoginScreen) {
+-                    popUpTo(navController.graph.id) {
+-                        inclusive = false
+-
+-                    }
+-                }
++                openExitDialog.value = true
+             },
+-            Modifier
+-                .padding(start = 32.dp, end = 32.dp, bottom = 10.dp)
+-                .height(55.dp), colors = ButtonDefaults.buttonColors(
+-                backgroundColor = Color(android.graphics.Color.parseColor("#ffffff"))
+-            ), shape = RoundedCornerShape(15)
++            modifier = Modifier
++                .padding(start = spacing_xl, end = spacing_xl, bottom = spacing_s1)
++                .height(spacing_cv),
++            colors = ButtonDefaults.buttonColors(backgroundColor = White),
++            shape = RoundedCornerShape(15),
+         ) {
+             Column(
+                 modifier = Modifier.fillMaxHeight(),
+-                verticalArrangement = Arrangement.Center
++                verticalArrangement = Arrangement.Center,
+             ) {
+                 Image(
+                     painter = painterResource(id = R.drawable.logout),
+-                    contentDescription = "",
+-                    modifier = Modifier
+-                        .padding(end = 5.dp)
++                    contentDescription = stringResource(id = R.string.exit_button_logo_desc),
++                    modifier = Modifier.padding(end = spacing_xxs),
+                 )
+             }
+             Column(
+                 modifier = Modifier
+-                    .padding(start = 16.dp)
++                    .padding(start = spacing_m1)
+                     .weight(1f),
+                 verticalArrangement = Arrangement.Center,
+-                horizontalAlignment = Alignment.Start
++                horizontalAlignment = Alignment.Start,
+             ) {
+                 Text(
+-                    text = "Çıkış Yap",
++                    text = stringResource(id = R.string.exit_button),
+                     color = Color.Black,
+-                    fontSize = 18.sp,
+-                    fontWeight = FontWeight.Bold
++                    fontSize = font_size_18,
++                    fontWeight = FontWeight.Bold,
+                 )
+             }
+         }
+     }
+ 
+-    if (showDialog) {
+-        ProfileSettingsDialog(onDismiss = { showDialog = false }, user)
++    if (showSettingDialog) {
++        ProfileSettingsDialog(onDismiss = { showSettingDialog = false }, user)
++    }
++    if (openExitDialog.value) {
++        ExitDialog(onDismiss = { openExitDialog.value = false }, navController = navController)
+     }
+ }
+ 
+@@ -272,17 +287,18 @@
+ fun ProfileSettingsDialog(
+     onDismiss: () -> Unit,
+     user: User,
+-    viewModel: ProfileViewModel = hiltViewModel(),
++    viewModel: ProfileViewModel = hiltViewModel()
+ ) {
+ 
+-    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl) ) }
++    var imageUri by remember { mutableStateOf<Uri?>(Uri.parse(user.photoUrl)) }
+     val launcher = rememberLauncherForActivityResult(
+         contract = ActivityResultContracts.GetContent(),
+-        onResult = {resultUri ->
++        onResult = { resultUri ->
+             resultUri?.let {
+-                viewModel.updatePhoto(user,resultUri)
+-                imageUri=resultUri
+-            }}
++                viewModel.updatePhoto(user, resultUri)
++                imageUri = resultUri
++            }
++        }
+     )
+ 
+     var surname by remember { mutableStateOf(user.surname) }
+@@ -291,74 +307,155 @@
+     var iban by remember { mutableStateOf(user.iban) }
+ 
+     Dialog(onDismiss) {
+-        Surface(shape = MaterialTheme.shapes.medium, elevation = 8.dp) {
++        Surface(shape = MaterialTheme.shapes.medium, elevation = spacing_xs) {
+             Column(
+                 modifier = Modifier
+-                    .padding(16.dp)
++                    .padding(spacing_m1)
+                     .fillMaxWidth(),
+-                horizontalAlignment = Alignment.CenterHorizontally
++                horizontalAlignment = Alignment.CenterHorizontally,
+             ) {
+-                Text(text = "Profili Güncelle")
++                Text(text = stringResource(id = R.string.profile_update_button))
+ 
+                 GlideImage(
+-                    model = imageUri, contentDescription = "", modifier = Modifier
+-                        .padding(4.dp)
+-                        .size(150.dp)
+-                        .clip(RoundedCornerShape(12.dp)),
+-                    contentScale = ContentScale.Crop
++                    model = imageUri,
++                    contentDescription = stringResource(id = R.string.profile_photo_button),
++                    modifier = Modifier
++                        .padding(spacing_xxs)
++                        .size(spacing_cl)
++                        .clip(RoundedCornerShape(spacing_s2)),
++                    contentScale = ContentScale.Crop,
+                 )
+ 
+                 Button(
+-                    onClick = {
+-                        launcher.launch("image/*")
+-                    }
++                    onClick = { launcher.launch("image/*") },
++                    colors = ButtonDefaults.buttonColors(Blue),
+                 ) {
+-                    Text(text = "Profil Fotoğrafı Değiştir")
++                    Text(text = stringResource(id = R.string.profile_photo_button), color = White)
+                 }
+ 
+                 OutlinedTextField(
+                     value = firstname,
+                     onValueChange = { firstname = it },
+-                    label = { Text(text = "İsim") }
++                    label = { Text(text = stringResource(id = R.string.isim)) },
++                    singleLine = true,
++                    colors = TextFieldDefaults.outlinedTextFieldColors(
++                        focusedBorderColor = Blue,
++                        cursorColor = Blue,
++                        focusedLabelColor = Blue,
++                    ),
+                 )
+ 
+                 OutlinedTextField(
+                     value = surname,
+                     onValueChange = { surname = it },
+-                    label = { Text(text = "Soyisim") }
++                    label = { Text(text = stringResource(id = R.string.soyisim)) },
++                    singleLine = true,
++                    colors = TextFieldDefaults.outlinedTextFieldColors(
++                        focusedBorderColor = Blue,
++                        cursorColor = Blue,
++                        focusedLabelColor = Blue,
++                    ),
+                 )
+ 
+                 OutlinedTextField(
+                     value = position,
+                     onValueChange = { position = it },
+-                    label = { Text(text = "Pozisyon") }
++                    label = { Text(text = stringResource(id = R.string.pozisyon)) },
++                    singleLine = true,
++                    colors = TextFieldDefaults.outlinedTextFieldColors(
++                        focusedBorderColor = Blue,
++                        cursorColor = Blue,
++                        focusedLabelColor = Blue,
++                    ),
+                 )
+                 OutlinedTextField(
+                     value = iban,
+                     onValueChange = { iban = it },
+-                    label = { Text(text = "Iban") }
++                    label = { Text(text = stringResource(id = R.string.profile_iban)) },
++                    singleLine = true,
++                    colors = TextFieldDefaults.outlinedTextFieldColors(
++                        focusedBorderColor = Blue,
++                        cursorColor = Blue,
++                        focusedLabelColor = Blue,
++                    ),
+                 )
+ 
+-                Spacer(modifier = Modifier.height(12.dp))
++                Spacer(modifier = Modifier.height(spacing_s2))
+ 
+                 Row(
+                     modifier = Modifier.fillMaxWidth(),
+-                    horizontalArrangement = Arrangement.SpaceBetween
++                    horizontalArrangement = Arrangement.SpaceBetween,
+                 ) {
+-                    Button(onClick = onDismiss) {
+-                        Text(text = "İptal")
++                    Button(
++                        onClick = onDismiss,
++                        colors = ButtonDefaults.buttonColors(Blue),
++                    ) {
++                        Text(text = stringResource(id = R.string.iptal), color = White)
+                     }
+-                    Button(onClick = {
+-
+-                        user.firstName = firstname
+-                        user.surname = surname
+-                        user.position = position
+-                        user.iban = iban
++                    Button(
++                        onClick = {
++                            user.firstName = firstname
++                            user.surname = surname
++                            user.position = position
++                            user.iban = iban
+ 
+-                        viewModel.updateProfileInfo(user)
+-                        onDismiss()
+-                    }) {
+-                        Text(text = "Ekle")
++                            viewModel.updateProfileInfo(user)
++                            onDismiss()
++                        },
++                        colors = ButtonDefaults.buttonColors(Blue),
++                    ) {
++                        Text(stringResource(id = R.string.ekle), color = White)
++                    }
++                }
++            }
++        }
++    }
++}
++
++@Composable
++fun ExitDialog(
++    onDismiss: () -> Unit,
++    viewModel: ProfileViewModel = hiltViewModel(),
++    navController: NavController
++) {
++
++    Dialog(onDismiss) {
++        Surface(shape = MaterialTheme.shapes.medium, elevation = spacing_xs) {
++            Column(
++                modifier = Modifier
++                    .padding(spacing_m1)
++                    .fillMaxWidth(),
++                horizontalAlignment = Alignment.CenterHorizontally,
++            ) {
++
++                Text(text = stringResource(id = R.string.exit), fontSize = font_size_l1)
++                Spacer(modifier = Modifier.height(spacing_xl))
++                Text(text = stringResource(id = R.string.exit_detail))
++                Spacer(modifier = Modifier.height(spacing_xl))
++
++                Row(
++                    modifier = Modifier.fillMaxWidth(),
++                    horizontalArrangement = Arrangement.SpaceBetween,
++                ) {
++                    Button(
++                        onClick = onDismiss,
++                        colors = ButtonDefaults.buttonColors(Blue),
++                    ) {
++                        Text(text = stringResource(id = R.string.exit_no), color = White)
++                    }
++                    Button(
++                        onClick = {
++                            viewModel.logout()
++                            navController.navigate(AuthenticationScreens.LoginScreen) {
++                                popUpTo(navController.graph.id) {
++                                    inclusive = false
++                                }
++                            }
++                            onDismiss()
++                        },
++                        colors = ButtonDefaults.buttonColors(Blue),
++                    ) {
++                        Text(stringResource(id = R.string.exit_yes), color = White)
+                     }
+                 }
+             }
+Index: app/src/main/res/values/strings.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><resources>\r\n    <string name=\"app_name\">GroupMaker</string>\r\n\r\n    <!-- Sign Up Screen -->\r\n    <string name=\"sign_up\">Kayıt ol</string>\r\n    <string name=\"username\">Kullanıcı Adı</string>\r\n    <string name=\"username_hint\">Kullanıcı Adı</string>\r\n    <string name=\"email\">Email</string>\r\n    <string name=\"hint_mail\">test@testmail.com</string>\r\n    <string name=\"password\">Şİfre</string>\r\n    <string name=\"hint_password\">*********</string>\r\n    <string name=\"button_sign_up\">Giriş Yap</string>\r\n    <string name=\"verify_password_text\">Şifre</string>\r\n    <string name=\"verify_password_hint_text\">*********</string>\r\n    <string name=\"or_sign_up_with_text\">veya giriş yap</string>\r\n    <string name=\"by_creating_an_account_i_accept_hiring_hub_terms_of_use_and_privacy_policy\">Kaydolarak sözleşmeyi kabul ediyorum.</string>\r\n    <string name=\"already_have_an_account\">Zaten bir hesabım var?</string>\r\n    <string name=\"sign_up_login_text_button_text\">Giriş</string>\r\n\r\n    <!-- Authentication Screen -->\r\n    <string name=\"email_address\">Email Adrei</string>\r\n    <string name=\"text_field_value_password\">Şifre</string>\r\n    <string name=\"login\">Giriş</string>\r\n    <string name=\"keep_me_signed_in\">Giriş yapılı tut.</string>\r\n    <string name=\"or_sign_in_with\">veya giriş yap</string>\r\n    <string name=\"don_t_have_an_account\">Bir hesabın yok mu?</string>\r\n    <string name=\"sign_up_here\">Buradan kayıt ol</string>\r\n    <string name=\"password_not_match\">Şifre uyuşmuyor.</string>\r\n\r\n    <!-- Content Descriptions -->\r\n    <string name=\"content_description_app_image\">App Image</string>\r\n    <string name=\"content_description_dictionary_logo\">Dictionary Logo</string>\r\n    <string name=\"content_description_visibility_icon\">Show Password Icon</string>\r\n    <string name=\"password_must_be_at_least_6_characters_long\">Password must be at least 6 characters long</string>\r\n    <string name=\"email_and_password_cannot_be_empty\">Email and password cannot be empty</string>\r\n    <string name=\"your_password_has_been_reset\">Your password has been reset</string>\r\n    <string name=\"save\">Save</string>\r\n    <string name=\"bottom_bar_item_search\">Search</string>\r\n    <string name=\"bottom_bar_item_favorite\">Favorite</string>\r\n    <string name=\"bottom_bar_item_detail\">Detail</string>\r\n\r\n    <!-- OnBoarding -->\r\n\r\n    <string name=\"onBoardingTitle1\">Welcome to GroupMaker</string>\r\n    <string name=\"onBoardingText1\">Create an account so you can get started.</string>\r\n\r\n    <string name=\"onBoardingTitle2\">Prepare for the match</string>\r\n    <string name=\"onBoardingText2\">Choose your sport and create your team</string>\r\n\r\n    <string name=\"onBoardingTitle3\">Have fun</string>\r\n    <string name=\"onBoardingText3\">Play with your team and have fun</string>\r\n    <string name=\"title_activity_on_boarding\">OnBoardingActivity</string>\r\n    <string name=\"title_activity_login\">LoginActivity</string>\r\n    <string name=\"title_activity_splash\">SplashActivity</string>\r\n\r\n    <!-- Player Screen-->\r\n\r\n    <string name=\"se_ili_oyuncular\">Seçili Oyuncular</string>\r\n    <string name=\"bir_hata_olu_tu\">Bir hata oluştu</string>\r\n    <string name=\"no_players_selected\">Oyuncu Seçilmedi.</string>\r\n    <string name=\"oyuncu_ekle\">Oyuncu Ekle</string>\r\n    <string name=\"oyuncu_a_r\">Oyuncu Çağır</string>\r\n    <string name=\"kullan_c_lar_se_in\">Kullanıcıları Seçin</string>\r\n    <string name=\"ara\">Ara</string>\r\n    <string name=\"tamam\">Tamam</string>\r\n    <string name=\"remove\">Remove</string>\r\n    <string name=\"star\">Star</string>\r\n    <string name=\"yeni_oyuncu_ekle\">Yeni Oyuncu Ekle</string>\r\n    <string name=\"kullan_c_ad\">Kullanıcı adı</string>\r\n    <string name=\"isim\">isim</string>\r\n    <string name=\"soyisim\">Soyisim</string>\r\n    <string name=\"pozisyon\">Pozisyon</string>\r\n    <string name=\"puan\">Puan</string>\r\n    <string name=\"ptal\">İptal</string>\r\n    <string name=\"ekle\">Ekle</string>\r\n\r\n\r\n</resources>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/values/strings.xml b/app/src/main/res/values/strings.xml
+--- a/app/src/main/res/values/strings.xml	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/res/values/strings.xml	(date 1723507578046)
+@@ -41,17 +41,16 @@
+ 
+     <!-- OnBoarding -->
+ 
+-    <string name="onBoardingTitle1">Welcome to GroupMaker</string>
+-    <string name="onBoardingText1">Create an account so you can get started.</string>
+-
+-    <string name="onBoardingTitle2">Prepare for the match</string>
+-    <string name="onBoardingText2">Choose your sport and create your team</string>
+-
+-    <string name="onBoardingTitle3">Have fun</string>
+-    <string name="onBoardingText3">Play with your team and have fun</string>
++    <string name="onBoardingTitle1">GroupMaker\'a Hoşgeldin</string>
++    <string name="onBoardingText1">Başlayabilmek için bir hesap oluşturun.</string>
++    <string name="onBoardingTitle2">Maç için hazırlanın</string>
++    <string name="onBoardingText2">Sporunuzu seçin ve takımınızı oluşturun</string>
++    <string name="onBoardingTitle3">İyi eğlenceler</string>
++    <string name="onBoardingText3">Takımınızla oynayın ve eğlenmeye bakın</string>
+     <string name="title_activity_on_boarding">OnBoardingActivity</string>
+     <string name="title_activity_login">LoginActivity</string>
+     <string name="title_activity_splash">SplashActivity</string>
++    <string name="skip">Burayı Atla</string>
+ 
+     <!-- Player Screen-->
+ 
+@@ -67,12 +66,40 @@
+     <string name="star">Star</string>
+     <string name="yeni_oyuncu_ekle">Yeni Oyuncu Ekle</string>
+     <string name="kullan_c_ad">Kullanıcı adı</string>
+-    <string name="isim">isim</string>
++    <string name="isim">İsim</string>
+     <string name="soyisim">Soyisim</string>
+     <string name="pozisyon">Pozisyon</string>
+     <string name="puan">Puan</string>
+-    <string name="ptal">İptal</string>
++    <string name="iptal">İptal</string>
+     <string name="ekle">Ekle</string>
+ 
++    <!-- Profile Screen-->
++    <string name="profile_iban">Iban</string>
++    <string name="profile_photo_button">Profil Fotoğrafı Değiştir</string>
++    <string name="profile_update_button">Profili Güncelle</string>
++    <string name="exit_button">Çıkış Yap</string>
++    <string name="exit_button_logo_desc">Çıkış yapma ikonu</string>
++    <string name="profile_settings">Profil Ayarları</string>
++    <string name="settings_button_logo_desc">Profil Ayarlama ikonu</string>
++    <string name="profile_info_title">Bilgiler</string>
++    <string name="profile_photo_desc">Profil Fotoğrafı</string>
++    <string name="top_background_desc">Üst Arkaplan Görseli</string>
++    <string name="error">Hata!</string>
++    <string name="exit_yes">Evet</string>
++    <string name="exit_no">Hayır</string>
++    <string name="exit">Çıkış</string>
++    <string name="exit_detail">Çıkış yapmak istiyor musunuz?</string>
++
++    <!-- SportTypes Screen-->
++    <string name="select_sport">Bir spor seç</string>
++    <string name="card_image_desc">Bir spor seç</string>
++
++    <!-- Splash Screen-->
++    <string name="splash_text">Oynayalım!</string>
++
++    <!-- SportTypesSetting Screen-->
++    <string name="card_title_create">Maç Oluştur</string>
++    <string name="card_title_players">Oyuncular</string>
++
+ 
+ </resources>
+\ No newline at end of file
+Index: app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.domain.model\r\n\r\ndata class User(\r\n    val id: String = \"\",\r\n    val email: String = \"\",\r\n    var firstName: String = \"\",\r\n    var userName: String = \"\",\r\n    var surname: String = \"\",\r\n    var photoUrl: String? = \"\",\r\n    var position: String = \"\",\r\n    val point: Int = 0,\r\n    var iban: String = \"\",\r\n    var scoreCount: Int? = 0,\r\n) {\r\n    constructor() : this(\r\n        id = \"\",\r\n        firstName = \"\",\r\n        email = \"\",\r\n        userName = \"\",\r\n        surname = \"\",\r\n        photoUrl = \"\",\r\n        position = \"\",\r\n        point = 0,\r\n        iban = \"\",\r\n    )\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt b/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/domain/model/User.kt	(date 1723507578042)
+@@ -10,7 +10,6 @@
+     var position: String = "",
+     val point: Int = 0,
+     var iban: String = "",
+-    var scoreCount: Int? = 0,
+ ) {
+     constructor() : this(
+         id = "",
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.onboarding\r\n\r\nimport androidx.compose.animation.core.Spring\r\nimport androidx.compose.animation.core.animateDpAsState\r\nimport androidx.compose.animation.core.spring\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.BoxScope\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.layout.width\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight\r\nimport androidx.compose.material3.FloatingActionButton\r\nimport androidx.compose.material3.Icon\r\nimport androidx.compose.material3.MaterialTheme\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.material3.TextButton\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.rememberCoroutineScope\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.res.stringResource\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.tooling.preview.Preview\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.navigation.NavController\r\nimport androidx.navigation.compose.rememberNavController\r\nimport com.google.accompanist.pager.ExperimentalPagerApi\r\nimport com.google.accompanist.pager.HorizontalPager\r\nimport com.google.accompanist.pager.rememberPagerState\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.domain.model.OnBoardingData\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.theme.GroupMakerTheme\r\nimport kotlinx.coroutines.launch\r\n\r\n@Preview(showBackground = true)\r\n@Composable\r\nprivate fun OnBoardinPreview() {\r\n    GroupMakerTheme {\r\n        OnBoarding(navController = rememberNavController())\r\n    }\r\n}\r\n\r\nfun getData(): List<OnBoardingData> {\r\n    return listOf(\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle1,\r\n            textR = R.string.onBoardingText1,\r\n            imageR = R.drawable.onboarding1\r\n        ),\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle2,\r\n            textR = R.string.onBoardingText2,\r\n            imageR = R.drawable.onboarding2\r\n        ),\r\n        OnBoardingData(\r\n            titleR = R.string.onBoardingTitle3,\r\n            textR = R.string.onBoardingText3,\r\n            imageR = R.drawable.onboarding3\r\n        ),\r\n    )\r\n}\r\n\r\n@OptIn(ExperimentalPagerApi::class)\r\n@Composable\r\nfun OnBoarding(navController: NavController) {\r\n\r\n    val scope = rememberCoroutineScope()\r\n\r\n    Column(modifier = Modifier.fillMaxSize()) {\r\n        //Top alanını oluşturan compose çağırıyoruz\r\n        TopSection(navController)\r\n        //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz\r\n        val item = getData()\r\n        val state = rememberPagerState(pageCount = item.size)\r\n        //OnBoardingItem'a item resim ve yazıları arayüz elementlerine aktarmasını\r\n        //sağlıyoruz\r\n        HorizontalPager(\r\n            state = state,\r\n            modifier = Modifier\r\n                .fillMaxSize()\r\n                .weight(0.8f)\r\n        ) { page ->\r\n            OnBoardingItem(item = item[page])\r\n        }\r\n        //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi\r\n        BottomSection(size = item.size, index = state.currentPage) {\r\n            if (state.currentPage + 1 < item.size) {\r\n                scope.launch {\r\n                    state.scrollToPage(page = state.currentPage + 1)\r\n                }\r\n            } else {\r\n                navController.popBackStack()\r\n                navController.navigate(AuthenticationScreens.LoginScreen)\r\n\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n//Top alanını oluşturan compose\r\n@Composable\r\nfun TopSection(navController: NavController) {\r\n\r\n    Box(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(12.dp)\r\n    ) {\r\n        //Skip adlı text buttonunu oluşturma\r\n        TextButton(\r\n            onClick = {\r\n                navController.popBackStack()\r\n                navController.navigate(AuthenticationScreens.LoginScreen)\r\n            },\r\n            modifier = Modifier.align(Alignment.CenterEnd)\r\n        ) {\r\n            Text(\r\n                text = \"Skip\",\r\n                color = MaterialTheme.colorScheme.onBackground\r\n            )\r\n        }\r\n    }\r\n}\r\n\r\n//Pager görselini ekran sayısı kadar çoğaltan compose\r\n@Composable\r\nfun BoxScope.Indicators(size: Int, index: Int) {\r\n    Row(\r\n        verticalAlignment = Alignment.CenterVertically,\r\n        horizontalArrangement = Arrangement.spacedBy(12.dp),\r\n        modifier = Modifier.align(Alignment.CenterStart)\r\n    ) {\r\n        repeat(size) {\r\n            Indicator(isSelected = it == index)\r\n        }\r\n    }\r\n}\r\n\r\n//Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma\r\n@Composable\r\nfun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {\r\n    Box(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(12.dp)\r\n    ) {//Pager bölümünü oluşturan compose çağırıyoruz\r\n        Indicators(size = size, index = index)\r\n        //Sağdaki FloatingActionButton rengini, iconunu tanımalama\r\n        FloatingActionButton(\r\n            onClick = onNextClicked,\r\n            modifier = Modifier.align(Alignment.CenterEnd),\r\n            containerColor = MaterialTheme.colorScheme.primary,\r\n            contentColor = MaterialTheme.colorScheme.onPrimary\r\n        ) {\r\n            Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)\r\n        }\r\n    }\r\n}\r\n\r\n//Bir tane Circle şeklinde pager oluşturma\r\n@Composable\r\nfun Indicator(isSelected: Boolean) {\r\n    //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm\r\n    val width = animateDpAsState(\r\n        targetValue = if (isSelected) 25.dp else 10.dp,\r\n        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy), label = \"\"\r\n    )\r\n    //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama\r\n    Box(\r\n        modifier = Modifier\r\n            .height(10.dp)\r\n            .width(width = width.value)\r\n            .clip(shape = CircleShape)\r\n            .background(\r\n                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(\r\n                    alpha = 0.5f\r\n                )\r\n            )\r\n    ) {}\r\n\r\n}\r\n\r\n//OnBoardingData sınıfından gelen resim ve yazıların arayüz elementlerine aktarılması\r\n@Composable\r\nfun OnBoardingItem(item: OnBoardingData) {\r\n    //İçereklerin konumu belirleniyorz\r\n    Column(\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly,\r\n        modifier = Modifier.fillMaxSize()\r\n    ) {\r\n        //Resim, image özelliğine atanıyor\r\n        Image(\r\n            painter = painterResource(id = item.imageR), contentDescription = null,\r\n            Modifier.size(300.dp)\r\n        )\r\n        //Bold ana başlık Text özelliğine atanıyor\r\n        Text(\r\n            text = stringResource(id = item.titleR),\r\n            fontSize = 24.sp,\r\n            color = MaterialTheme.colorScheme.onBackground,\r\n            fontWeight = FontWeight.Bold\r\n        )\r\n        //Açıklama yazısı Text özelliğine atanıyor\r\n        Text(\r\n            text = stringResource(id = item.textR),\r\n            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),\r\n            textAlign = TextAlign.Center\r\n        )\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/onboarding/OnBoarding.kt	(date 1723507578043)
+@@ -29,13 +29,12 @@
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.draw.clip
++import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.res.painterResource
+ import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.text.style.TextAlign
+ import androidx.compose.ui.tooling.preview.Preview
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+ import androidx.navigation.NavController
+ import androidx.navigation.compose.rememberNavController
+ import com.google.accompanist.pager.ExperimentalPagerApi
+@@ -44,6 +43,12 @@
+ import com.yeceylan.groupmaker.R
+ import com.yeceylan.groupmaker.domain.model.OnBoardingData
+ import com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_l
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_ccc
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxxvi
+ import com.yeceylan.groupmaker.ui.theme.GroupMakerTheme
+ import kotlinx.coroutines.launch
+ 
+@@ -60,17 +65,17 @@
+         OnBoardingData(
+             titleR = R.string.onBoardingTitle1,
+             textR = R.string.onBoardingText1,
+-            imageR = R.drawable.onboarding1
++            imageR = R.drawable.onboarding1,
+         ),
+         OnBoardingData(
+             titleR = R.string.onBoardingTitle2,
+             textR = R.string.onBoardingText2,
+-            imageR = R.drawable.onboarding2
++            imageR = R.drawable.onboarding2,
+         ),
+         OnBoardingData(
+             titleR = R.string.onBoardingTitle3,
+             textR = R.string.onBoardingText3,
+-            imageR = R.drawable.onboarding3
++            imageR = R.drawable.onboarding3,
+         ),
+     )
+ }
+@@ -81,23 +86,22 @@
+ 
+     val scope = rememberCoroutineScope()
+ 
+-    Column(modifier = Modifier.fillMaxSize()) {
+-        //Top alanını oluşturan compose çağırıyoruz
++    Column(modifier = Modifier.fillMaxSize().background(Color.White)) {
++
+         TopSection(navController)
+-        //OnBoardingData sınıfından OnBoarding ekran sayısını alıyoruz
+         val item = getData()
+         val state = rememberPagerState(pageCount = item.size)
+-        //OnBoardingItem'a item resim ve yazıları arayüz elementlerine aktarmasını
+-        //sağlıyoruz
++
+         HorizontalPager(
+             state = state,
+             modifier = Modifier
+                 .fillMaxSize()
+-                .weight(0.8f)
+-        ) { page ->
++                .weight(0.8f),
++
++            ) { page ->
+             OnBoardingItem(item = item[page])
+         }
+-        //Ekran sayısını BottomSection compose da kullanarak pager ve scrool işlemi
++
+         BottomSection(size = item.size, index = state.currentPage) {
+             if (state.currentPage + 1 < item.size) {
+                 scope.launch {
+@@ -112,16 +116,14 @@
+     }
+ }
+ 
+-//Top alanını oluşturan compose
+ @Composable
+ fun TopSection(navController: NavController) {
+ 
+     Box(
+         modifier = Modifier
+             .fillMaxWidth()
+-            .padding(12.dp)
++            .padding(spacing_s2, spacing_xxxvi),
+     ) {
+-        //Skip adlı text buttonunu oluşturma
+         TextButton(
+             onClick = {
+                 navController.popBackStack()
+@@ -130,20 +132,20 @@
+             modifier = Modifier.align(Alignment.CenterEnd)
+         ) {
+             Text(
+-                text = "Skip",
+-                color = MaterialTheme.colorScheme.onBackground
++                text = stringResource(id = R.string.skip),
++                color = MaterialTheme.colorScheme.onBackground,
+             )
+         }
+     }
+ }
+ 
+-//Pager görselini ekran sayısı kadar çoğaltan compose
+ @Composable
+ fun BoxScope.Indicators(size: Int, index: Int) {
++
+     Row(
+         verticalAlignment = Alignment.CenterVertically,
+-        horizontalArrangement = Arrangement.spacedBy(12.dp),
+-        modifier = Modifier.align(Alignment.CenterStart)
++        horizontalArrangement = Arrangement.spacedBy(spacing_s2),
++        modifier = Modifier.align(Alignment.CenterStart),
+     ) {
+         repeat(size) {
+             Indicator(isSelected = it == index)
+@@ -151,76 +153,76 @@
+     }
+ }
+ 
+-//Bottom alanındaki FloatingActionButton ve Pager göstergesini oluşturma
+ @Composable
+ fun BottomSection(size: Int, index: Int, onNextClicked: () -> Unit) {
+     Box(
+         modifier = Modifier
+             .fillMaxWidth()
+-            .padding(12.dp)
+-    ) {//Pager bölümünü oluşturan compose çağırıyoruz
++            .padding(spacing_s2),
++    ) {
+         Indicators(size = size, index = index)
+-        //Sağdaki FloatingActionButton rengini, iconunu tanımalama
+         FloatingActionButton(
+             onClick = onNextClicked,
+             modifier = Modifier.align(Alignment.CenterEnd),
+             containerColor = MaterialTheme.colorScheme.primary,
+-            contentColor = MaterialTheme.colorScheme.onPrimary
++            contentColor = MaterialTheme.colorScheme.onPrimary,
+         ) {
+             Icon(Icons.AutoMirrored.Outlined.KeyboardArrowRight, null)
+         }
+     }
+ }
+ 
+-//Bir tane Circle şeklinde pager oluşturma
+ @Composable
+ fun Indicator(isSelected: Boolean) {
+-    //pager arasında geçiş yaparkenki animasyonu sağlayan bölüm
++
+     val width = animateDpAsState(
+-        targetValue = if (isSelected) 25.dp else 10.dp,
+-        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy), label = ""
++        targetValue = if (isSelected) spacing_l else spacing_s1,
++        animationSpec = spring(dampingRatio = Spring.DampingRatioHighBouncy),
++        label = "",
+     )
+-    //Pager alanı için yükseklik, şekil vb görsel özelliklerini tanımlama
++
+     Box(
+         modifier = Modifier
+-            .height(10.dp)
++            .height(spacing_s1)
+             .width(width = width.value)
+             .clip(shape = CircleShape)
+             .background(
+-                if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onBackground.copy(
+-                    alpha = 0.5f
+-                )
+-            )
+-    ) {}
++                if (isSelected) {
++                    MaterialTheme.colorScheme.primary
++                } else {
++                    MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
++                }
++            ),
++    ) {
+ 
++    }
+ }
+ 
+-//OnBoardingData sınıfından gelen resim ve yazıların arayüz elementlerine aktarılması
+ @Composable
+ fun OnBoardingItem(item: OnBoardingData) {
+-    //İçereklerin konumu belirleniyorz
++
+     Column(
+         horizontalAlignment = Alignment.CenterHorizontally,
+         verticalArrangement = Arrangement.SpaceEvenly,
+-        modifier = Modifier.fillMaxSize()
++        modifier = Modifier.fillMaxSize(),
+     ) {
+-        //Resim, image özelliğine atanıyor
+         Image(
+-            painter = painterResource(id = item.imageR), contentDescription = null,
+-            Modifier.size(300.dp)
++            painter = painterResource(id = item.imageR),
++            contentDescription = null,
++            Modifier.size(spacing_ccc),
+         )
+-        //Bold ana başlık Text özelliğine atanıyor
++
+         Text(
+             text = stringResource(id = item.titleR),
+-            fontSize = 24.sp,
++            fontSize = font_size_l,
+             color = MaterialTheme.colorScheme.onBackground,
+-            fontWeight = FontWeight.Bold
++            fontWeight = FontWeight.Bold,
+         )
+-        //Açıklama yazısı Text özelliğine atanıyor
++
+         Text(
+             text = stringResource(id = item.textR),
+             color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.8f),
+-            textAlign = TextAlign.Center
++            textAlign = TextAlign.Center,
+         )
+     }
+ }
+\ No newline at end of file
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"deploymentTargetSelector\">\r\n    <selectionStates>\r\n      <SelectionState runConfigName=\"app\">\r\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\r\n        <DropdownSelection timestamp=\"2024-08-11T12:05:59.464314200Z\">\r\n          <Target type=\"DEFAULT_BOOT\">\r\n            <handle>\r\n              <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\Ali\\.android\\avd\\Pixel_8_API_34.avd\" />\r\n            </handle>\r\n          </Target>\r\n        </DropdownSelection>\r\n        <DialogSelection>\r\n          <targets>\r\n            <Target type=\"DEFAULT_BOOT\">\r\n              <handle>\r\n                <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\Ali\\.android\\avd\\Pixel_2_API_34.avd\" />\r\n              </handle>\r\n            </Target>\r\n            <Target type=\"DEFAULT_BOOT\">\r\n              <handle>\r\n                <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\Ali\\.android\\avd\\Pixel_8_API_34.avd\" />\r\n              </handle>\r\n            </Target>\r\n          </targets>\r\n        </DialogSelection>\r\n      </SelectionState>\r\n    </selectionStates>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/.idea/deploymentTargetSelector.xml	(date 1723507578041)
+@@ -3,11 +3,11 @@
+   <component name="deploymentTargetSelector">
+     <selectionStates>
+       <SelectionState runConfigName="app">
+-        <option name="selectionMode" value="DROPDOWN" />
+-        <DropdownSelection timestamp="2024-08-11T12:05:59.464314200Z">
++        <option name="selectionMode" value="DIALOG" />
++        <DropdownSelection timestamp="2024-08-12T09:50:04.520563200Z">
+           <Target type="DEFAULT_BOOT">
+             <handle>
+-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Ali\.android\avd\Pixel_8_API_34.avd" />
++              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Ali\.android\avd\Pixel_2_API_34.avd" />
+             </handle>
+           </Target>
+         </DropdownSelection>
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.lazy.items\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.font.FontStyle\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi\r\nimport com.bumptech.glide.integration.compose.GlideImage\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n@Composable\r\nfun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {\r\n\r\n    val list = viewModel.sportTypeList.collectAsState().value\r\n\r\n    Column(\r\n        modifier = Modifier.fillMaxSize(),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly\r\n    ) {\r\n        Text(\r\n            text = \"Select a sport\",\r\n            fontSize = 30.sp,\r\n            textAlign = TextAlign.Center,\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n        )\r\n        LazyColumn() {\r\n\r\n            items(list) {\r\n\r\n                ImageCard(\r\n                    painter = it.image!!,\r\n                    contentDescription = \"\",\r\n                    title = it.title!!,\r\n                    navController = navController,\r\n                    teamSize = it.size!!\r\n                )\r\n            }\r\n        }\r\n    }\r\n\r\n}\r\n\r\n@OptIn(ExperimentalGlideComposeApi::class)\r\n@Composable\r\nfun ImageCard(\r\n    painter: String,\r\n    contentDescription: String,\r\n    title: String,\r\n    modifier: Modifier = Modifier,\r\n    navController: NavController,\r\n    teamSize: Int\r\n\r\n) {\r\n    Card(\r\n        modifier = modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                navController.navigate(SportTypeScreens.SportTypeSetting(title,teamSize))\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n\r\n            GlideImage(\r\n                model = painter,\r\n                contentDescription = contentDescription,\r\n                modifier = Modifier.fillMaxSize(),\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black,\r\n                            ),\r\n                            // startY = 100f,\r\n                        ),\r\n                    ),\r\n            ) {\r\n\r\n            }\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter,\r\n            ) {\r\n                Text(\r\n                    title,\r\n                    style = TextStyle(\r\n                        color = Color.White,\r\n                        fontSize = 16.sp,\r\n                        fontStyle = FontStyle.Italic,\r\n                    )\r\n                )\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypes.kt	(date 1723507578045)
+@@ -2,13 +2,14 @@
+ 
+ import androidx.compose.foundation.background
+ import androidx.compose.foundation.clickable
+-import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.layout.Box
+ import androidx.compose.foundation.layout.Column
++import androidx.compose.foundation.layout.Spacer
+ import androidx.compose.foundation.layout.fillMaxSize
+ import androidx.compose.foundation.layout.fillMaxWidth
+ import androidx.compose.foundation.layout.height
+ import androidx.compose.foundation.layout.padding
++import androidx.compose.foundation.layout.size
+ import androidx.compose.foundation.lazy.LazyColumn
+ import androidx.compose.foundation.lazy.items
+ import androidx.compose.foundation.shape.RoundedCornerShape
+@@ -22,16 +23,25 @@
+ import androidx.compose.ui.graphics.Brush
+ import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.layout.ContentScale
++import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.TextStyle
+ import androidx.compose.ui.text.font.FontStyle
+ import androidx.compose.ui.text.style.TextAlign
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+ import com.bumptech.glide.integration.compose.GlideImage
++import com.yeceylan.groupmaker.R
+ import com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_m1
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_xl
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_c
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cc
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_m2
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s1
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_s2
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_xxl
+ 
+ @Composable
+ fun SportTypes(navController: NavController, viewModel: SportTypeViewModel = hiltViewModel()) {
+@@ -41,22 +51,26 @@
+     Column(
+         modifier = Modifier.fillMaxSize(),
+         horizontalAlignment = Alignment.CenterHorizontally,
+-        verticalArrangement = Arrangement.SpaceEvenly
+     ) {
++        Spacer(modifier = Modifier
++            .fillMaxWidth()
++            .size(spacing_c))
+         Text(
+-            text = "Select a sport",
+-            fontSize = 30.sp,
++            text = stringResource(id = R.string.select_sport),
++            fontSize = font_size_xl,
+             textAlign = TextAlign.Center,
+             modifier = Modifier
+                 .fillMaxWidth()
+         )
+-        LazyColumn() {
++        Spacer(modifier = Modifier
++            .fillMaxWidth()
++            .size(spacing_xxl))
++        LazyColumn {
+ 
+             items(list) {
+-
+                 ImageCard(
+                     painter = it.image!!,
+-                    contentDescription = "",
++                    contentDescription = stringResource(id = R.string.card_image_desc),
+                     title = it.title!!,
+                     navController = navController,
+                     teamSize = it.size!!
+@@ -64,7 +78,6 @@
+             }
+         }
+     }
+-
+ }
+ 
+ @OptIn(ExperimentalGlideComposeApi::class)
+@@ -81,15 +94,15 @@
+     Card(
+         modifier = modifier
+             .fillMaxWidth()
+-            .padding(20.dp)
++            .padding(spacing_m2)
+             .clickable {
+-                navController.navigate(SportTypeScreens.SportTypeSetting(title,teamSize))
++                navController.navigate(SportTypeScreens.SportTypeSetting(title, teamSize))
+             },
+-        shape = RoundedCornerShape(24.dp),
+-        elevation = CardDefaults.cardElevation(10.dp),
++        shape = RoundedCornerShape(spacing_l),
++        elevation = CardDefaults.cardElevation(spacing_s1),
+ 
+         ) {
+-        Box(modifier = Modifier.height(200.dp)) {
++        Box(modifier = Modifier.height(spacing_cc)) {
+ 
+             GlideImage(
+                 model = painter,
+@@ -107,7 +120,6 @@
+                                 Color.Transparent,
+                                 Color.Black,
+                             ),
+-                            // startY = 100f,
+                         ),
+                     ),
+             ) {
+@@ -116,14 +128,14 @@
+             Box(
+                 modifier = Modifier
+                     .fillMaxSize()
+-                    .padding(12.dp),
++                    .padding(spacing_s2),
+                 contentAlignment = Alignment.BottomCenter,
+             ) {
+                 Text(
+                     title,
+                     style = TextStyle(
+                         color = Color.White,
+-                        fontSize = 16.sp,
++                        fontSize = font_size_m1,
+                         fontStyle = FontStyle.Italic,
+                     )
+                 )
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.graphics.painter.Painter\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.match.navigation.MatchScreens\r\nimport com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens\r\n\r\n@Composable\r\nfun SportTypeSetting(\r\n    title: String,\r\n    teamSize: Int,\r\n    navController: NavController,\r\n) {\r\n\r\n    val create = painterResource(id = R.drawable.create_match)\r\n    val players = painterResource(id = R.drawable.players)\r\n\r\n    Column(\r\n        modifier = Modifier.fillMaxSize(),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly\r\n    ) {\r\n\r\n        Text(\r\n            text = title,\r\n            fontSize = 30.sp,\r\n            textAlign = TextAlign.Center,\r\n            modifier = Modifier\r\n                .fillMaxWidth()\r\n        )\r\n        LazyColumn {\r\n            item {\r\n                SportTypeSettingItem(painter = create, \"Create a Match\", navController,teamSize,title)\r\n            }\r\n            item {\r\n                SportTypeSettingItem(painter = players, \"Players\", navController,teamSize,title)\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun SportTypeSettingItem(\r\n    painter: Painter,\r\n    text: String,\r\n    navController: NavController,\r\n    teamSize: Int,\r\n    title: String,\r\n    viewModel:SportTypeViewModel = hiltViewModel(),\r\n    ) {\r\n\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                viewModel.addMatch(title,teamSize)\r\n                if (text !=\"Players\"){\r\n                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))\r\n                }else{\r\n                    navController.navigate(PlayerScreens.PlayerPage)\r\n                }\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n            Image(\r\n                modifier = Modifier.fillMaxWidth(),\r\n                painter = painter,\r\n                contentDescription = \"\",\r\n                contentScale = ContentScale.Crop\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black\r\n                            ),\r\n                            // startY = 00f,\r\n                        )\r\n                    )\r\n            ) {\r\n\r\n            }\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter\r\n            ) {\r\n                Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1723507578045)
+@@ -23,6 +23,7 @@
+ import androidx.compose.ui.graphics.painter.Painter
+ import androidx.compose.ui.layout.ContentScale
+ import androidx.compose.ui.res.painterResource
++import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.TextStyle
+ import androidx.compose.ui.text.style.TextAlign
+ import androidx.compose.ui.unit.dp
+@@ -39,14 +40,13 @@
+     teamSize: Int,
+     navController: NavController,
+ ) {
+-
+     val create = painterResource(id = R.drawable.create_match)
+     val players = painterResource(id = R.drawable.players)
+ 
+     Column(
+         modifier = Modifier.fillMaxSize(),
+         horizontalAlignment = Alignment.CenterHorizontally,
+-        verticalArrangement = Arrangement.SpaceEvenly
++        verticalArrangement = Arrangement.SpaceEvenly,
+     ) {
+ 
+         Text(
+@@ -54,14 +54,24 @@
+             fontSize = 30.sp,
+             textAlign = TextAlign.Center,
+             modifier = Modifier
+-                .fillMaxWidth()
++                .fillMaxWidth(),
+         )
+         LazyColumn {
+             item {
+-                SportTypeSettingItem(painter = create, "Create a Match", navController,teamSize,title)
++                SportTypeSettingItem(
++                    painter = create,
++                    stringResource(id = R.string.card_title_create),
++                    navController,
++                    teamSize,title,
++                )
+             }
+             item {
+-                SportTypeSettingItem(painter = players, "Players", navController,teamSize,title)
++                SportTypeSettingItem(
++                    painter = players,
++                    stringResource(id = R.string.card_title_players),
++                    navController,
++                    teamSize,title,
++                )
+             }
+         }
+     }
+@@ -82,10 +92,10 @@
+             .fillMaxWidth()
+             .padding(20.dp)
+             .clickable {
+-                viewModel.addMatch(title,teamSize)
+-                if (text !="Players"){
+-                    navController.navigate(MatchScreens.MakeMatchScreen(title,teamSize))
+-                }else{
++                viewModel.addMatch(title, teamSize)
++                if (text != "Players") {
++                    navController.navigate(MatchScreens.MakeMatchScreen(title, teamSize))
++                } else {
+                     navController.navigate(PlayerScreens.PlayerPage)
+                 }
+             },
+@@ -98,7 +108,7 @@
+                 modifier = Modifier.fillMaxWidth(),
+                 painter = painter,
+                 contentDescription = "",
+-                contentScale = ContentScale.Crop
++                contentScale = ContentScale.Crop,
+             )
+ 
+             Box(
+@@ -108,9 +118,8 @@
+                         brush = Brush.verticalGradient(
+                             colors = listOf(
+                                 Color.Transparent,
+-                                Color.Black
++                                Color.Black,
+                             ),
+-                            // startY = 00f,
+                         )
+                     )
+             ) {
+@@ -121,7 +130,7 @@
+                 modifier = Modifier
+                     .fillMaxSize()
+                     .padding(12.dp),
+-                contentAlignment = Alignment.BottomCenter
++                contentAlignment = Alignment.BottomCenter,
+             ) {
+                 Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))
+             }
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.splash\r\n\r\n\r\nimport android.app.Activity\r\nimport android.content.Context\r\nimport androidx.compose.animation.core.Animatable\r\nimport androidx.compose.animation.core.tween\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.isSystemInDarkTheme\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.LaunchedEffect\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.alpha\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.platform.LocalContext\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavHostController\r\nimport com.airbnb.lottie.compose.LottieAnimation\r\nimport com.airbnb.lottie.compose.LottieCompositionSpec\r\nimport com.airbnb.lottie.compose.LottieConstants\r\nimport com.airbnb.lottie.compose.rememberLottieComposition\r\nimport com.google.firebase.auth.FirebaseAuth\r\nimport com.yeceylan.groupmaker.MainActivity\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen\r\nimport com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport kotlinx.coroutines.delay\r\n\r\n\r\n@Composable\r\nfun SplashScreen(navController: NavHostController) {\r\n\r\n    val context = LocalContext.current\r\n    val viewModel: SplashViewModel = hiltViewModel()\r\n\r\n    val alpha = remember {\r\n        Animatable(0f)\r\n    }\r\n    val auth = FirebaseAuth.getInstance()\r\n    //FirebaseAuth.getInstance().signOut()\r\n\r\n    LaunchedEffect(key1 = true) {\r\n        alpha.animateTo(\r\n            1f,\r\n            animationSpec = tween(2500)\r\n        )\r\n        delay(3000)\r\n\r\n        if (viewModel.uiState.value.isLogin) {\r\n            // auth.signOut()\r\n            navController.navigate(BottomBarScreen.Home.route) {\r\n                popUpTo(navController.graph.id) {\r\n                    inclusive = true\r\n                }\r\n            }\r\n        } else {\r\n            navController.navigate(OnBoardingScreens.OnBoardingScreen) {\r\n                popUpTo(navController.graph.id) {\r\n                    inclusive = true\r\n                }\r\n            }\r\n        }\r\n\r\n\r\n    }\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .background(if (isSystemInDarkTheme()) Color.DarkGray else Color.White),\r\n        verticalArrangement = Arrangement.Center,\r\n        horizontalAlignment = Alignment.CenterHorizontally\r\n    ) {\r\n        LoaderAnimation(\r\n            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie\r\n        )\r\n        Spacer(modifier = Modifier.height(25.dp))\r\n        Text(\r\n            text = \"Let's Play\",\r\n            modifier = Modifier.alpha(alpha.value),\r\n            fontSize = 52.sp,\r\n            fontWeight = FontWeight.Light\r\n        )\r\n    }\r\n}\r\n\r\n@Composable\r\nfun LoaderAnimation(modifier: Modifier, anim: Int) {\r\n    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(anim))\r\n\r\n    LottieAnimation(\r\n        composition = composition, iterations = LottieConstants.IterateForever,\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {\r\n    val sharedPreferences = context.getSharedPreferences(\"onBoarding\", Context.MODE_PRIVATE)\r\n    return sharedPreferences.getBoolean(\"isFinished\", false)\r\n\r\n}\r\n\r\n */
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/splash/SplashScreen.kt	(date 1723507578044)
+@@ -1,8 +1,5 @@
+ package com.yeceylan.groupmaker.ui.splash
+ 
+-
+-import android.app.Activity
+-import android.content.Context
+ import androidx.compose.animation.core.Animatable
+ import androidx.compose.animation.core.tween
+ import androidx.compose.foundation.background
+@@ -22,46 +19,39 @@
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.draw.alpha
+ import androidx.compose.ui.graphics.Color
+-import androidx.compose.ui.platform.LocalContext
++import androidx.compose.ui.res.stringResource
+ import androidx.compose.ui.text.font.FontWeight
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.unit.sp
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavHostController
+ import com.airbnb.lottie.compose.LottieAnimation
+ import com.airbnb.lottie.compose.LottieCompositionSpec
+ import com.airbnb.lottie.compose.LottieConstants
+ import com.airbnb.lottie.compose.rememberLottieComposition
+-import com.google.firebase.auth.FirebaseAuth
+-import com.yeceylan.groupmaker.MainActivity
+ import com.yeceylan.groupmaker.R
+ import com.yeceylan.groupmaker.ui.bottombar.BottomBarScreen
+ import com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens
+-import com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens
++import com.yeceylan.groupmaker.ui.theme.Dimen.font_size_lii
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_cccc
++import com.yeceylan.groupmaker.ui.theme.Dimen.spacing_l
+ import kotlinx.coroutines.delay
+ 
+-
+ @Composable
+ fun SplashScreen(navController: NavHostController) {
+ 
+-    val context = LocalContext.current
+     val viewModel: SplashViewModel = hiltViewModel()
+ 
+     val alpha = remember {
+         Animatable(0f)
+     }
+-    val auth = FirebaseAuth.getInstance()
+-    //FirebaseAuth.getInstance().signOut()
+ 
+     LaunchedEffect(key1 = true) {
+         alpha.animateTo(
+             1f,
+             animationSpec = tween(2500)
+         )
+-        delay(3000)
++        delay(1000)
+ 
+         if (viewModel.uiState.value.isLogin) {
+-            // auth.signOut()
+             navController.navigate(BottomBarScreen.Home.route) {
+                 popUpTo(navController.graph.id) {
+                     inclusive = true
+@@ -74,8 +64,6 @@
+                 }
+             }
+         }
+-
+-
+     }
+ 
+     Column(
+@@ -86,13 +74,13 @@
+         horizontalAlignment = Alignment.CenterHorizontally
+     ) {
+         LoaderAnimation(
+-            modifier = Modifier.size(400.dp), anim = R.raw.splash_lottie
++            modifier = Modifier.size(spacing_cccc), anim = R.raw.splash_lottie
+         )
+-        Spacer(modifier = Modifier.height(25.dp))
++        Spacer(modifier = Modifier.height(spacing_l))
+         Text(
+-            text = "Let's Play",
++            text = stringResource(id = R.string.splash_text),
+             modifier = Modifier.alpha(alpha.value),
+-            fontSize = 52.sp,
++            fontSize = font_size_lii,
+             fontWeight = FontWeight.Light
+         )
+     }
+@@ -106,12 +94,4 @@
+         composition = composition, iterations = LottieConstants.IterateForever,
+         modifier = modifier
+     )
+-}
+-
+-/*private fun onBoardingIsFinished(context: SplashActivity): Boolean {
+-    val sharedPreferences = context.getSharedPreferences("onBoarding", Context.MODE_PRIVATE)
+-    return sharedPreferences.getBoolean("isFinished", false)
+-
+-}
+-
+- */
+\ No newline at end of file
++}
+\ No newline at end of file
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.bottombar\r\n\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.MutableState\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.navigation.NavHostController\r\nimport androidx.navigation.NavType\r\nimport androidx.navigation.compose.NavHost\r\nimport androidx.navigation.compose.composable\r\nimport androidx.navigation.navArgument\r\nimport androidx.navigation.toRoute\r\nimport com.google.gson.Gson\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.ui.auth.login.LoginScreen\r\nimport com.yeceylan.groupmaker.ui.auth.navigation.AuthenticationScreens\r\nimport com.yeceylan.groupmaker.ui.auth.signup.SignUpScreen\r\nimport com.yeceylan.groupmaker.ui.bottombar.demoscreens.HistoryScreen\r\nimport com.yeceylan.groupmaker.ui.match.MakeMatchScreen\r\nimport com.yeceylan.groupmaker.ui.match.matchinfo.MatchInfoScreen\r\nimport com.yeceylan.groupmaker.ui.match.navigation.MatchScreens\r\nimport com.yeceylan.groupmaker.ui.oldMatches.OldMatchesScreen\r\nimport com.yeceylan.groupmaker.ui.onboarding.OnBoarding\r\nimport com.yeceylan.groupmaker.ui.onboarding.navigation.OnBoardingScreens\r\nimport com.yeceylan.groupmaker.ui.player.PlayerPage\r\nimport com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens\r\nimport com.yeceylan.groupmaker.ui.profile.ProfileScreen\r\nimport com.yeceylan.groupmaker.ui.splash.SplashScreen\r\nimport com.yeceylan.groupmaker.ui.splash.navigation.SplashScreens\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypeSetting\r\nimport com.yeceylan.groupmaker.ui.sport_types.SportTypes\r\nimport com.yeceylan.groupmaker.ui.sport_types.navigation.SportTypeScreens\r\n\r\n\r\n@Composable\r\nfun MainNavGraph(\r\n    navController: NavHostController,\r\n    isShowBottomBar: MutableState<Boolean>,\r\n) {\r\n    NavHost(\r\n        navController = navController,\r\n        startDestination = SplashScreens.SplashScreen,\r\n    ) {\r\n\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<OnBoardingScreens.OnBoardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.LoginScreen> {\r\n            isShowBottomBar.value = false\r\n            LoginScreen(navController = navController)\r\n        }\r\n        composable<AuthenticationScreens.SignUpScreen> {\r\n            isShowBottomBar.value = false\r\n            SignUpScreen(navController = navController)\r\n        }\r\n        composable<MatchScreens.MakeMatchScreen> {\r\n            val args = it.toRoute<MatchScreens.MakeMatchScreen>()\r\n            isShowBottomBar.value = false\r\n            MakeMatchScreen(args.title,args.size, navController = navController)\r\n        }\r\n        composable<SplashScreens.SplashScreen> {\r\n            isShowBottomBar.value = false\r\n            SplashScreen(navController = navController)\r\n        }\r\n        composable<OnBoardingScreens.OnBoardingScreen> {\r\n            isShowBottomBar.value = false\r\n            OnBoarding(navController = navController)\r\n        }\r\n        composable(route = BottomBarScreen.Home.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                SportTypes(navController = navController)\r\n            }\r\n        }\r\n        composable(route = BottomBarScreen.History.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp, top = 10.dp)) {\r\n                OldMatchesScreen()\r\n            }\r\n        }\r\n        composable(route = BottomBarScreen.Profile.route) {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                ProfileScreen(navController = navController)\r\n            }\r\n        }\r\n        composable<SportTypeScreens.SportTypeSetting> {\r\n            isShowBottomBar.value = true\r\n            val args = it.toRoute<SportTypeScreens.SportTypeSetting>()\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                SportTypeSetting(args.title, args.teamSize, navController)\r\n            }\r\n        }\r\n        composable(\r\n            route = \"matchInfo/{matchJson}\",\r\n            arguments = listOf(navArgument(\"matchJson\") { type = NavType.StringType })\r\n        ) { backStackEntry ->\r\n            val matchJson = backStackEntry.arguments?.getString(\"matchJson\") ?: return@composable\r\n            val match = Gson().fromJson(matchJson, Match::class.java)\r\n            MatchInfoScreen(navController = navController, match = match)\r\n        }\r\n        composable<PlayerScreens.PlayerPage> {\r\n            isShowBottomBar.value = true\r\n            Box(modifier = Modifier.padding(bottom = 50.dp)) {\r\n                PlayerPage()\r\n            }\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/bottombar/MainNavGraph.kt	(date 1723507578042)
+@@ -81,7 +81,7 @@
+         }
+         composable(route = BottomBarScreen.History.route) {
+             isShowBottomBar.value = true
+-            Box(modifier = Modifier.padding(bottom = 50.dp, top = 10.dp)) {
++            Box(modifier = Modifier.padding(bottom = 50.dp)) {
+                 OldMatchesScreen()
+             }
+         }
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/match/matchinfo/MatchInfoViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.match.matchinfo\r\n\r\nimport android.content.ClipData\r\nimport android.content.ClipboardManager\r\nimport android.content.Context\r\nimport android.content.Intent\r\nimport android.net.Uri\r\nimport android.os.DeadObjectException\r\nimport android.util.Log\r\nimport android.widget.Toast\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.GetActiveMatchUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.UpdateMatchUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase\r\nimport dagger.hilt.android.lifecycle.HiltViewModel\r\nimport kotlinx.coroutines.launch\r\nimport javax.inject.Inject\r\n\r\n@HiltViewModel\r\nclass MatchInfoViewModel @Inject constructor(\r\n    private val addOldMatchUseCase: AddOldMatchUseCase,\r\n    private val getActiveMatchUseCase: GetActiveMatchUseCase,\r\n    private val updateMatchUseCase: UpdateMatchUseCase,\r\n    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase\r\n) : ViewModel() {\r\n\r\n    fun copyIbanToClipboard(context: Context, iban: String) {\r\n        val clipboardManager =\r\n            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager\r\n        val clipData = ClipData.newPlainText(\"IBAN\", iban)\r\n        clipboardManager.setPrimaryClip(clipData)\r\n        Toast.makeText(context, \"IBAN kopyalandı\", Toast.LENGTH_SHORT).show()\r\n    }\r\n\r\n    fun openMapForDirections(context: Context, address: String) {\r\n        val gmmIntentUri = Uri.parse(\"google.navigation:q=${Uri.encode(address)}\")\r\n        val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)\r\n        mapIntent.setPackage(\"com.google.android.apps.maps\")\r\n        if (mapIntent.resolveActivity(context.packageManager) != null) {\r\n            context.startActivity(mapIntent)\r\n        } else {\r\n            Toast.makeText(context, \"Harita uygulaması bulunamadı\", Toast.LENGTH_SHORT).show()\r\n        }\r\n    }\r\n\r\n    fun finishMatch() {\r\n        viewModelScope.launch {\r\n            try {\r\n                val userId = getCurrentUserUidUseCase()\r\n                val activeMatch = getActiveMatchUseCase(userId)\r\n\r\n                if (activeMatch != null) {\r\n                    val updatedMatch = activeMatch.copy(isActive = false)\r\n                    updateMatchUseCase(userId, updatedMatch) // This should now correctly update the match\r\n                    addOldMatchUseCase(updatedMatch)\r\n                }\r\n            } catch (e: Exception) {\r\n                Log.e(\"ViewModel\", \"Exception occurred\", e)\r\n            }\r\n        }\r\n    }\r\n\r\n}\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/match/matchinfo/MatchInfoViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/match/matchinfo/MatchInfoViewModel.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/match/matchinfo/MatchInfoViewModel.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/match/matchinfo/MatchInfoViewModel.kt	(date 1723507578043)
+@@ -54,7 +54,7 @@
+ 
+                 if (activeMatch != null) {
+                     val updatedMatch = activeMatch.copy(isActive = false)
+-                    updateMatchUseCase(userId, updatedMatch) // This should now correctly update the match
++                    updateMatchUseCase(userId, updatedMatch)
+                     addOldMatchUseCase(updatedMatch)
+                 }
+             } catch (e: Exception) {
+@@ -62,6 +62,5 @@
+             }
+         }
+     }
+-
+ }
+ 
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.oldMatches\r\n\r\nimport androidx.compose.foundation.BorderStroke\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.border\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.layout.width\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.lazy.items\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material.AlertDialog\r\nimport androidx.compose.material.Button\r\nimport androidx.compose.material.ButtonDefaults\r\nimport androidx.compose.material.Card\r\nimport androidx.compose.material.CircularProgressIndicator\r\nimport androidx.compose.material.Icon\r\nimport androidx.compose.material.IconButton\r\nimport androidx.compose.material.MaterialTheme\r\nimport androidx.compose.material.Text\r\nimport androidx.compose.material.TextField\r\nimport androidx.compose.material.icons.Icons\r\nimport androidx.compose.material.icons.filled.Check\r\nimport androidx.compose.material.icons.filled.DateRange\r\nimport androidx.compose.material.icons.filled.KeyboardArrowDown\r\nimport androidx.compose.material.icons.filled.KeyboardArrowUp\r\nimport androidx.compose.material.icons.filled.LocationOn\r\nimport androidx.compose.material.icons.filled.Star\r\nimport androidx.compose.material3.OutlinedTextField\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.text.font.FontWeight\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.domain.model.User\r\n\r\n@Composable\r\nfun OldMatchesScreen(\r\n    viewModel: OldMatchesViewModel = hiltViewModel()\r\n) {\r\n    val oldMatchesResource by viewModel.oldMatches.collectAsState()\r\n    var expandedMatchId by remember { mutableStateOf<String?>(null) }\r\n    var showResultDialog by remember { mutableStateOf(false) }\r\n    var currentMatch by remember { mutableStateOf<Match?>(null) }\r\n\r\n    when (oldMatchesResource) {\r\n        is Resource.Loading -> {\r\n            CircularProgressIndicator(\r\n                modifier = Modifier\r\n                    .padding(16.dp),\r\n                color = MaterialTheme.colors.primary\r\n            )\r\n        }\r\n\r\n        is Resource.Success -> {\r\n            val matches = oldMatchesResource.data ?: emptyList()\r\n            LazyColumn(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(16.dp)\r\n            ) {\r\n                items(matches) { match ->\r\n                    MatchItem(\r\n                        match = match,\r\n                        isExpanded = expandedMatchId == match.id,\r\n                        viewModel = viewModel,\r\n                        onExpandClick = { selectedMatchId ->\r\n                            expandedMatchId = if (expandedMatchId == selectedMatchId) null else selectedMatchId\r\n                        },\r\n                        onAddResultClick = {\r\n                            currentMatch = match\r\n                            showResultDialog = true\r\n                        }\r\n                    )\r\n                    Spacer(modifier = Modifier.height(8.dp))\r\n                }\r\n            }\r\n        }\r\n\r\n        is Resource.Error -> {\r\n            Text(\r\n                text = oldMatchesResource.message ?: \"Bir hata oluştu.\",\r\n                color = MaterialTheme.colors.error,\r\n                modifier = Modifier.padding(16.dp)\r\n            )\r\n        }\r\n    }\r\n\r\n    if (showResultDialog && currentMatch != null) {\r\n        AddResultDialog(onDismiss = { showResultDialog = false }) { result ->\r\n            viewModel.updateMatchResult(currentMatch!!, result)\r\n            showResultDialog = false\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun AddResultDialog(\r\n    onDismiss: () -> Unit,\r\n    onSubmit: (String) -> Unit\r\n) {\r\n    var result by remember { mutableStateOf(\"\") }\r\n\r\n    AlertDialog(\r\n        shape = MaterialTheme.shapes.medium,\r\n        onDismissRequest = onDismiss,\r\n        title = { Text(text = \"Sonuç Ekle\") },\r\n        text = {\r\n            OutlinedTextField(\r\n                value = result,\r\n                onValueChange = { result = it },\r\n                label = { Text(\"Sonucu Girin\") }\r\n            )\r\n        },\r\n        confirmButton = {\r\n            Button(\r\n                onClick = { onSubmit(result) },\r\n                colors = ButtonDefaults.buttonColors(Color.Blue),\r\n            ) {\r\n                Text(\"Onayla\")\r\n            }\r\n        },\r\n        dismissButton = {\r\n            Button(\r\n                onClick = { onDismiss },\r\n                colors = ButtonDefaults.buttonColors(Color.Blue),\r\n            ) {\r\n                Text(\"İptal\")\r\n            }\r\n        }\r\n    )\r\n}\r\n\r\n@Composable\r\nfun MatchItem(\r\n    match: Match,\r\n    isExpanded: Boolean,\r\n    viewModel: OldMatchesViewModel,\r\n    onExpandClick: (String) -> Unit,\r\n    onAddResultClick: () -> Unit\r\n) {\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),\r\n        elevation = 4.dp,\r\n        backgroundColor = MaterialTheme.colors.surface,\r\n        shape = RoundedCornerShape(16.dp) // Rounded corners\r\n    ) {\r\n        Column(modifier = Modifier.padding(16.dp)) {\r\n            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {\r\n                Column {\r\n                    Text(\r\n                        text = \"${match.firstTeamName} vs ${match.secondTeamName}\",\r\n                        fontSize = 20.sp,\r\n                        fontWeight = FontWeight.Bold\r\n                    )\r\n                    Row(verticalAlignment = Alignment.CenterVertically) {\r\n                        Icon(imageVector = Icons.Default.DateRange, contentDescription = \"Date\")\r\n                        Text(text = match.matchDate ?: \"\")\r\n                        Spacer(modifier = Modifier.width(8.dp))\r\n                        Text(text = match.matchTime ?: \"\")\r\n                    }\r\n                    Row(verticalAlignment = Alignment.CenterVertically) {\r\n                        Icon(imageVector = Icons.Default.LocationOn, contentDescription = \"Location\")\r\n                        Text(text = match.matchLocationTitle ?: \"\")\r\n                    }\r\n                }\r\n\r\n                if (match.result == null) {\r\n                    Button(\r\n                        onClick = onAddResultClick,\r\n                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),\r\n                        shape = RoundedCornerShape(50.dp)\r\n                    ) {\r\n                        Text(\r\n                            text = \"Sonuç Ekle\",\r\n                            color = Color.White,\r\n                        )\r\n                    }\r\n                } else {\r\n                    Button(\r\n                        onClick = { /* sonar - comment */ },\r\n                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),\r\n                        shape = RoundedCornerShape(50.dp)\r\n                    ) {\r\n                        Text(\r\n                            text = match.result,\r\n                            color = Color.White,\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n\r\n            if (isExpanded) {\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n\r\n                Text(text = match.firstTeamName ?: \"\", fontWeight = FontWeight.Bold)\r\n                match.firstTeamPlayerList.forEach { player ->\r\n                    PlayerRatingItem(player = player, matchId = match.id, viewModel = viewModel)\r\n                }\r\n\r\n                Text(text = match.secondTeamName ?: \"\", fontWeight = FontWeight.Bold)\r\n                match.secondTeamPlayerList.forEach { player ->\r\n                    PlayerRatingItem(player = player, matchId = match.id, viewModel = viewModel)\r\n                }\r\n            }\r\n\r\n            Spacer(modifier = Modifier.height(8.dp))\r\n            IconButton(\r\n                onClick = { onExpandClick(match.id) },\r\n                modifier = Modifier\r\n                    .size(40.dp)\r\n                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(50.dp)) // Oval shape\r\n            ) {\r\n                Icon(\r\n                    imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,\r\n                    contentDescription = \"Toggle details\",\r\n                    tint = Color.White\r\n                )\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewModel) {\r\n    var rating by remember { mutableStateOf(0) }\r\n    var isRatingSubmitted by remember { mutableStateOf(false) }\r\n\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(vertical = 8.dp)\r\n            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)), // Border with rounded corners\r\n        elevation = 4.dp,\r\n        backgroundColor = MaterialTheme.colors.background // Change the background color here\r\n    ) {\r\n        Column(modifier = Modifier.padding(16.dp)) {\r\n            Text(text = \"Player: ${player.userName}\")\r\n\r\n            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {\r\n                Row {\r\n                    (1..5).forEach { starIndex ->\r\n                        IconButton(onClick = {\r\n                            if (!isRatingSubmitted) rating = starIndex\r\n                        }) {\r\n                            Icon(\r\n                                imageVector = Icons.Default.Star,\r\n                                contentDescription = \"Rate\",\r\n                                tint = if (starIndex <= rating) Color.Yellow else Color.Gray\r\n                            )\r\n                        }\r\n                    }\r\n                }\r\n\r\n                Button(\r\n                    onClick = {\r\n                        viewModel.updatePlayerRating(matchId, player.id, rating)\r\n                        isRatingSubmitted = true\r\n                    },\r\n                    enabled = !isRatingSubmitted,\r\n                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),\r\n                    shape = RoundedCornerShape(50.dp) // Oval shape\r\n                ) {\r\n                    Icon(\r\n                        imageVector = Icons.Default.Check,\r\n                        contentDescription = \"Submit Rating\",\r\n                        tint = Color.White\r\n                    )\r\n                }\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesScreen.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesScreen.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesScreen.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesScreen.kt	(date 1723507578043)
+@@ -1,99 +1,46 @@
+ package com.yeceylan.groupmaker.ui.oldMatches
+ 
+-import androidx.compose.foundation.BorderStroke
+-import androidx.compose.foundation.background
+-import androidx.compose.foundation.border
+-import androidx.compose.foundation.layout.Arrangement
+-import androidx.compose.foundation.layout.Column
+-import androidx.compose.foundation.layout.Row
+-import androidx.compose.foundation.layout.Spacer
+-import androidx.compose.foundation.layout.fillMaxSize
+-import androidx.compose.foundation.layout.fillMaxWidth
+-import androidx.compose.foundation.layout.height
+-import androidx.compose.foundation.layout.padding
+-import androidx.compose.foundation.layout.size
+-import androidx.compose.foundation.layout.width
++import androidx.compose.foundation.layout.*
+ import androidx.compose.foundation.lazy.LazyColumn
+ import androidx.compose.foundation.lazy.items
+-import androidx.compose.foundation.shape.RoundedCornerShape
+-import androidx.compose.material.AlertDialog
+-import androidx.compose.material.Button
+-import androidx.compose.material.ButtonDefaults
+-import androidx.compose.material.Card
+-import androidx.compose.material.CircularProgressIndicator
+-import androidx.compose.material.Icon
+-import androidx.compose.material.IconButton
+-import androidx.compose.material.MaterialTheme
+-import androidx.compose.material.Text
+-import androidx.compose.material.TextField
+-import androidx.compose.material.icons.Icons
+-import androidx.compose.material.icons.filled.Check
+-import androidx.compose.material.icons.filled.DateRange
+-import androidx.compose.material.icons.filled.KeyboardArrowDown
+-import androidx.compose.material.icons.filled.KeyboardArrowUp
+-import androidx.compose.material.icons.filled.LocationOn
+-import androidx.compose.material.icons.filled.Star
+-import androidx.compose.material3.OutlinedTextField
++import androidx.compose.material.*
+ import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.collectAsState
+ import androidx.compose.runtime.getValue
+-import androidx.compose.runtime.mutableStateOf
+-import androidx.compose.runtime.remember
+-import androidx.compose.runtime.setValue
+-import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.Color
+ import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.unit.sp
+ import androidx.hilt.navigation.compose.hiltViewModel
+-import com.yeceylan.groupmaker.core.Resource
+ import com.yeceylan.groupmaker.domain.model.Match
+-import com.yeceylan.groupmaker.domain.model.User
++import com.yeceylan.groupmaker.core.Resource
+ 
+ @Composable
+ fun OldMatchesScreen(
+     viewModel: OldMatchesViewModel = hiltViewModel()
+ ) {
+     val oldMatchesResource by viewModel.oldMatches.collectAsState()
+-    var expandedMatchId by remember { mutableStateOf<String?>(null) }
+-    var showResultDialog by remember { mutableStateOf(false) }
+-    var currentMatch by remember { mutableStateOf<Match?>(null) }
+ 
+     when (oldMatchesResource) {
+         is Resource.Loading -> {
+             CircularProgressIndicator(
+                 modifier = Modifier
++                    .fillMaxSize()
+                     .padding(16.dp),
+                 color = MaterialTheme.colors.primary
+             )
+         }
+-
+         is Resource.Success -> {
+             val matches = oldMatchesResource.data ?: emptyList()
+             LazyColumn(
+-                modifier = Modifier
+-                    .fillMaxSize()
+-                    .padding(16.dp)
++                modifier = Modifier.fillMaxSize().padding(16.dp)
+             ) {
+                 items(matches) { match ->
+-                    MatchItem(
+-                        match = match,
+-                        isExpanded = expandedMatchId == match.id,
+-                        viewModel = viewModel,
+-                        onExpandClick = { selectedMatchId ->
+-                            expandedMatchId = if (expandedMatchId == selectedMatchId) null else selectedMatchId
+-                        },
+-                        onAddResultClick = {
+-                            currentMatch = match
+-                            showResultDialog = true
+-                        }
+-                    )
++                    MatchItem(match = match)
+                     Spacer(modifier = Modifier.height(8.dp))
+                 }
+             }
+         }
+-
+         is Resource.Error -> {
+             Text(
+                 text = oldMatchesResource.message ?: "Bir hata oluştu.",
+@@ -102,191 +49,23 @@
+             )
+         }
+     }
+-
+-    if (showResultDialog && currentMatch != null) {
+-        AddResultDialog(onDismiss = { showResultDialog = false }) { result ->
+-            viewModel.updateMatchResult(currentMatch!!, result)
+-            showResultDialog = false
+-        }
+-    }
+ }
+ 
+ @Composable
+-fun AddResultDialog(
+-    onDismiss: () -> Unit,
+-    onSubmit: (String) -> Unit
+-) {
+-    var result by remember { mutableStateOf("") }
+-
+-    AlertDialog(
+-        shape = MaterialTheme.shapes.medium,
+-        onDismissRequest = onDismiss,
+-        title = { Text(text = "Sonuç Ekle") },
+-        text = {
+-            OutlinedTextField(
+-                value = result,
+-                onValueChange = { result = it },
+-                label = { Text("Sonucu Girin") }
+-            )
+-        },
+-        confirmButton = {
+-            Button(
+-                onClick = { onSubmit(result) },
+-                colors = ButtonDefaults.buttonColors(Color.Blue),
+-            ) {
+-                Text("Onayla")
+-            }
+-        },
+-        dismissButton = {
+-            Button(
+-                onClick = { onDismiss },
+-                colors = ButtonDefaults.buttonColors(Color.Blue),
+-            ) {
+-                Text("İptal")
+-            }
+-        }
+-    )
+-}
+-
+-@Composable
+-fun MatchItem(
+-    match: Match,
+-    isExpanded: Boolean,
+-    viewModel: OldMatchesViewModel,
+-    onExpandClick: (String) -> Unit,
+-    onAddResultClick: () -> Unit
+-) {
++fun MatchItem(match: Match) {
+     Card(
+-        modifier = Modifier
+-            .fillMaxWidth()
+-            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)),
++        modifier = Modifier.fillMaxWidth(),
+         elevation = 4.dp,
+-        backgroundColor = MaterialTheme.colors.surface,
+-        shape = RoundedCornerShape(16.dp) // Rounded corners
++        backgroundColor = MaterialTheme.colors.surface
+     ) {
+         Column(modifier = Modifier.padding(16.dp)) {
+-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+-                Column {
+-                    Text(
+-                        text = "${match.firstTeamName} vs ${match.secondTeamName}",
+-                        fontSize = 20.sp,
+-                        fontWeight = FontWeight.Bold
+-                    )
+-                    Row(verticalAlignment = Alignment.CenterVertically) {
+-                        Icon(imageVector = Icons.Default.DateRange, contentDescription = "Date")
+-                        Text(text = match.matchDate ?: "")
+-                        Spacer(modifier = Modifier.width(8.dp))
+-                        Text(text = match.matchTime ?: "")
+-                    }
+-                    Row(verticalAlignment = Alignment.CenterVertically) {
+-                        Icon(imageVector = Icons.Default.LocationOn, contentDescription = "Location")
+-                        Text(text = match.matchLocationTitle ?: "")
+-                    }
+-                }
+-
+-                if (match.result == null) {
+-                    Button(
+-                        onClick = onAddResultClick,
+-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
+-                        shape = RoundedCornerShape(50.dp)
+-                    ) {
+-                        Text(
+-                            text = "Sonuç Ekle",
+-                            color = Color.White,
+-                        )
+-                    }
+-                } else {
+-                    Button(
+-                        onClick = { /* sonar - comment */ },
+-                        colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
+-                        shape = RoundedCornerShape(50.dp)
+-                    ) {
+-                        Text(
+-                            text = match.result,
+-                            color = Color.White,
+-                        )
+-                    }
+-                }
+-            }
+-
+-            if (isExpanded) {
+-                Spacer(modifier = Modifier.height(8.dp))
+-
+-                Text(text = match.firstTeamName ?: "", fontWeight = FontWeight.Bold)
+-                match.firstTeamPlayerList.forEach { player ->
+-                    PlayerRatingItem(player = player, matchId = match.id, viewModel = viewModel)
+-                }
+-
+-                Text(text = match.secondTeamName ?: "", fontWeight = FontWeight.Bold)
+-                match.secondTeamPlayerList.forEach { player ->
+-                    PlayerRatingItem(player = player, matchId = match.id, viewModel = viewModel)
+-                }
+-            }
+-
+-            Spacer(modifier = Modifier.height(8.dp))
+-            IconButton(
+-                onClick = { onExpandClick(match.id) },
+-                modifier = Modifier
+-                    .size(40.dp)
+-                    .background(MaterialTheme.colors.primary, shape = RoundedCornerShape(50.dp)) // Oval shape
+-            ) {
+-                Icon(
+-                    imageVector = if (isExpanded) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
+-                    contentDescription = "Toggle details",
+-                    tint = Color.White
+-                )
+-            }
+-        }
+-    }
+-}
+-
+-@Composable
+-fun PlayerRatingItem(player: User, matchId: String, viewModel: OldMatchesViewModel) {
+-    var rating by remember { mutableStateOf(0) }
+-    var isRatingSubmitted by remember { mutableStateOf(false) }
+-
+-    Card(
+-        modifier = Modifier
+-            .fillMaxWidth()
+-            .padding(vertical = 8.dp)
+-            .border(2.dp, MaterialTheme.colors.primary, shape = RoundedCornerShape(16.dp)), // Border with rounded corners
+-        elevation = 4.dp,
+-        backgroundColor = MaterialTheme.colors.background // Change the background color here
+-    ) {
+-        Column(modifier = Modifier.padding(16.dp)) {
+-            Text(text = "Player: ${player.userName}")
+-
+-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+-                Row {
+-                    (1..5).forEach { starIndex ->
+-                        IconButton(onClick = {
+-                            if (!isRatingSubmitted) rating = starIndex
+-                        }) {
+-                            Icon(
+-                                imageVector = Icons.Default.Star,
+-                                contentDescription = "Rate",
+-                                tint = if (starIndex <= rating) Color.Yellow else Color.Gray
+-                            )
+-                        }
+-                    }
+-                }
+-
+-                Button(
+-                    onClick = {
+-                        viewModel.updatePlayerRating(matchId, player.id, rating)
+-                        isRatingSubmitted = true
+-                    },
+-                    enabled = !isRatingSubmitted,
+-                    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Blue),
+-                    shape = RoundedCornerShape(50.dp) // Oval shape
+-                ) {
+-                    Icon(
+-                        imageVector = Icons.Default.Check,
+-                        contentDescription = "Submit Rating",
+-                        tint = Color.White
+-                    )
+-                }
+-            }
+-        }
+-    }
+-}
+\ No newline at end of file
++            Text(
++                text = "${match.firstTeamName} vs ${match.secondTeamName}",
++                fontSize = 20.sp,
++                fontWeight = FontWeight.Bold
++            )
++            Text(text = "Tarih: ${match.matchDate}")
++            Text(text = "Konum: ${match.matchLocationTitle}")
++        }
++    }
++}
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.oldMatches\r\n\r\nimport androidx.lifecycle.ViewModel\r\nimport androidx.lifecycle.viewModelScope\r\nimport com.yeceylan.groupmaker.domain.model.Match\r\nimport com.yeceylan.groupmaker.domain.use_cases.GetAllMatchesUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\nimport com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase\r\nimport com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase\r\nimport dagger.hilt.android.lifecycle.HiltViewModel\r\nimport kotlinx.coroutines.flow.*\r\nimport kotlinx.coroutines.launch\r\nimport javax.inject.Inject\r\n\r\n@HiltViewModel\r\nclass OldMatchesViewModel @Inject constructor(\r\n    private val getAllMatchesUseCase: GetAllMatchesUseCase,\r\n    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,\r\n    private val addUserUseCase: AddUserUseCase,\r\n    private val addOldMatchUseCase: AddOldMatchUseCase,\r\n) : ViewModel() {\r\n\r\n    private val _oldMatches = MutableStateFlow<Resource<List<Match>>>(Resource.Loading())\r\n    val oldMatches: StateFlow<Resource<List<Match>>> get() = _oldMatches\r\n\r\n    init {\r\n        fetchOldMatches()\r\n    }\r\n\r\n    private fun fetchOldMatches() {\r\n        viewModelScope.launch {\r\n            try {\r\n                val currentUserUid = getCurrentUserUidUseCase()\r\n\r\n                getAllMatchesUseCase().collect { matches ->\r\n                    val filteredMatches = matches.filter { match ->\r\n                        match.playerList.any { player -> player.id == currentUserUid }\r\n                    }\r\n                    _oldMatches.value = Resource.Success(filteredMatches)\r\n                }\r\n            } catch (e: Exception) {\r\n                _oldMatches.value = Resource.Error(\"Eski maçlar yüklenirken bir hata oluştu: ${e.message}\")\r\n            }\r\n        }\r\n    }\r\n\r\n    fun updateMatchResult(match: Match, result: String) {\r\n        viewModelScope.launch {\r\n            try {\r\n                val updatedMatch = match.copy(result = result)\r\n                addOldMatchUseCase(updatedMatch) // Update match in Firebase\r\n                fetchOldMatches() // Refresh the list to show updated result\r\n            } catch (e: Exception) {\r\n                // Handle errors, such as logging or showing a user-friendly message\r\n            }\r\n        }\r\n    }\r\n\r\n    fun updatePlayerRating(matchId: String, playerId: String, rating: Int) {\r\n        viewModelScope.launch {\r\n            try {\r\n                // Find the match and update the player's rating\r\n                val match = _oldMatches.value.data?.find { it.id == matchId }\r\n                val updatedPlayers = match?.playerList?.map { player ->\r\n                    if (player.id == playerId) {\r\n                        val calcRating = calculateRating(player, rating)\r\n                        player.copy(\r\n                            point = calcRating,\r\n                            scoreCount = (player.scoreCount ?: 0) + 1\r\n                        )\r\n                    } else {\r\n                        player\r\n                    }\r\n                } ?: emptyList()\r\n\r\n                // Create an updated match with the new player list\r\n                val updatedMatch = match?.copy(playerList = updatedPlayers)\r\n\r\n                updatedMatch?.let {\r\n                    // Update the match in Firebase\r\n                    val currentUserUid = getCurrentUserUidUseCase() // Ensure to get the current user UID\r\n                    //updateMatchInFirebase(currentUserUid, it) // Call a method to update match in Firestore\r\n\r\n                    // Update the user information\r\n                    val updatedPlayer = updatedPlayers.find { player -> player.id == playerId }\r\n                    if (updatedPlayer != null) {\r\n                        addUserUseCase(updatedPlayer) // Update player info\r\n                    }\r\n\r\n                    // Optionally refresh the old matches to reflect changes\r\n                    fetchOldMatches()\r\n                }\r\n            } catch (e: Exception) {\r\n                // Handle errors\r\n            }\r\n        }\r\n    }\r\n\r\n    /*private suspend fun updateMatchInFirebase(userId: String, match: Match) {\r\n        // Make sure to use the correct repository method to update the match\r\n        userRepository.updateMatch(userId, match)\r\n    }*/\r\n\r\n    private fun calculateRating(player: User, rating: Int): Int {\r\n        val currentPoints = player.point\r\n        val currentCount = player.scoreCount ?: 0\r\n\r\n        if (currentCount == 0) return rating\r\n\r\n        return ((currentPoints * currentCount) + rating) / (currentCount + 1)\r\n    }\r\n\r\n\r\n}\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesViewModel.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesViewModel.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesViewModel.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/oldMatches/OldMatchesViewModel.kt	(date 1723507578043)
+@@ -6,9 +6,6 @@
+ import com.yeceylan.groupmaker.domain.use_cases.GetAllMatchesUseCase
+ import com.yeceylan.groupmaker.domain.use_cases.auth.GetCurrentUserUidUseCase
+ import com.yeceylan.groupmaker.core.Resource
+-import com.yeceylan.groupmaker.domain.model.User
+-import com.yeceylan.groupmaker.domain.use_cases.AddOldMatchUseCase
+-import com.yeceylan.groupmaker.domain.use_cases.AddUserUseCase
+ import dagger.hilt.android.lifecycle.HiltViewModel
+ import kotlinx.coroutines.flow.*
+ import kotlinx.coroutines.launch
+@@ -17,9 +14,7 @@
+ @HiltViewModel
+ class OldMatchesViewModel @Inject constructor(
+     private val getAllMatchesUseCase: GetAllMatchesUseCase,
+-    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase,
+-    private val addUserUseCase: AddUserUseCase,
+-    private val addOldMatchUseCase: AddOldMatchUseCase,
++    private val getCurrentUserUidUseCase: GetCurrentUserUidUseCase
+ ) : ViewModel() {
+ 
+     private val _oldMatches = MutableStateFlow<Resource<List<Match>>>(Resource.Loading())
+@@ -45,74 +40,5 @@
+             }
+         }
+     }
+-
+-    fun updateMatchResult(match: Match, result: String) {
+-        viewModelScope.launch {
+-            try {
+-                val updatedMatch = match.copy(result = result)
+-                addOldMatchUseCase(updatedMatch) // Update match in Firebase
+-                fetchOldMatches() // Refresh the list to show updated result
+-            } catch (e: Exception) {
+-                // Handle errors, such as logging or showing a user-friendly message
+-            }
+-        }
+-    }
+-
+-    fun updatePlayerRating(matchId: String, playerId: String, rating: Int) {
+-        viewModelScope.launch {
+-            try {
+-                // Find the match and update the player's rating
+-                val match = _oldMatches.value.data?.find { it.id == matchId }
+-                val updatedPlayers = match?.playerList?.map { player ->
+-                    if (player.id == playerId) {
+-                        val calcRating = calculateRating(player, rating)
+-                        player.copy(
+-                            point = calcRating,
+-                            scoreCount = (player.scoreCount ?: 0) + 1
+-                        )
+-                    } else {
+-                        player
+-                    }
+-                } ?: emptyList()
+-
+-                // Create an updated match with the new player list
+-                val updatedMatch = match?.copy(playerList = updatedPlayers)
+-
+-                updatedMatch?.let {
+-                    // Update the match in Firebase
+-                    val currentUserUid = getCurrentUserUidUseCase() // Ensure to get the current user UID
+-                    //updateMatchInFirebase(currentUserUid, it) // Call a method to update match in Firestore
+-
+-                    // Update the user information
+-                    val updatedPlayer = updatedPlayers.find { player -> player.id == playerId }
+-                    if (updatedPlayer != null) {
+-                        addUserUseCase(updatedPlayer) // Update player info
+-                    }
+-
+-                    // Optionally refresh the old matches to reflect changes
+-                    fetchOldMatches()
+-                }
+-            } catch (e: Exception) {
+-                // Handle errors
+-            }
+-        }
+-    }
+-
+-    /*private suspend fun updateMatchInFirebase(userId: String, match: Match) {
+-        // Make sure to use the correct repository method to update the match
+-        userRepository.updateMatch(userId, match)
+-    }*/
+-
+-    private fun calculateRating(player: User, rating: Int): Int {
+-        val currentPoints = player.point
+-        val currentCount = player.scoreCount ?: 0
+-
+-        if (currentCount == 0) return rating
+-
+-        return ((currentPoints * currentCount) + rating) / (currentCount + 1)
+-    }
+-
+-
+-}
+-
++}
+ 
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/player/PlayerPage.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.player\r\n\r\nimport androidx.compose.foundation.BorderStroke\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.PaddingValues\r\nimport androidx.compose.foundation.layout.Row\r\nimport androidx.compose.foundation.layout.Spacer\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.heightIn\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.layout.size\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.lazy.grid.GridCells\r\nimport androidx.compose.foundation.lazy.grid.LazyVerticalGrid\r\nimport androidx.compose.foundation.lazy.grid.items\r\nimport androidx.compose.foundation.lazy.items\r\nimport androidx.compose.foundation.shape.CircleShape\r\nimport androidx.compose.material.Divider\r\nimport androidx.compose.material3.Button\r\nimport androidx.compose.material3.ButtonDefaults\r\nimport androidx.compose.material3.Checkbox\r\nimport androidx.compose.material3.CircularProgressIndicator\r\nimport androidx.compose.material3.ExperimentalMaterial3Api\r\nimport androidx.compose.material3.Icon\r\nimport androidx.compose.material3.MaterialTheme\r\nimport androidx.compose.material3.OutlinedTextField\r\nimport androidx.compose.material3.Surface\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.material3.TextFieldDefaults\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.runtime.collectAsState\r\nimport androidx.compose.runtime.getValue\r\nimport androidx.compose.runtime.mutableIntStateOf\r\nimport androidx.compose.runtime.mutableStateOf\r\nimport androidx.compose.runtime.remember\r\nimport androidx.compose.runtime.setValue\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.draw.clip\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.res.stringResource\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.window.Dialog\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport coil.compose.AsyncImage\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.core.Resource\r\nimport com.yeceylan.groupmaker.domain.model.User\r\n\r\n@Composable\r\nfun PlayerPage(\r\n    playerViewModel: PlayerViewModel = hiltViewModel()\r\n) {\r\n    val usersState by playerViewModel.filteredUsers.collectAsState()\r\n    val selectedUsers by playerViewModel.selectedUsers.collectAsState()\r\n    var showUserDialog by remember { mutableStateOf(false) }\r\n    var showAddPlayerDialog by remember { mutableStateOf(false) }\r\n    var searchQuery by remember { mutableStateOf(\"\") }\r\n\r\n    Column(\r\n        modifier = Modifier\r\n            .fillMaxSize()\r\n            .padding(16.dp)\r\n    ) {\r\n        Text(text = stringResource(R.string.se_ili_oyuncular))\r\n\r\n        when (usersState) {\r\n            is Resource.Loading -> {\r\n                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))\r\n            }\r\n\r\n            is Resource.Error -> {\r\n                Text(\r\n                    text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),\r\n                    color = Color.Red,\r\n                    modifier = Modifier.align(Alignment.CenterHorizontally)\r\n                )\r\n            }\r\n\r\n            is Resource.Success -> {\r\n                if (selectedUsers.isEmpty()) {\r\n                    Text(\r\n                        text = stringResource(R.string.no_players_selected),\r\n                        modifier = Modifier.align(Alignment.CenterHorizontally)\r\n                    )\r\n                } else {\r\n                    SelectedPlayersGrid(\r\n                        modifier = Modifier.weight(1f),\r\n                        selectedPersons = selectedUsers,\r\n                        setSelectedPersons = { updatedList ->\r\n                            playerViewModel.updateSelectedUsers(updatedList)\r\n                        }\r\n                    )\r\n                }\r\n            }\r\n        }\r\n\r\n        Spacer(modifier = Modifier.weight(1f))\r\n\r\n        Row(\r\n            modifier = Modifier.fillMaxWidth(),\r\n            horizontalArrangement = Arrangement.SpaceBetween\r\n        ) {\r\n            Button(\r\n                onClick = { showAddPlayerDialog = true },\r\n                colors = ButtonDefaults.buttonColors(Color.Blue),\r\n            ) {\r\n                Text(\r\n                    text = stringResource(R.string.oyuncu_ekle),\r\n                    color = Color.White\r\n                )\r\n            }\r\n            Button(\r\n                onClick = { showUserDialog = true },\r\n                colors = ButtonDefaults.buttonColors(Color.Blue),\r\n            ) {\r\n                Text(\r\n                    text = stringResource(R.string.oyuncu_a_r),\r\n                    color = Color.White,\r\n                )\r\n            }\r\n        }\r\n    }\r\n\r\n    if (showUserDialog) {\r\n        Dialog(onDismissRequest = { showUserDialog = false }) {\r\n            Surface(\r\n                shape = MaterialTheme.shapes.medium,\r\n                color = Color.White,\r\n                border = BorderStroke(1.dp, Color.Black),\r\n            ) {\r\n                Column(\r\n                    modifier = Modifier\r\n                        .padding(16.dp)\r\n                        .fillMaxWidth(),\r\n                    horizontalAlignment = Alignment.CenterHorizontally\r\n                ) {\r\n                    Text(text = stringResource(R.string.kullan_c_lar_se_in))\r\n\r\n                    OutlinedTextField(\r\n                        value = searchQuery,\r\n                        onValueChange = { query ->\r\n                            searchQuery = query\r\n                            playerViewModel.searchUsers(query)\r\n                        },\r\n                        label = { Text(text = stringResource(R.string.ara)) }\r\n                    )\r\n\r\n                    when (usersState) {\r\n                        is Resource.Loading -> {\r\n                            CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))\r\n                        }\r\n\r\n                        is Resource.Error -> {\r\n                            Text(\r\n                                text = usersState.message ?: stringResource(R.string.bir_hata_olu_tu),\r\n                                color = Color.Red,\r\n                                modifier = Modifier.align(Alignment.CenterHorizontally)\r\n                            )\r\n                        }\r\n\r\n                        is Resource.Success -> {\r\n                            LazyColumn(modifier = Modifier.height(300.dp)) {\r\n                                items(usersState.data!!) { user ->\r\n                                    Row(\r\n                                        modifier = Modifier.fillMaxWidth(),\r\n                                        verticalAlignment = Alignment.CenterVertically,\r\n                                    ) {\r\n                                        Checkbox(\r\n                                            checked = selectedUsers.contains(user),\r\n                                            onCheckedChange = { checked ->\r\n                                                if (checked) {\r\n                                                    playerViewModel.addUser(user)\r\n                                                } else {\r\n                                                    playerViewModel.removeUser(user)\r\n                                                }\r\n                                            }\r\n                                        )\r\n                                        Column(modifier = Modifier.weight(1f)) {\r\n                                            Text(text = \"${user.firstName} ${user.surname}\")\r\n                                            Text(text = user.userName)\r\n                                        }\r\n                                        Row(verticalAlignment = Alignment.CenterVertically) {\r\n                                            Icon(\r\n                                                painter = painterResource(id = R.drawable.ic_star),\r\n                                                contentDescription = stringResource(R.string.star),\r\n                                            )\r\n                                            Text(text = user.point.toString())\r\n                                        }\r\n                                    }\r\n                                    Divider()\r\n                                }\r\n                            }\r\n                        }\r\n                    }\r\n                    Spacer(modifier = Modifier.height(8.dp))\r\n                    Button(\r\n                        onClick = { showUserDialog = false },\r\n                        colors = ButtonDefaults.buttonColors(Color.Blue),\r\n                    ) {\r\n                        Text(\r\n                            text = stringResource(R.string.tamam),\r\n                            color = Color.White,\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n\r\n    if (showAddPlayerDialog) {\r\n        AddPlayerDialog(\r\n            onDismiss = { showAddPlayerDialog = false },\r\n            onAddPlayer = { user ->\r\n                playerViewModel.addUserToFirestore(user)\r\n                showAddPlayerDialog = false\r\n            }\r\n        )\r\n    }\r\n}\r\n\r\n\r\n@Composable\r\nfun SelectedPlayersGrid(modifier: Modifier, selectedPersons: List<User>, setSelectedPersons: (List<User>) -> Unit) {\r\n    if (selectedPersons.isNotEmpty()) {\r\n        LazyVerticalGrid(\r\n            columns = GridCells.Fixed(4),\r\n            contentPadding = PaddingValues(8.dp),\r\n            modifier = modifier\r\n                .heightIn(max = 400.dp)\r\n        ) {\r\n            items(selectedPersons) { person ->\r\n\r\n                Column(\r\n                    horizontalAlignment = Alignment.CenterHorizontally,\r\n                    modifier = Modifier.fillMaxSize()\r\n                ) {\r\n                    Box {\r\n                        AsyncImage(\r\n                            model = person.photoUrl,\r\n                            placeholder = painterResource(id = R.drawable.ic_clock),\r\n                            error = painterResource(id = R.drawable.ic_clock),\r\n                            contentDescription = null,\r\n                            modifier = Modifier\r\n                                .size(60.dp)\r\n                                .clip(CircleShape),\r\n                            contentScale = ContentScale.Crop,\r\n                            alignment = Alignment.Center\r\n                        )\r\n                        Box(\r\n                            modifier = Modifier\r\n                                .size(16.dp)\r\n                                .align(Alignment.TopEnd)\r\n                                .clickable {\r\n                                    setSelectedPersons(selectedPersons - person)\r\n                                }\r\n                        ) {\r\n                            Image(\r\n                                painter = painterResource(id = R.drawable.ic_remove),\r\n                                contentDescription = stringResource(R.string.remove),\r\n                                modifier = Modifier.size(16.dp)\r\n                            )\r\n                        }\r\n                    }\r\n                    Text(\r\n                        text = person.userName,\r\n                        modifier = Modifier\r\n                            .align(Alignment.CenterHorizontally)\r\n                            .padding(top = 4.dp)\r\n                    )\r\n\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun AddPlayerDialog(\r\n    onDismiss: () -> Unit,\r\n    onAddPlayer: (User) -> Unit\r\n) {\r\n    var email by remember { mutableStateOf(\"\") }\r\n    var userName by remember { mutableStateOf(\"\") }\r\n    var surname by remember { mutableStateOf(\"\") }\r\n    var position by remember { mutableStateOf(\"\") }\r\n    var point by remember { mutableIntStateOf(0) }\r\n    var firstname by remember { mutableStateOf(\"\") }\r\n\r\n    Dialog(onDismissRequest = onDismiss) {\r\n        Surface(\r\n            shape = MaterialTheme.shapes.medium,\r\n            color = Color.White,\r\n            border = BorderStroke(1.dp, Color.Black),\r\n        ) {\r\n            Column(\r\n                modifier = Modifier\r\n                    .padding(16.dp)\r\n                    .fillMaxWidth(),\r\n                horizontalAlignment = Alignment.CenterHorizontally\r\n            ) {\r\n                Text(text = stringResource(R.string.yeni_oyuncu_ekle))\r\n\r\n                CustomTextField(\r\n                    value = email,\r\n                    onValueChange = { email = it },\r\n                    label = stringResource(R.string.email)\r\n                )\r\n\r\n                CustomTextField(\r\n                    value = userName,\r\n                    onValueChange = { userName = it },\r\n                    label = stringResource(R.string.kullan_c_ad)\r\n                )\r\n\r\n                CustomTextField(\r\n                    value = firstname,\r\n                    onValueChange = { firstname = it },\r\n                    label = stringResource(R.string.isim)\r\n                )\r\n\r\n                CustomTextField(\r\n                    value = surname,\r\n                    onValueChange = { surname = it },\r\n                    label = stringResource(R.string.soyisim)\r\n                )\r\n\r\n                CustomTextField(\r\n                    value = position,\r\n                    onValueChange = { position = it },\r\n                    label = stringResource(R.string.pozisyon)\r\n                )\r\n\r\n                CustomTextField(\r\n                    value = point.toString(),\r\n                    onValueChange = { point = it.toIntOrNull() ?: 0 },\r\n                    label = stringResource(R.string.puan)\r\n                )\r\n\r\n                Spacer(modifier = Modifier.height(8.dp))\r\n                Row(\r\n                    modifier = Modifier.fillMaxWidth(),\r\n                    horizontalArrangement = Arrangement.SpaceBetween\r\n                ) {\r\n                    Button(\r\n                        onClick = onDismiss,\r\n                        colors = ButtonDefaults.buttonColors(Color.Blue),\r\n                    ) {\r\n                        Text(\r\n                            text = stringResource(R.string.ptal),\r\n                            color = Color.White,\r\n                        )\r\n                    }\r\n                    Button(\r\n                        onClick = {\r\n                            val newUser = User(\r\n                                email = email,\r\n                                userName = userName,\r\n                                surname = surname,\r\n                                position = position,\r\n                                point = point,\r\n                                firstName = firstname\r\n                            )\r\n                            onAddPlayer(newUser)\r\n                        },\r\n                        colors = ButtonDefaults.buttonColors(Color.Blue),\r\n                    ) {\r\n                        Text(\r\n                            text = stringResource(R.string.ekle),\r\n                            color = Color.White,\r\n                        )\r\n                    }\r\n                }\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@OptIn(ExperimentalMaterial3Api::class)\r\n@Composable\r\nfun CustomTextField(\r\n    value: String,\r\n    onValueChange: (String) -> Unit,\r\n    label: String,\r\n    modifier: Modifier = Modifier\r\n) {\r\n    OutlinedTextField(\r\n        value = value,\r\n        onValueChange = onValueChange,\r\n        label = { Text(text = label) },\r\n        colors = TextFieldDefaults.outlinedTextFieldColors(\r\n            unfocusedBorderColor = Color.Black,\r\n            focusedBorderColor = Color.Black,\r\n            cursorColor = Color.Black,\r\n            focusedLabelColor = Color.Black,\r\n            unfocusedLabelColor = Color.Black\r\n        ),\r\n        modifier = modifier\r\n    )\r\n}\r\n\r\n\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/player/PlayerPage.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/player/PlayerPage.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/player/PlayerPage.kt	(revision 6910bbb358810c8b5f2b48396f035756f3a1794b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/player/PlayerPage.kt	(date 1723507578043)
+@@ -355,7 +355,7 @@
+                         colors = ButtonDefaults.buttonColors(Color.Blue),
+                     ) {
+                         Text(
+-                            text = stringResource(R.string.ptal),
++                            text = stringResource(R.string.iptal),
+                             color = Color.White,
+                         )
+                     }

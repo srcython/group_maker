@@ -1,0 +1,48 @@
+Index: app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.yeceylan.groupmaker.ui.sport_types\r\n\r\nimport androidx.compose.foundation.Image\r\nimport androidx.compose.foundation.background\r\nimport androidx.compose.foundation.clickable\r\nimport androidx.compose.foundation.layout.Arrangement\r\nimport androidx.compose.foundation.layout.Box\r\nimport androidx.compose.foundation.layout.Column\r\nimport androidx.compose.foundation.layout.fillMaxSize\r\nimport androidx.compose.foundation.layout.fillMaxWidth\r\nimport androidx.compose.foundation.layout.height\r\nimport androidx.compose.foundation.layout.padding\r\nimport androidx.compose.foundation.lazy.LazyColumn\r\nimport androidx.compose.foundation.shape.RoundedCornerShape\r\nimport androidx.compose.material3.Card\r\nimport androidx.compose.material3.CardDefaults\r\nimport androidx.compose.material3.Text\r\nimport androidx.compose.runtime.Composable\r\nimport androidx.compose.ui.Alignment\r\nimport androidx.compose.ui.Modifier\r\nimport androidx.compose.ui.graphics.Brush\r\nimport androidx.compose.ui.graphics.Color\r\nimport androidx.compose.ui.graphics.painter.Painter\r\nimport androidx.compose.ui.layout.ContentScale\r\nimport androidx.compose.ui.res.painterResource\r\nimport androidx.compose.ui.res.stringResource\r\nimport androidx.compose.ui.text.TextStyle\r\nimport androidx.compose.ui.text.style.TextAlign\r\nimport androidx.compose.ui.unit.dp\r\nimport androidx.compose.ui.unit.sp\r\nimport androidx.hilt.navigation.compose.hiltViewModel\r\nimport androidx.navigation.NavController\r\nimport com.yeceylan.groupmaker.R\r\nimport com.yeceylan.groupmaker.ui.match.navigation.MatchScreens\r\nimport com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens\r\n\r\n@Composable\r\nfun SportTypeSetting(\r\n    title: String,\r\n    teamSize: Int,\r\n    navController: NavController,\r\n) {\r\n    val create = painterResource(id = R.drawable.create_match)\r\n    val players = painterResource(id = R.drawable.players)\r\n\r\n    Column(\r\n        modifier = Modifier.fillMaxSize(),\r\n        horizontalAlignment = Alignment.CenterHorizontally,\r\n        verticalArrangement = Arrangement.SpaceEvenly,\r\n    ) {\r\n\r\n        Text(\r\n            text = title,\r\n            fontSize = 30.sp,\r\n            textAlign = TextAlign.Center,\r\n            modifier = Modifier\r\n                .fillMaxWidth(),\r\n        )\r\n        LazyColumn {\r\n            item {\r\n                SportTypeSettingItem(\r\n                    painter = create,\r\n                    stringResource(id = R.string.card_title_create),\r\n                    navController,\r\n                    teamSize,title,\r\n                )\r\n            }\r\n            item {\r\n                SportTypeSettingItem(\r\n                    painter = players,\r\n                    stringResource(id = R.string.card_title_players),\r\n                    navController,\r\n                    teamSize,title,\r\n                )\r\n            }\r\n        }\r\n    }\r\n}\r\n\r\n@Composable\r\nfun SportTypeSettingItem(\r\n    painter: Painter,\r\n    text: String,\r\n    navController: NavController,\r\n    teamSize: Int,\r\n    title: String,\r\n    viewModel:SportTypeViewModel = hiltViewModel(),\r\n    ) {\r\n\r\n    Card(\r\n        modifier = Modifier\r\n            .fillMaxWidth()\r\n            .padding(20.dp)\r\n            .clickable {\r\n                viewModel.addMatch(title, teamSize)\r\n                if (text != \"Oyuncular\") {\r\n                    navController.navigate(MatchScreens.MakeMatchScreen(title, teamSize))\r\n                } else {\r\n                    navController.navigate(PlayerScreens.PlayerPage)\r\n                }\r\n            },\r\n        shape = RoundedCornerShape(24.dp),\r\n        elevation = CardDefaults.cardElevation(10.dp),\r\n\r\n        ) {\r\n        Box(modifier = Modifier.height(200.dp)) {\r\n            Image(\r\n                modifier = Modifier.fillMaxWidth(),\r\n                painter = painter,\r\n                contentDescription = \"\",\r\n                contentScale = ContentScale.Crop,\r\n            )\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .background(\r\n                        brush = Brush.verticalGradient(\r\n                            colors = listOf(\r\n                                Color.Transparent,\r\n                                Color.Black,\r\n                            ),\r\n                        )\r\n                    )\r\n            ) {\r\n\r\n            }\r\n\r\n            Box(\r\n                modifier = Modifier\r\n                    .fillMaxSize()\r\n                    .padding(12.dp),\r\n                contentAlignment = Alignment.BottomCenter,\r\n            ) {\r\n                Text(text, style = TextStyle(color = Color.White, fontSize = 16.sp))\r\n            }\r\n        }\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt
+--- a/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(revision 077fc50ea2196d4e0ba6f74125c72c622c4eda5b)
++++ b/app/src/main/java/com/yeceylan/groupmaker/ui/sport_types/SportTypeSetting.kt	(date 1723557436755)
+@@ -6,6 +6,7 @@
+ import androidx.compose.foundation.layout.Arrangement
+ import androidx.compose.foundation.layout.Box
+ import androidx.compose.foundation.layout.Column
++import androidx.compose.foundation.layout.Row
+ import androidx.compose.foundation.layout.fillMaxSize
+ import androidx.compose.foundation.layout.fillMaxWidth
+ import androidx.compose.foundation.layout.height
+@@ -31,6 +32,8 @@
+ import androidx.hilt.navigation.compose.hiltViewModel
+ import androidx.navigation.NavController
+ import com.yeceylan.groupmaker.R
++import com.yeceylan.groupmaker.ui.components.BackButton
++import com.yeceylan.groupmaker.ui.components.DButton
+ import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
+ import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
+ 
+@@ -48,6 +51,11 @@
+         horizontalAlignment = Alignment.CenterHorizontally,
+         verticalArrangement = Arrangement.SpaceEvenly,
+     ) {
++        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
++            BackButton {
++
++            }
++        }
+ 
+         Text(
+             text = title,
+@@ -94,7 +102,7 @@
+             .clickable {
+                 viewModel.addMatch(title, teamSize)
+                 if (text != "Oyuncular") {
+-                    navController.navigate(MatchScreens.MakeMatchScreen(title, teamSize))
++                    navController.navigate(MatchScreens.MakeMatchScreen(teamSize))
+                 } else {
+                     navController.navigate(PlayerScreens.PlayerPage)
+                 }

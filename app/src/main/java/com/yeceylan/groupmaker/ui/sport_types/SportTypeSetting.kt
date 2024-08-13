@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.yeceylan.groupmaker.R
+import com.yeceylan.groupmaker.ui.components.button.BackButton
 import com.yeceylan.groupmaker.ui.match.navigation.MatchScreens
 import com.yeceylan.groupmaker.ui.player.navigation.PlayerScreens
 
@@ -42,6 +44,12 @@ fun SportTypeSetting(
 ) {
     val create = painterResource(id = R.drawable.create_match)
     val players = painterResource(id = R.drawable.players)
+
+    Row(modifier = Modifier.padding(top = 60.dp, start = 20.dp)) {
+        BackButton {
+            navController.popBackStack()
+        }
+    }
 
     Column(
         modifier = Modifier.fillMaxSize(),
